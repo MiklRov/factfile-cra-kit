@@ -1,0 +1,22 @@
+Starting a Gradle Daemon
+
+> Task :app:dependencies
+
+------------------------------------------------------------
+Project ':app'
+------------------------------------------------------------
+
+releaseRuntimeClasspath - Runtime classpath of '/release'.
++--- com.example:core:1.0.0
++--- com.example:util:1.0.0 -> 2.0.0
+|    \--- com.example:helper:1.0.0 -> 2.0.0 (*)
++--- com.example:constrained:1.0.0 -> 2.0.0 (c)
+\--- com.example:missing (n)
+
+prodReleaseRuntimeClasspath - Runtime classpath of '/prodRelease'.
++--- com.example:core:1.0.0
++--- com.example:flavor-only:5.0.0
+
+(*) - dependencies omitted (listed previously)
+
+A web-based, searchable dependency report is available by adding the --scan option.

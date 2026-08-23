@@ -1,0 +1,171 @@
+# Product data for the Annex VII technical file — Regulation (EU) 2024/2847
+#
+# This file is a TEMPLATE. Every value is a placeholder; lists carry one entry each to
+# show the shape. Replace all of it.
+#
+# Sections map to Annex VII:
+#   section_1  — general description of the product (point 1) + Annex II user information
+#   section_2  — design, development and production (point 2)
+#   section_4  — support period (Article 13(8))
+#   section_5  — applied standards and specifications (point 5)
+#   section_6  — test reports (point 6)
+#   declaration — the draft EU declaration of conformity (Annex V)
+#
+# Sections 3 (risk assessment), 7 and 8 are generated from risks.yaml, annex_i.yaml and
+# the SBOM, not from this file.
+#
+# NOTE: build.py currently ignores top-level keys it does not recognise. If a block you
+# added does not appear in the output, check the key name against this file.
+
+meta:
+  schema_version: "0.1.0"
+  compiled_at: "<YYYY-MM-DD>"
+  disclaimer: >
+    <Who prepared this document, on what basis, and what it is not. If it was prepared
+    by someone other than the manufacturer, say so here.>
+
+section_1:
+  product_name: "<product name>"
+  product_version: "<the exact version placed on the market — not 'latest'>"
+  product_type: "<e.g. mobile application / server software / connected device>"
+  license: "<licence of the product itself>"
+
+  intended_purpose: >
+    <What the product is for, in the manufacturer's own words. This governs the whole
+    assessment: 'data minimisation' under EI-07 is judged against this purpose.>
+
+  intended_users: >
+    <Who is expected to use it, and with what competence. Consumer, professional,
+    or an operator deploying it for others.>
+
+  reasonably_foreseeable_misuse: >
+    <Not abuse by an attacker — ordinary use the manufacturer did not intend but should
+    have expected. Leaving this empty is itself a finding.>
+
+  scope_note: >
+    <What is inside the product boundary and what is not: separately deployed services,
+    third-party platforms, the operator's infrastructure.>
+
+  versions_affecting_compliance: >
+    <Which versions this file covers, and what would require a new assessment.>
+
+  annex_ii_user_information:
+    manufacturer_contact: "<name, registered address, and a contact route>"
+    single_point_of_contact: "<a stable address for cybersecurity matters, e.g. security@...>"
+    product_identification: "<how a user identifies the exact product and version they hold>"
+    intended_purpose_summary: "<one sentence, for the user rather than the authority>"
+    known_limitations: "<what the product does not protect against>"
+    secure_configuration: "<what the user must do for the product to be secure as delivered>"
+    update_information: "<how updates are delivered, and whether they are automatic>"
+    support_period_statement: "<the support period, stated to the user>"
+    vulnerability_reporting: "<where to report a vulnerability, and what to expect back>"
+
+section_2:
+  architecture: >
+    <How the product is put together and what crosses between its parts. Name every
+    external processor: anything the product sends data to is inside this description.>
+
+  component_integration: >
+    <How third-party components enter the product: package managers, vendored code,
+    platform SDKs. This is what the SBOM is evidence for.>
+
+  security_relevant_subsystems:
+    - name: "<e.g. Authentication and session management>"
+      ref: "<where it lives in the source>"
+      note: "<what it does, and what it deliberately does not do>"
+
+  production_and_monitoring: >
+    <How a release is built and signed, what is pinned, who can trigger a release, and
+    what is observed in production.>
+
+  vulnerability_handling_processes:
+    sbom:
+      status: "<implemented / partial / not implemented>"
+      ref: "<the SBOM file this pack was built from>"
+      note: "<how it was produced, and which configuration it describes>"
+    remediation:
+      status: "<...>"
+      note: "<how a vulnerability in a component gets fixed and shipped, and how fast>"
+    testing:
+      status: "<...>"
+      note: "<what security testing happens, and how regularly>"
+    disclosure:
+      status: "<...>"
+      note: "<coordinated vulnerability disclosure policy: where it is published>"
+    updates:
+      status: "<...>"
+      note: "<how updates reach users, and whether they are free and separable>"
+
+section_4:
+  support_period_years: 5
+  end_date: "<date of placing on the market + support period>"
+  security_update_availability_years: 10
+  rationale: >
+    <Why this period and not a longer one. Article 13(8) sets five years as a floor, not
+    a default: a product with a longer expected life needs a longer period, and saying so
+    here is what makes the number defensible.>
+  factors_considered:
+    - factor: "<e.g. Reasonable user expectations>"
+      assessment: "<what that factor implies for this product>"
+  end_of_support_notification: >
+    <How users will be told the support period is ending, and how far in advance.>
+
+section_5:
+  harmonised_standards_applied: []
+  harmonised_standards_note: >
+    No harmonised standard supporting the Regulation had been published in the Official
+    Journal as of the date of this document. Standardisation request M/606 was accepted
+    by CEN, CENELEC and ETSI on 3 April 2025 and work is ongoing. The presumption of
+    conformity is therefore unavailable, and conformity is substantiated directly through
+    the risk assessment and the evidence attached to each requirement.
+  common_specifications_applied: []
+  certification_schemes_applied: []
+  other_means_used:
+    - name: "<framework, guideline or internal standard actually applied>"
+      note: "<where it shows in the product, so the claim can be checked>"
+
+section_6:
+  summary: >
+    <What testing exists, what it covers, and — more usefully — what it does not.>
+  automated_tests:
+    - suite: "<test runner actually used>"
+      files: 0
+      note: "<what layer these tests cover>"
+  security_relevant_tests:
+    note: >
+      <Which tests bear directly on the essential requirements, singled out from the rest.>
+    items:
+      - name: "<test or suite name>"
+        covers:
+          - EI-04
+  static_analysis:
+    - tool: "<static analyser actually run in CI>"
+      config: "<configuration file>"
+      level: 0
+      note: "<how strict the configuration is, and what raising it would buy>"
+  gaps:
+    - "<what is missing from the evidence base — named, not omitted>"
+
+declaration:
+  product_identification: "<name and exact version, as a user would identify it>"
+  manufacturer_name: "<legal name>"
+  manufacturer_address: "<registered address>"
+  authorised_representative: "<name and address, or: not applicable>"
+  sole_responsibility_statement: >
+    This declaration of conformity is issued under the sole responsibility of the
+    manufacturer.
+  object_of_declaration: "<what exactly is being declared conformant>"
+  conformity_statement: >
+    <The statement that the object described conforms to the relevant Union harmonisation
+    legislation. NOT ISSUED until the manufacturer signs it — this file produces a draft.>
+  standards_referenced: []
+  standards_note: "<see section_5: none available at the date of this document>"
+  notified_body: "<name and number, or: not applicable>"
+  notified_body_note: >
+    <Whether the product falls under Annex III class I or II, or Annex IV, and what
+    conformity assessment route follows from that.>
+  conformity_assessment_module: "<e.g. Module A — internal control of production, Annex VIII>"
+  place_of_issue: "<city>"
+  date_of_issue: "<YYYY-MM-DD>"
+  signatory_name: "<who signs — a person, not a department>"
+  signatory_function: "<their function>"

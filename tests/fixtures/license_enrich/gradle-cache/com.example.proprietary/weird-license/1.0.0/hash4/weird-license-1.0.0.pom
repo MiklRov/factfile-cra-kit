@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.example.proprietary</groupId>
+  <artifactId>weird-license</artifactId>
+  <version>1.0.0</version>
+  <licenses>
+    <license>
+      <name>Play Core Software Development Kit Terms of Service</name>
+      <url>https://developer.android.com/guide/playcore/license</url>
+    </license>
+  </licenses>
+</project>

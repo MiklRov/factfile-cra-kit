@@ -1,0 +1,120 @@
+meta:
+  schema_version: "0.1.0"
+  compiled_at: "2026-08-20"
+  disclaimer: >
+    Test fixture. Not a real technical file.
+
+section_1:
+  product_name: "TestProduct"
+  product_version: "0.1.0"
+  product_type: "Software with digital elements"
+  license: "MIT"
+  intended_purpose: >
+    A minimal fixture product used only to exercise build.py end to end.
+  intended_users: >
+    Test authors.
+  reasonably_foreseeable_misuse: >
+    None considered; this is a fixture.
+  scope_note: >
+    Fixture scope note.
+  versions_affecting_compliance: >
+    Fixture version note.
+  annex_ii_user_information:
+    manufacturer_contact: "test@example.com"
+    single_point_of_contact: "test@example.com"
+    product_identification: "TestProduct 0.1.0"
+    intended_purpose_short: "Fixture product"
+    known_limitations: "None"
+    support_period_end: "2030-01-01"
+    security_update_information: "Fixture note"
+    vulnerability_reporting: "test@example.com"
+    secure_configuration_guidance: "Fixture note"
+
+section_2:
+  architecture: >
+    Fixture architecture description.
+  component_integration: >
+    Fixture component integration description.
+  security_relevant_subsystems:
+    - name: "Auth"
+      ref: "app/auth.py"
+      note: "Fixture note"
+  production_and_monitoring: >
+    Fixture production and monitoring note.
+  vulnerability_handling_processes:
+    sbom:
+      status: "implemented"
+      note: "Fixture"
+    coordinated_disclosure_policy:
+      status: "implemented"
+      note: "Fixture"
+    reporting_channel:
+      status: "implemented"
+      note: "Fixture"
+    security_advisories:
+      status: "implemented"
+      note: "Fixture"
+    update_distribution:
+      status: "implemented"
+      note: "Fixture"
+
+section_4:
+  support_period_years: 5
+  end_date: "2031-08-20"
+  security_update_availability_years: 5
+  rationale: >
+    Fixture rationale.
+  factors_considered:
+    - factor: "Expected lifetime"
+      assessment: "Fixture assessment"
+  end_of_support_notification: >
+    Fixture notification note.
+
+section_5:
+  harmonised_standards_applied: []
+  harmonised_standards_note: >
+    None available at time of writing (fixture).
+  other_means_used:
+    - name: "Internal review"
+      note: "Fixture note"
+
+section_6:
+  summary: >
+    Fixture test summary.
+  automated_tests:
+    - suite: "pytest"
+      files: "tests/"
+      note: "Fixture"
+  security_relevant_tests:
+    note: >
+      Fixture note.
+    items:
+      - name: "test_auth"
+        covers: ["EI-01"]
+  static_analysis:
+    - tool: "ruff"
+      config: "pyproject.toml"
+      note: "Fixture"
+  gaps:
+    - "Fixture gap note"
+
+declaration:
+  product_identification: "TestProduct 0.1.0"
+  manufacturer_name: "Acme Test Ltd"
+  manufacturer_address: "1 Test Street, Test City"
+  sole_responsibility_statement: >
+    Fixture statement.
+  object_of_declaration: >
+    Fixture object of declaration.
+  conformity_statement: >
+    Fixture conformity statement.
+  standards_referenced: []
+  standards_note: >
+    None applied (fixture).
+  notified_body_note: >
+    Not involved (fixture).
+  conformity_assessment_module: "Internal control (Annex VIII)"
+  place_of_issue: "Test City"
+  date_of_issue: "2026-08-20"
+  signatory_name: "Test Signatory"
+  signatory_function: "Test Function"

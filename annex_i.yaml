@@ -1,0 +1,308 @@
+# Essential requirements matrix — Regulation (EU) 2024/2847 (Cyber Resilience Act)
+#
+# Annex I Part I  — essential cybersecurity requirements for the product (13 items)
+# Annex I Part II — vulnerability handling requirements (8 items)
+#
+# Requirement wording is a condensed restatement, not a verbatim quotation.
+# Always check against the official text: https://eur-lex.europa.eu/eli/reg/2024/2847/oj/eng
+#
+# Fields of each requirement:
+#   id            — stable identifier referenced from the technical file
+#   article       — precise reference to the provision
+#   title         — short title
+#   requirement   — what is required
+#   applicability — applicable | not_applicable | conditional
+#                   NOTE: Annex I Part I(2) applies "to the extent applicable"
+#                   to the specific product, based on the risk assessment under Art. 13(2).
+#                   Non-applicability must be justified, not merely asserted.
+#   rationale     — justification where not applicable
+#   evidence      — list of evidence items; each: type, ref, note
+#                   type: design_doc | test_report | code_ref | config | sbom |
+#                         process_doc | third_party | screenshot | policy
+#   status        — not_started | in_progress | met | not_met | not_applicable
+#   owner         — accountable person
+#   annex_vii     — which section of the technical file it feeds
+#
+# A status of `met` without at least one evidence item is invalid:
+# the integrity check in validate.py catches it.
+
+meta:
+  regulation: "Regulation (EU) 2024/2847"
+  schema_version: "0.1.0"
+  product: "<product name>"
+  product_version: "<version>"
+  assessed_at: "<YYYY-MM-DD>"
+  assessor: "<who assessed this>"
+
+part_i:
+  - id: EI-01
+    article: "Annex I, Part I, (2)(a)"
+    title: "No known exploitable vulnerabilities"
+    requirement: >
+      The product is made available on the market without known exploitable
+      vulnerabilities.
+    applicability: applicable
+    annex_vii: 3
+    status: not_met   # met | in_progress | not_met | not_applicable
+    owner: ""
+    evidence: []
+    notes: ""
+
+  - id: EI-02
+    article: "Annex I, Part I, (2)(b)"
+    title: "Secure by default configuration"
+    requirement: >
+      The product is made available with a secure by default configuration,
+      including the possibility to reset it to its original secure state.
+      A different configuration is permitted where agreed with a business user.
+    applicability: applicable
+    annex_vii: 2
+    status: not_met   # met | in_progress | not_met | not_applicable
+    owner: ""
+    evidence: []
+    notes: ""
+
+  - id: EI-03
+    article: "Annex I, Part I, (2)(c)"
+    title: "Vulnerabilities addressed through security updates"
+    requirement: >
+      Vulnerabilities are addressed through security updates, including, where
+      applicable, automatic updates installed within an appropriate timeframe,
+      with an opt-out mechanism available.
+    applicability: applicable
+    annex_vii: 2
+    status: not_met   # met | in_progress | not_met | not_applicable
+    owner: ""
+    evidence: []
+
+  - id: EI-04
+    article: "Annex I, Part I, (2)(d)"
+    title: "Protection from unauthorised access"
+    requirement: >
+      Protection from unauthorised access by appropriate control mechanisms,
+      including authentication, identity and access management, with reporting
+      of possible unauthorised access attempts.
+    applicability: applicable
+    annex_vii: 2
+    status: not_met   # met | in_progress | not_met | not_applicable
+    owner: ""
+    evidence: []
+
+  - id: EI-05
+    article: "Annex I, Part I, (2)(e)"
+    title: "Confidentiality of data"
+    requirement: >
+      Protection of the confidentiality of stored, transmitted and otherwise
+      processed data by state-of-the-art encryption, both at rest and in transit.
+    applicability: applicable
+    annex_vii: 2
+    status: not_met   # met | in_progress | not_met | not_applicable
+    owner: ""
+    evidence: []
+    notes: ""
+
+  - id: EI-06
+    article: "Annex I, Part I, (2)(f)"
+    title: "Integrity of data"
+    requirement: >
+      Protection of the integrity of stored, transmitted and otherwise processed
+      data, commands, programs and configuration against unauthorised
+      modification.
+    applicability: applicable
+    annex_vii: 2
+    status: not_met   # met | in_progress | not_met | not_applicable
+    owner: ""
+    evidence: []
+
+  - id: EI-07
+    article: "Annex I, Part I, (2)(g)"
+    title: "Data minimisation"
+    requirement: >
+      Only data that is adequate, relevant and limited to what is necessary in
+      relation to the intended purpose of the product is processed.
+    applicability: applicable
+    annex_vii: 2
+    status: not_met   # met | in_progress | not_met | not_applicable
+    owner: ""
+    evidence: []
+    notes: ""
+
+  - id: EI-08
+    article: "Annex I, Part I, (2)(h)"
+    title: "Availability of essential functions"
+    requirement: >
+      Protection of the availability of essential and basic functions, including
+      after an incident, and resilience against denial of service attacks.
+    applicability: applicable
+    annex_vii: 2
+    status: not_met   # met | in_progress | not_met | not_applicable
+    owner: ""
+    evidence: []
+
+  - id: EI-09
+    article: "Annex I, Part I, (2)(i)"
+    title: "No adverse effect on availability of other devices or networks"
+    requirement: >
+      Minimisation of the negative impact of the product on the availability of
+      services provided by other devices or networks.
+    applicability: applicable
+    annex_vii: 2
+    status: not_met   # met | in_progress | not_met | not_applicable
+    owner: ""
+    evidence: []
+
+  - id: EI-10
+    article: "Annex I, Part I, (2)(j)"
+    title: "Limitation of attack surface"
+    requirement: >
+      The product is designed and produced to limit attack surfaces, including
+      external interfaces.
+    applicability: applicable
+    annex_vii: 2
+    status: not_met   # met | in_progress | not_met | not_applicable
+    owner: ""
+    evidence: []
+    notes: ""
+
+  - id: EI-11
+    article: "Annex I, Part I, (2)(k)"
+    title: "Mitigation of the impact of exploitation"
+    requirement: >
+      The impact of an incident is reduced using appropriate exploitation
+      mitigation mechanisms and techniques.
+    applicability: applicable
+    annex_vii: 2
+    status: not_met   # met | in_progress | not_met | not_applicable
+    owner: ""
+    evidence: []
+    notes: ""
+
+  - id: EI-12
+    article: "Annex I, Part I, (2)(l)"
+    title: "Recording and monitoring of security-relevant activity"
+    requirement: >
+      Security-related information is provided by recording and monitoring
+      relevant internal activity, including access to and modification of data,
+      services and functions, with an opt-out mechanism.
+    applicability: applicable
+    annex_vii: 2
+    status: not_met   # met | in_progress | not_met | not_applicable
+    owner: ""
+    evidence: []
+
+  - id: EI-13
+    article: "Annex I, Part I, (2)(m)"
+    title: "Data deletion and portability"
+    requirement: >
+      Users can securely and easily remove, on a permanent basis, all data and
+      settings, and can securely transfer data to another product.
+    applicability: applicable
+    annex_vii: 2
+    status: not_met   # met | in_progress | not_met | not_applicable
+    owner: ""
+    evidence: []
+
+part_ii:
+  - id: VH-01
+    article: "Annex I, Part II, (1)"
+    title: "Identification of components and the SBOM"
+    requirement: >
+      Components and vulnerabilities of the product are identified and
+      documented, including by drawing up a software bill of materials in a
+      commonly used machine-readable format covering at the very least the
+      top-level dependencies of the product.
+    applicability: applicable
+    annex_vii: 8
+    status: not_met   # met | in_progress | not_met | not_applicable
+    owner: ""
+    evidence: []
+    notes: ""
+
+  - id: VH-02
+    article: "Annex I, Part II, (2)"
+    title: "Addressing vulnerabilities without delay"
+    requirement: >
+      Vulnerabilities are addressed and remediated without delay, including by
+      providing security updates. Where a free and open-source component is
+      affected, the manufacturer contributes to the upstream fix where feasible.
+    applicability: applicable
+    annex_vii: 2
+    status: not_met   # met | in_progress | not_met | not_applicable
+    owner: ""
+    evidence: []
+
+  - id: VH-03
+    article: "Annex I, Part II, (3)"
+    title: "Regular security testing and review"
+    requirement: >
+      Effective and regular tests and reviews of the security of the product are
+      carried out.
+    applicability: applicable
+    annex_vii: 6
+    status: not_met   # met | in_progress | not_met | not_applicable
+    owner: ""
+    evidence: []
+
+  - id: VH-04
+    article: "Annex I, Part II, (4)"
+    title: "Public disclosure of fixed vulnerabilities"
+    requirement: >
+      Information about fixed vulnerabilities is published: a description, the
+      affected and corrected versions, remediation guidance and a severity
+      assessment. Publication may be deferred on justified security grounds
+      until users are able to apply the corresponding patch.
+    applicability: applicable
+    annex_vii: 2
+    status: not_met   # met | in_progress | not_met | not_applicable
+    owner: ""
+    evidence: []
+
+  - id: VH-05
+    article: "Annex I, Part II, (5)"
+    title: "Coordinated vulnerability disclosure policy"
+    requirement: >
+      A policy on coordinated vulnerability disclosure is put in place and
+      enforced.
+    applicability: applicable
+    annex_vii: 2
+    status: not_met   # met | in_progress | not_met | not_applicable
+    owner: ""
+    evidence: []
+
+  - id: VH-06
+    article: "Annex I, Part II, (6)"
+    title: "Channel for receiving vulnerability reports"
+    requirement: >
+      Measures are in place to facilitate the reporting of vulnerabilities,
+      including a single point of contact and, where technically feasible, the
+      possibility of anonymous reporting.
+    applicability: applicable
+    annex_vii: 2
+    status: not_met   # met | in_progress | not_met | not_applicable
+    owner: ""
+    evidence: []
+
+  - id: VH-07
+    article: "Annex I, Part II, (7)"
+    title: "Secure distribution of updates"
+    requirement: >
+      Mechanisms are in place to securely distribute updates, including automatic
+      security updates where applicable.
+    applicability: applicable
+    annex_vii: 2
+    status: not_met   # met | in_progress | not_met | not_applicable
+    owner: ""
+    evidence: []
+
+  - id: VH-08
+    article: "Annex I, Part II, (8)"
+    title: "Timely, free-of-charge updates with a security advisory"
+    requirement: >
+      Security updates are disseminated without delay and free of charge,
+      accompanied by an advisory message that explains the content, the urgency
+      and the action users are expected to take.
+    applicability: applicable
+    annex_vii: 2
+    status: not_met   # met | in_progress | not_met | not_applicable
+    owner: ""
+    evidence: []

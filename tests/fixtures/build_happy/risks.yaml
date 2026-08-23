@@ -1,0 +1,59 @@
+meta:
+  product: TestProduct
+  product_version: "0.1.0"
+  assessed_at: "2026-08-20"
+  method: static_source_review
+  methodology: "STRIDE across trust boundaries; risk rating = likelihood x impact"
+  limitations:
+    - "fixture document, not a real assessment"
+
+system:
+  description: >
+    Fixture system description.
+  entry_points:
+    - id: EP-1
+      name: "HTTP: web interface"
+      ref: "app/main.py"
+  assets:
+    - id: A-1
+      name: "User data"
+      note: "Fixture note"
+      cia: [confidentiality, integrity]
+  trust_boundaries:
+    - id: TB-1
+      name: "Internet-facing boundary"
+
+risks:
+  - id: R-01
+    title: "Fixture risk: weak auth"
+    stride: [spoofing]
+    boundary: TB-1
+    assets: [A-1]
+    description: >
+      Fixture risk description.
+    annex_i: [EI-01]
+    likelihood: 3
+    impact: 3
+    residual_likelihood: 2
+    residual_impact: 2
+    existing_controls:
+      - "Fixture control: rate limiting"
+    control_refs:
+      - "app/auth.py"
+    treatment: mitigate
+    treatment_note: "Fixture treatment note"
+
+  - id: R-02
+    title: "Fixture risk: SBOM gap"
+    stride: [tampering]
+    boundary: TB-1
+    assets: [A-1]
+    description: >
+      Fixture risk description.
+    annex_i: [EI-14]
+    likelihood: 2
+    impact: 2
+    residual_likelihood: 2
+    residual_impact: 2
+    treatment: accept
+    treatment_note: "Fixture acceptance rationale"

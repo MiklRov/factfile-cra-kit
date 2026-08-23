@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.example.nolicense</groupId>
+  <artifactId>no-license-lib</artifactId>
+  <version>1.0.0</version>
+  <!-- deliberately no licenses block and no parent: a real POM that
+       was read successfully and genuinely declares no license. -->
+</project>

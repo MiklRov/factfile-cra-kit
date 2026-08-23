@@ -1,0 +1,5 @@
+# Dev/test dependencies for cra-kit. Not required to run the tools
+# themselves (see README.md for those requirements) — only to run the
+# test suite under tests/.
+pytest>=8.0
+pyyaml>=6.0

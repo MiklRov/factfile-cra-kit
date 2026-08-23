@@ -1,0 +1,31 @@
+{
+  "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.6",
+  "serialNumber": "urn:uuid:00000000-0000-4000-a000-000000000000",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-08-20T00:00:00+00:00",
+    "component": {
+      "bom-ref": "pkg:generic/TestProduct@0.1.0",
+      "type": "application",
+      "name": "TestProduct",
+      "version": "0.1.0"
+    }
+  },
+  "components": [
+    {
+      "bom-ref": "pkg:npm/foo@1.2.3",
+      "type": "library",
+      "name": "foo",
+      "version": "1.2.3",
+      "purl": "pkg:npm/foo@1.2.3",
+      "licenses": [{"license": {"id": "MIT"}}],
+      "properties": [
+        {"name": "cra:ecosystem", "value": "npm"},
+        {"name": "cra:direct", "value": "true"},
+        {"name": "cra:dev", "value": "false"}
+      ]
+    }
+  ]
+}

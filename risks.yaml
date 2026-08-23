@@ -1,0 +1,85 @@
+# Cybersecurity risk assessment — Regulation (EU) 2024/2847, Article 13(2)
+#
+# Rendered as section 3 of the Annex VII technical file.
+#
+# This file is a TEMPLATE. It contains one worked example of each structure so the
+# shape is unambiguous. Replace everything; the example risk R-01 is illustrative
+# and belongs to no real product.
+#
+# How the pieces relate:
+#   assets            — what an attacker would want, or what the user would lose
+#   trust_boundaries  — where data or control crosses between parties of different trust
+#   entry_points      — where untrusted input reaches the product
+#   risks             — each one names a boundary, the assets at stake, and the
+#                       Annex I requirements it bears on
+#
+# `risk_report.py` refuses to lower a risk without a named control, and warns when an
+# essential requirement has no risk mapped to it at all.
+
+meta:
+  product: "<product name>"
+  product_version: "<version>"
+  assessed_at: "<YYYY-MM-DD>"
+  method: static_source_review        # how the assessment was carried out
+  methodology: "STRIDE across trust boundaries; risk rating = likelihood x impact, each 1-5"
+  limitations:
+    - "<name every limitation of the assessment here — an unnamed limitation reads as a claim>"
+    - "Static review only: no penetration testing and no dynamic analysis were performed."
+    - "Statements that could not be verified in the source are marked as such."
+
+system:
+  description: >
+    <One or two paragraphs: what the product is, how it is deployed, what it talks to,
+    and where the data lives. This is the ground the whole assessment stands on — if a
+    reader cannot picture the system from this, nothing below will convince them.>
+
+  entry_points:
+    - id: EP-1
+      name: "<e.g. HTTP: public API>"
+      ref: "<file, route or endpoint that receives untrusted input>"
+
+  external_dependencies:
+    - "<service or system the product depends on, and what it is used for>"
+
+  assets:
+    - id: A-1
+      name: "<what is worth protecting>"
+      note: "<why it matters, and what it may contain>"
+      cia:
+        - confidentiality
+        - integrity
+        - availability
+
+  trust_boundaries:
+    - id: TB-1
+      name: "<e.g. Unauthenticated user -> application>"
+
+risks:
+  # ---- EXAMPLE. Delete it and write your own. ----
+  - id: R-01
+    title: "<short, specific, and about this product>"
+    stride:
+      - tampering                     # spoofing | tampering | repudiation |
+      - elevation_of_privilege        # information_disclosure | denial_of_service |
+                                      # elevation_of_privilege
+    boundary: TB-1
+    assets:
+      - A-1
+    description: >
+      <What can happen, to whom, and with what consequence. Written so that someone who
+      does not know the codebase can judge whether it is plausible.>
+    likelihood: 3                     # 1-5, before controls
+    impact: 4                         # 1-5, before controls
+    existing_controls:
+      - "<a control that exists TODAY — not one that is planned>"
+    control_refs:
+      - "<file or configuration where that control lives, so it can be checked>"
+    residual_likelihood: 2            # after the controls above
+    residual_impact: 4
+    treatment: mitigate               # mitigate | accept | transfer | avoid
+    treatment_note: >
+      <Why the residual figures are what they are, and what would move them. A residual
+      risk lowered without a named control is rejected by risk_report.py.>
+    annex_i:
+      - EI-04                         # which essential requirements this risk bears on
+    deployment_dependent: false       # true if the risk depends on how the operator deploys it

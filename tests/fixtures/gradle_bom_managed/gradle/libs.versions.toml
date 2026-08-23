@@ -1,0 +1,10 @@
+[versions]
+composeBom = "2024.12.01"
+
+[libraries]
+# The BOM itself is explicitly versioned...
+compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+# ...but the library it manages is deliberately left with no version at all —
+# its version comes from the BOM at resolution time, same as the real
+# android_family/gradle/libs.versions.toml (compose-ui, compose-material3, ...).
+compose-ui = { group = "androidx.compose.ui", name = "ui" }
