@@ -141,8 +141,6 @@ pytest
 
 The unit tests use small, hand-built fixtures under `tests/fixtures/` rather than captured production data, so the suite runs in under a second and carries nothing product-specific.
 
-The unit tests use small, hand-built fixtures under `tests/fixtures/` rather than captured production data, so the suite runs in under a second and carries nothing product-specific.
-
 **Mocked-network-only: no test in this suite makes a live call to OSV.dev, PyPI, or a Maven repository.** Every `vuln_scan.py` test monkeypatches `urllib.request.urlopen` (or the `osv_post` seam directly above it); `license_enrich.py` tests that exercise the network-shaped Gradle POM fetch or PyPI lookup monkeypatch the seam functions directly (`fetch_pom_network`, `fetch_pypi_metadata`) instead. An autouse fixture in `tests/conftest.py` fails any test that reaches the real `urlopen` unpatched. The whole suite runs in well under a second, which is itself a signal nothing is hitting the network.
 
 ---
