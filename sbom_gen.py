@@ -9,7 +9,11 @@ top-level dependencies of the product".
 Deliberately implemented without external dependencies: it reads lock files
 directly, because they are the source of truth about what actually shipped.
 
-Supports: composer (PHP), npm (Node).
+Own parsers: Gradle (Kotlin/Android), PyPI, composer (PHP), npm (Node).
+Optional fallback: Syft, for everything else (Go, Rust, .NET, OS packages,
+container images) — see syft_scan.py. Whatever is detected in the source
+tree but not resolved into components is recorded in the SBOM as a
+known-unknowns block (see sbom_coverage.py) instead of failing the run.
 """
 
 from __future__ import annotations
@@ -20,6 +24,9 @@ import json
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
+
+import sbom_coverage as coverage
+import syft_scan
 
 SPEC_VERSION = "1.6"
 TOOL_NAME = "cra-kit-sbom"
@@ -245,6 +252,9 @@ def build_bom(
     gradle_configuration: str | None = None,
     pip_freeze: Path | None = None,
     search_log: list[str] | None = None,
+    syft: str | None = None,
+    syft_image: str | None = None,
+    syft_runner=None,
 ) -> dict:
     """
     `search_log`, when passed, is appended in place with one human-readable
@@ -252,6 +262,11 @@ def build_bom(
     of whether anything was found there. `main()` uses it to make the
     E-SBOM-01 "no components found" error name exactly what was checked,
     instead of a generic message.
+
+    `syft` is the path to a Syft binary (None: not used). `syft_image` is a
+    local image archive/directory to scan with it. `syft_runner` replaces
+    subprocess.run in tests. Syft failures never raise: they become
+    known-unknowns entries.
     """
     if search_log is None:
         search_log = []
@@ -315,11 +330,53 @@ def build_bom(
     else:
         search_log.append("gradle/pypi: ecosystems.py not importable, skipped")
 
-    # dedupe by purl, stable ordering
+    # dedupe by purl
     seen: dict[str, dict] = {}
     for c in components:
         seen.setdefault(c["purl"], c)
-    components = sorted(seen.values(), key=lambda c: (c["purl"]))
+    components = list(seen.values())
+    for c in components:
+        c.setdefault("properties", []).append(
+            {"name": syft_scan.GENERATOR_PROP, "value": "cra-kit"}
+        )
+
+    # Syft fallback: never fatal, every failure becomes a known unknown
+    syft_dir_status = syft_image_status = None
+    syft_dir: list[dict] = []
+    syft_img: list[dict] = []
+    runner_kw = {"runner": syft_runner} if syft_runner else {}
+    if syft:
+        try:
+            doc = syft_scan.run(syft, f"dir:{root}", **runner_kw)
+            syft_dir = syft_scan.components_from(doc, "dir")
+            syft_dir_status = "ok"
+            search_log.append(f"syft (directory): {root}")
+        except syft_scan.SyftError as e:
+            syft_dir_status = str(e)
+            search_log.append(f"syft (directory) failed: {e}")
+    if syft_image:
+        if not syft:
+            syft_image_status = "--syft-image given but no Syft binary was found"
+        else:
+            try:
+                src = syft_scan.image_source(syft_image)
+                doc = syft_scan.run(syft, src, **runner_kw)
+                syft_img = syft_scan.components_from(doc, "image")
+                syft_image_status = "ok"
+                search_log.append(f"syft (image): {src}")
+            except syft_scan.SyftError as e:
+                syft_image_status = str(e)
+                search_log.append(f"syft (image) failed: {e}")
+    components = syft_scan.merge(components, syft_dir, syft_img)
+    components.sort(key=lambda c: (c.get("purl") or "", c.get("bom-ref", "")))
+
+    unknowns = coverage.known_unknowns(
+        root, components,
+        syft_dir_status=syft_dir_status,
+        syft_image_status=syft_image_status,
+        gradle_tree=gradle_tree,
+        pip_freeze=pip_freeze,
+    )
 
     now = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
     serial = hashlib.sha256(
@@ -347,8 +404,11 @@ def build_bom(
     if supplier:
         metadata["supplier"] = {"name": supplier}
         metadata["component"]["supplier"] = {"name": supplier}
+    if syft_dir_status == "ok" or syft_image_status == "ok":
+        metadata["tools"]["components"].append({"type": "application", "name": "syft"})
+    metadata["properties"] = coverage.to_properties(unknowns)
 
-    return {
+    bom = {
         "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
         "bomFormat": "CycloneDX",
         "specVersion": SPEC_VERSION,
@@ -358,6 +418,13 @@ def build_bom(
         "metadata": metadata,
         "components": components,
     }
+    if unknowns:
+        # The standard CycloneDX way to say "this inventory is not complete".
+        bom["compositions"] = [{
+            "aggregate": "incomplete",
+            "assemblies": [metadata["component"]["bom-ref"]],
+        }]
+    return bom
 
 
 def summarise(bom: dict) -> None:
@@ -386,23 +453,21 @@ def _warn_if_static_only(bom: dict, gradle_tree: Path | None) -> None:
     """W-SBOM-02: warn (not fail) when the SBOM looks like it came only from
     static parsing of Gradle build files rather than a Gradle-resolved tree.
 
-    Signal: every component is direct (cra:direct=true for all of them, i.e.
-    zero transitive components) AND gradle is one of the ecosystems present
+    Signal: every Gradle component is direct (cra:direct=true for all of
+    them, i.e. zero transitive Gradle components)
     AND the caller did not already pass --gradle-tree (in which case this
     warning would be pointless — a resolved tree was used).
     """
     if gradle_tree is not None:
         return
-    comps = bom["components"]
+    comps = [
+        c for c in bom["components"]
+        if any(
+            p["name"] == "cra:ecosystem" and p["value"] == "gradle"
+            for p in c.get("properties", [])
+        )
+    ]
     if not comps:
-        return
-    ecosystems = {
-        p["value"]
-        for c in comps
-        for p in c.get("properties", [])
-        if p["name"] == "cra:ecosystem"
-    }
-    if "gradle" not in ecosystems:
         return
     all_direct = all(
         any(
@@ -437,75 +502,59 @@ def _pypi_declared_only_purls(bom: dict) -> list[str]:
     ]
 
 
-def _check_pypi_resolved_coverage(
-    bom: dict, pip_freeze: Path | None, declared_only: bool
-) -> str | None:
-    """E-SBOM-02 (hard error) / W-SBOM-03 (warning, opt-in via --declared-only).
+def _warn_pypi_declared_only(bom: dict, pip_freeze: Path | None) -> None:
+    """W-SBOM-03: PyPI components came only from requirements.txt.
 
-    Same severity class as E-SBOM-01, not a lesser one: tonight's real
-    incident showed 27 packages declared in requirements.txt against 111
-    actually resolved and running in the production container — including
-    security-critical packages (cryptography, PyJWT, redis, sentry-sdk) that
-    a declared-only scan cannot see at all. A PyPI component set built from
-    requirements.txt alone is not "slightly incomplete", it is the same
-    failure mode E-SBOM-01 already refuses to ship silently: an SBOM that
-    looks complete (valid CycloneDX, non-empty, no warning) while omitting
-    exactly the kind of component Annex I Part II's SBOM requirement exists
-    to surface.
-
-    If `pip_freeze` was given, every PyPI component is resolved-environment
-    confirmed and this check is a no-op. Otherwise, if any PyPI component
-    came only from declared parsing, this is a hard failure unless the
-    caller explicitly passed `declared_only=True` (mirrors --allow-empty:
-    an explicit, visible admission, not a silent default), in which case it
-    is downgraded to a W-SBOM-03 warning instead.
-
-    Returns the error message to print (and the caller should then refuse to
-    write the file / return non-zero) when this is a hard failure, or None
-    when it is not (either fully resolved, no PyPI components at all, or
-    downgraded to the warning path — which this function also prints).
+    This used to be E-SBOM-02, a hard failure. A requirements.txt-only scan
+    is badly incomplete — a real incident found 27 declared packages against
+    111 actually installed in the production container, including
+    security-critical ones (cryptography, PyJWT, redis, sentry-sdk) — but
+    refusing to write anything at all left the manufacturer with no SBOM and
+    no technical file. The gap is now written into the SBOM itself as a
+    known unknown (status "partial"), printed in section 8.3 of the
+    technical file, and warned about here. It is no longer silent and no
+    longer fatal.
     """
     if pip_freeze is not None:
-        return None
+        return
     declared_purls = _pypi_declared_only_purls(bom)
     if not declared_purls:
-        return None
-
-    fix = (
-        "      pip freeze > freeze.txt   # run inside the real target "
-        "environment/container\n"
-        "    then re-run this tool with --pip-freeze freeze.txt."
-    )
-
-    if declared_only:
-        print(
-            "  ! W-SBOM-03: PyPI components came only from declared parsing "
-            f"of requirements.txt ({len(declared_purls)} package(s)) — no "
-            "--pip-freeze was given, so this reflects only declared "
-            "top-level packages and likely undercounts the real, running "
-            "dependency closure significantly. --declared-only was passed, "
-            "so this is a warning, not a failure. For the full picture, on "
-            "the target environment run:\n" + fix,
-            file=sys.stderr,
-        )
-        return None
-
-    return (
-        "error: E-SBOM-02: PyPI components came only from declared parsing "
+        return
+    print(
+        "  ! W-SBOM-03: PyPI components came only from declared parsing "
         f"of requirements.txt ({len(declared_purls)} package(s)) — no "
-        "--pip-freeze was given. A requirements.txt-only scan reflects only "
-        "declared top-level packages, not what actually runs: a real "
-        "incident found 27 declared packages against 111 actually resolved "
-        "and installed in the production container, including "
-        "security-critical packages (cryptography, PyJWT, redis, "
-        "sentry-sdk) completely invisible to the declared-only file. "
-        "Shipping a technical-file SBOM built only from requirements.txt "
-        "would silently misrepresent the product's real dependency closure "
-        "— the same failure class E-SBOM-01 already refuses for an empty "
-        "SBOM. To fix, on the target environment/container run:\n" + fix +
-        "\n    If a declared-only scan is genuinely what you intend here, "
-        "re-run with --declared-only to downgrade this to a warning."
+        "--pip-freeze was given, so this reflects only declared top-level "
+        "packages and likely undercounts the real, running dependency "
+        "closure significantly. Recorded in the SBOM as a known unknown. "
+        "For the full picture, on the target environment run:\n"
+        "      pip freeze > freeze.txt   # inside the real target "
+        "environment/container\n"
+        "    then re-run this tool with --pip-freeze freeze.txt.",
+        file=sys.stderr,
     )
+
+
+def _report_known_unknowns(bom: dict) -> None:
+    """W-SBOM-04: everything detected in the source but not (fully) resolved.
+    Printed once here; the same record is in the SBOM and in section 8.3."""
+    entries = coverage.from_bom(bom) or []
+    if not entries:
+        return
+    print(
+        f"  ! W-SBOM-04: {len(entries)} known unknown(s) recorded in the SBOM "
+        "(metadata.properties, cra:known-unknown):",
+        file=sys.stderr,
+    )
+    for e in entries:
+        where = ", ".join(e.get("evidence", [])[:3])
+        more = len(e.get("evidence", [])) - 3
+        if more > 0:
+            where += f" (+{more} more)"
+        print(f"    - {e['ecosystem']} [{e['status']}] in {where}", file=sys.stderr)
+        print(f"        why: {e['reason']}", file=sys.stderr)
+        if e.get("base_images"):
+            print(f"        base image(s): {', '.join(e['base_images'])}", file=sys.stderr)
+        print(f"        fix: {e['fix']}", file=sys.stderr)
 
 
 def generate(
@@ -521,10 +570,23 @@ def generate(
     pip_freeze: Path | None = None,
     allow_empty: bool = False,
     declared_only: bool = False,
+    syft: str | None = None,
+    syft_image: str | None = None,
+    syft_runner=None,
 ) -> int:
-    """Build the BOM, apply the E-SBOM-01 / E-SBOM-02 / W-SBOM-02 / W-SBOM-03
-    checks, and write the file. Split out from main() so tests can call it
-    directly without going through argparse/sys.argv."""
+    """Build the BOM, apply the checks, and write the file. Split out from
+    main() so tests can call it directly without going through argparse.
+
+    Only one condition stops the run: E-SBOM-01, no components at all
+    (unless --allow-empty). Everything else that is missing — an ecosystem
+    without a parser, a container that was not scanned, a declared-only
+    PyPI set, a static-only Gradle parse — is written into the SBOM as a
+    known unknown and warned about.
+
+    `declared_only` is accepted for compatibility and has no effect: the
+    check it used to downgrade is now a warning anyway.
+    """
+    del declared_only
     search_log: list[str] = []
     bom = build_bom(
         root, product_name, product_version, supplier, include_dev,
@@ -533,6 +595,9 @@ def generate(
         gradle_configuration=gradle_configuration,
         pip_freeze=pip_freeze,
         search_log=search_log,
+        syft=syft,
+        syft_image=syft_image,
+        syft_runner=syft_runner,
     )
 
     if not bom["components"] and not allow_empty:
@@ -544,6 +609,12 @@ def generate(
         print(f"  Searched under {root}:", file=sys.stderr)
         for line in search_log:
             print(f"    - {line}", file=sys.stderr)
+        for e in coverage.from_bom(bom) or []:
+            print(
+                f"    - detected but not resolved: {e['ecosystem']} "
+                f"({', '.join(e.get('evidence', [])[:3])}) — {e['fix']}",
+                file=sys.stderr,
+            )
         print(
             "  If an empty SBOM is genuinely expected here (e.g. a module "
             "with no dependencies at all), re-run with --allow-empty.",
@@ -551,15 +622,14 @@ def generate(
         )
         return 1
 
-    pypi_error = _check_pypi_resolved_coverage(bom, pip_freeze, declared_only)
-    if pypi_error is not None:
-        print(pypi_error, file=sys.stderr)
-        return 1
-
+    _warn_pypi_declared_only(bom, pip_freeze)
     _warn_if_static_only(bom, gradle_tree)
+    _report_known_unknowns(bom)
 
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps(bom, indent=2, ensure_ascii=False), encoding="utf-8")
+    out.write_text(
+        json.dumps(bom, indent=2, ensure_ascii=False), encoding="utf-8", newline="\n"
+    )
 
     print(f"  SBOM written: {out}")
     summarise(bom)
@@ -606,8 +676,9 @@ def main() -> int:
         default=None,
         help="output of `pip freeze` run inside the real target "
         "environment/container — yields the full resolved PyPI component "
-        "set instead of only what requirements.txt declares. Required "
-        "unless --declared-only is passed (see E-SBOM-02).",
+        "set instead of only what requirements.txt declares. Needed "
+        "for a complete PyPI set; without it the gap is recorded as a known "
+        "unknown (W-SBOM-03).",
     )
     ap.add_argument(
         "--allow-empty",
@@ -620,13 +691,31 @@ def main() -> int:
     ap.add_argument(
         "--declared-only",
         action="store_true",
-        help="allow a PyPI component set built only from requirements.txt, "
-        "with no --pip-freeze. E-SBOM-02 is a hard error by default — a "
-        "requirements.txt-only scan reflects declared top-level packages "
-        "only and has been shown to omit ~75%% of what actually runs, "
-        "including security-critical packages. Only pass this when a "
-        "declared-only scan is genuinely what you intend (downgrades the "
-        "check to warning W-SBOM-03 instead of failing).",
+        help="no effect; kept so existing scripts keep working. A PyPI set "
+        "built only from requirements.txt is now always a warning "
+        "(W-SBOM-03) and a known unknown in the SBOM, never a failure.",
+    )
+    ap.add_argument(
+        "--syft",
+        default=None,
+        metavar="PATH",
+        help="Syft binary to use for ecosystems cra-kit does not parse itself "
+        "(Go, Rust, .NET, OS packages, binaries). Default: `syft` on PATH if "
+        "there is one. Its update check is switched off.",
+    )
+    ap.add_argument(
+        "--no-syft",
+        action="store_true",
+        help="do not use Syft even if it is on PATH; undetected ecosystems "
+        "are recorded as known unknowns",
+    )
+    ap.add_argument(
+        "--syft-image",
+        default=None,
+        metavar="ARCHIVE",
+        help="a container image to scan with Syft: a `docker save` .tar, an "
+        "OCI layout directory, or an explicit local source (docker:<image>, "
+        "oci-archive:<file>). Images are never pulled from a registry.",
     )
     ap.add_argument("-o", "--out", type=Path, default=Path("sbom.cdx.json"))
     args = ap.parse_args()
@@ -634,6 +723,16 @@ def main() -> int:
     if not args.root.is_dir():
         print(f"no such directory: {args.root}", file=sys.stderr)
         return 1
+
+    syft = None
+    if not args.no_syft:
+        syft = syft_scan.find_syft(args.syft)
+        if args.syft and syft is None:
+            print(
+                f"  ! W-SBOM-05: --syft {args.syft} not found; continuing "
+                "without Syft",
+                file=sys.stderr,
+            )
 
     return generate(
         args.root, args.name, args.version, args.supplier, args.include_dev,
@@ -644,6 +743,8 @@ def main() -> int:
         pip_freeze=args.pip_freeze,
         allow_empty=args.allow_empty,
         declared_only=args.declared_only,
+        syft=syft,
+        syft_image=args.syft_image,
     )
 
 
