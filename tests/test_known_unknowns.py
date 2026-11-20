@@ -21,7 +21,7 @@ import pytest
 
 from conftest import FIXTURES_DIR
 
-import coverage
+import sbom_coverage as coverage
 import syft_scan
 from build import build, known_unknowns_section
 from sbom_gen import generate

@@ -135,7 +135,7 @@ def test_declared_only_pypi_warns_and_records_a_known_unknown(tmp_path, capsys):
     assert "pip freeze" in err
     assert "--pip-freeze" in err
 
-    from coverage import from_bom
+    from sbom_coverage import from_bom
     bom = json.loads(out.read_text(encoding="utf-8"))
     unknowns = from_bom(bom)
     pypi = [u for u in unknowns if u["ecosystem"] == "pypi"]

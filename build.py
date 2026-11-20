@@ -27,7 +27,7 @@ from pathlib import Path
 
 import yaml
 
-import coverage
+import sbom_coverage as coverage
 from risk_report import cross_check, render as render_risks
 from reporting_report import check_readiness, render as render_reporting
 

@@ -13,7 +13,7 @@ Own parsers: Gradle (Kotlin/Android), PyPI, composer (PHP), npm (Node).
 Optional fallback: Syft, for everything else (Go, Rust, .NET, OS packages,
 container images) — see syft_scan.py. Whatever is detected in the source
 tree but not resolved into components is recorded in the SBOM as a
-known-unknowns block (see coverage.py) instead of failing the run.
+known-unknowns block (see sbom_coverage.py) instead of failing the run.
 """
 
 from __future__ import annotations
@@ -25,7 +25,7 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-import coverage
+import sbom_coverage as coverage
 import syft_scan
 
 SPEC_VERSION = "1.6"
