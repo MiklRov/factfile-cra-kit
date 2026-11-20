@@ -40,9 +40,11 @@ the risk assessment, the declaration and the Article 14 runbook.
 
 ## Why
 
-The Regulation is in force. The duty to report actively exploited vulnerabilities takes effect on 11 September 2026. The full set of obligations applies from 11 December 2027: technical documentation, conformity assessment, CE marking, and a support period of at least five years.
+The Regulation is in force. The duty to report actively exploited vulnerabilities has applied since 11 September 2026. The full set of obligations applies from 11 December 2027: technical documentation, conformity assessment, CE marking, and a support period of at least five years.
 
-At the same time, **no harmonised standard supporting the Regulation has been published in the Official Journal.** Standardisation request M/606 was accepted by CEN, CENELEC and ETSI on 3 April 2025 and work is ongoing. The consequence: the presumption of conformity is currently unavailable to anyone, and conformity has to be substantiated directly — through the risk assessment and evidence.
+At the same time, **no harmonised standard supporting the Regulation has been cited in the Official Journal.** Standardisation request M/606 was accepted by CEN, CENELEC and ETSI on 3 April 2025, and amended by Commission Implementing Decision C(2026) 7861 of 10 November 2026. The first two standards of the series were published by CEN-CENELEC on 18 November 2026 — EN 40000-1-1, vocabulary, and EN 40000-1-2, principles, product risk management and lifecycle activities — with more than thirty in development.
+
+Publication by the standards bodies is not citation in the Official Journal, and only citation confers the presumption of conformity. Those two are also the vocabulary and the principles rather than the operative parts: vulnerability handling and the generic security requirements are still in ballot. So the presumption of conformity remains unavailable to everyone, and conformity still has to be substantiated directly — through the risk assessment and evidence.
 
 That is exactly what this kit does.
 
@@ -217,7 +219,7 @@ If you would rather someone did that part and put their name on it, that is what
 ## On the SBOM
 
 - The Regulation requires a "commonly used machine-readable format" covering **at the very least the top-level dependencies**. A full transitive tree is not mandatory, but nor is it prohibited — this kit builds the full tree where the input allows it.
-- **No format is prescribed.** The implementing act under Article 13(24) that would set one had not been adopted as of August 2026. Do not treat CycloneDX or SPDX as legally mandatory.
+- **No format is prescribed.** The implementing act under Article 13(24) that would set one had not been adopted as of November 2026, and Article 13(24) is discretionary — it says the Commission *may* specify the format, with no deadline. Do not treat CycloneDX or SPDX as legally mandatory: the whole of the EU-level specification is the phrase "commonly used and machine-readable format" in Annex I, Part II, point 1. ENISA's Technical Advisory for Software Bill of Materials (v1.10, 22 October 2026) is non-binding and prescribes no format or version either. The only authority naming versions is national — Germany's BSI TR-03183-2, which requires CycloneDX 1.6 or later, or SPDX 3.0.1 or later — and it carries no EU-wide force under the Regulation.
 - **The SBOM does not have to be published.** It is retained as part of the technical documentation and made available to the market surveillance authority upon reasoned request.
 - Build-time dependencies that are not shipped are excluded: the SBOM describes the product, not the development environment.
 - For Gradle projects, prefer `--gradle-tree`. Static parsing of `build.gradle.kts` misses transitive dependencies and cannot resolve versions managed by a platform BOM.
@@ -321,7 +323,7 @@ python3 license_enrich.py --sbom out/sbom.cdx.json --offline
 
 ## On Article 14 reporting
 
-Article 14 requires manufacturers to report actively exploited vulnerabilities and severe incidents to ENISA and the relevant national CSIRT on a strict clock — 24-hour early warning, 72-hour full notification, and a final report (14 days after a fix is available, for a vulnerability; one month after the 72-hour notification, for an incident). This obligation takes effect on 11 September 2026.
+Article 14 requires manufacturers to report actively exploited vulnerabilities and severe incidents to ENISA and the relevant national CSIRT on a strict clock — 24-hour early warning, 72-hour full notification, and a final report (14 days after a fix is available, for a vulnerability; one month after the 72-hour notification, for an incident). This obligation has applied since 11 September 2026.
 
 `reporting.yaml` + `reporting_report.py` produce **appendix A** of the technical file: a runbook, not a live pipeline. It states the two triggers precisely enough that a CVE sitting in the SBOM is not mistaken for the clock having started, lays out the deadline stages for each, and holds a named filer, a deputy, the process for identifying the applicable CSIRT, and four draft notification templates with bracketed placeholders for facts only knowable at the time of a real event.
 
