@@ -17,7 +17,10 @@ worked example.
 
 from __future__ import annotations
 
+import shutil
 from pathlib import Path
+
+import yaml
 
 from conftest import FIXTURES_DIR
 
@@ -50,6 +53,33 @@ def test_happy_path_produces_technical_file_with_all_sections(tmp_path):
 
     decl_text = doc_md.read_text(encoding="utf-8")
     assert "EU Declaration of Conformity" in decl_text
+
+
+def test_unrecognized_product_yaml_key_warns_but_still_builds(tmp_path, capsys):
+    """A top-level key in product.yaml that no section reads must be
+    surfaced (W202), not silently dropped — the tool refuses to build on
+    contradictory data, so it should not build on unnoticed missing data
+    either."""
+    cfg_dir = tmp_path / "cfg"
+    shutil.copytree(HAPPY_DIR, cfg_dir)
+
+    product_path = cfg_dir / "product.yaml"
+    product = yaml.safe_load(product_path.read_text(encoding="utf-8"))
+    product["external_processors"] = {"note": "this key is not read by any section"}
+    product_path.write_text(yaml.safe_dump(product), encoding="utf-8")
+
+    out_dir = tmp_path / "out"
+    rc = build(
+        cfg_dir=cfg_dir,
+        sbom_path=HAPPY_DIR / "sbom.cdx.json",
+        out_dir=out_dir,
+        pdf=False,
+    )
+    out = capsys.readouterr().out
+
+    assert rc == 0
+    assert "W202" in out
+    assert "external_processors" in out
 
 
 def test_contradictory_input_refuses_to_build(tmp_path, capsys):
