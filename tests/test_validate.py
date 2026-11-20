@@ -24,8 +24,8 @@ from pathlib import Path
 import pytest
 import yaml
 
-import validate
-from validate import Finding, check_requirement
+from cra_kit import validate
+from cra_kit.validate import Finding, check_requirement
 
 
 # --------------------------------------------------------------------------

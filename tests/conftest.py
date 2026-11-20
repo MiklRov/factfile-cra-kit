@@ -1,13 +1,11 @@
 """
 Shared pytest configuration for the cra-kit test suite.
 
-cra-kit's modules are standalone scripts, not an installable package (see
-README.md: "run as `python3 script.py`", no setup.py). They
-import each other with plain top-level imports, e.g. build.py does
-`from risk_report import cross_check, render`. To let tests do the same
-thing (`import validate`, `from risk_report import cross_check`, ...),
-cra-kit/ itself must be on sys.path — this file puts it there before any
-test module is collected.
+The code is the `cra_kit` package (pyproject.toml); the scripts in the
+repository root are thin wrappers that keep `python3 build.py` working from
+a clone. Tests import the package (`from cra_kit.risk_report import
+cross_check`). The repository root is put on sys.path here so that works
+without `pip install -e .` as well.
 
 No test in this suite may make a real network call. vuln_scan.py is the
 only module that talks to the network (OSV.dev); every test that touches

@@ -15,7 +15,7 @@ from __future__ import annotations
 
 from conftest import FIXTURES_DIR
 
-from ecosystems import discover_gradle_modules, parse_gradle, parse_pip_freeze, parse_pypi
+from cra_kit.ecosystems import discover_gradle_modules, parse_gradle, parse_pip_freeze, parse_pypi
 
 MULTI_MODULE_DIR = FIXTURES_DIR / "gradle_multi_module"
 BOM_MANAGED_DIR = FIXTURES_DIR / "gradle_bom_managed"
