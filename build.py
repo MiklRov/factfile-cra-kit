@@ -293,11 +293,26 @@ def doc(d: dict) -> str:
 # assembly
 # --------------------------------------------------------------------------
 
+PRODUCT_YAML_KEYS = {
+    "section_1", "section_2", "section_4", "section_5", "section_6", "declaration", "meta",
+}
+
+
 def build(cfg_dir: Path, sbom_path: Path, out_dir: Path, pdf: bool) -> int:
     product = load_yaml(cfg_dir / "product.yaml")
     matrix = load_yaml(cfg_dir / "annex_i.yaml")
     risks = load_yaml(cfg_dir / "risks.yaml")
     sbom = json.loads(sbom_path.read_text(encoding="utf-8"))
+
+    # A tool that refuses to build on contradictory data cannot also silently
+    # drop data it doesn't recognize — that's the same failure mode by
+    # omission instead of by contradiction.
+    for key in sorted(set(product) - PRODUCT_YAML_KEYS):
+        print(
+            f"{YEL}  W202  product.yaml has an unrecognized top-level key "
+            f"'{key}' — it is not read by any section and will not appear "
+            f"anywhere in the built document.{RESET}"
+        )
 
     reporting_path = cfg_dir / "reporting.yaml"
     reporting = load_yaml(reporting_path) if reporting_path.exists() else None
