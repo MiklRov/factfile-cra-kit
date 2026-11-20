@@ -2,15 +2,25 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="pandoc" />
+  <meta name="generator" content="pandoc 3.14" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="dcterms.date" content="2026-08-21" />
   <title>Technical documentation — Sample Product iOS 1.0.15 (build 9) / Android 1.2.39 (versionCode 79)</title>
   <style>
-code{white-space: pre-wrap;}
+
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+em, em em em, em em em em em {
+font-style: italic;
+}
+em em, em em em em {
+font-style: normal;
+}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 
 ul.task-list[class]{list-style: none;}
@@ -20,10 +30,10 @@ width: 0.8em;
 margin: 0 0.8em 0.2em -1.6em;
 vertical-align: middle;
 }
-.display.math{display: block; text-align: center; margin: 0.5rem auto;}
 
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -85,120 +95,28 @@ code span.st { color: #4070a0; }
 code span.va { color: #19177c; } 
 code span.vs { color: #4070a0; } 
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
-</style>
-  <style type="text/css">
-:root {
---ink: #1a1a1a;
---muted: #5c5c5c;
---rule: #d8d8d8;
---bg: #ffffff;
---accent: #1c4e80;
---warn-bg: #fff8e6;
---warn-rule: #d4a017;
---code-bg: #f4f4f4;
-}
-@media (prefers-color-scheme: dark) {
-:root {
---ink: #e6e6e6;
---muted: #a0a0a0;
---rule: #3a3a3a;
---bg: #16181a;
---accent: #7ab0e0;
---warn-bg: #2a2415;
---warn-rule: #a67c00;
---code-bg: #232629;
-}
-}
-html { -webkit-text-size-adjust: 100%; }
-body {
-max-width: 46rem;
-margin: 0 auto;
-padding: 2.5rem 1.25rem 6rem;
-background: var(--bg);
-color: var(--ink);
-font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-"Helvetica Neue", Arial, sans-serif;
-}
-h1, h2, h3 { line-height: 1.25; font-weight: 600; }
-h1 {
-font-size: 1.6rem;
-margin: 2.8rem 0 1rem;
-padding-bottom: .4rem;
-border-bottom: 2px solid var(--rule);
-}
-h1.title {
-font-size: 2rem;
-border: 0;
-margin-top: 0;
-}
-h2 { font-size: 1.22rem; margin: 2rem 0 .7rem; color: var(--accent); }
-h3 { font-size: 1.03rem; margin: 1.5rem 0 .5rem; }
-p.subtitle {
-color: var(--muted);
-font-size: 1.05rem;
-margin-top: -.4rem;
-}
-p.date { color: var(--muted); font-size: .9rem; }
-
-blockquote {
-margin: 1.4rem 0;
-padding: .85rem 1.1rem;
-background: var(--warn-bg);
-border-left: 4px solid var(--warn-rule);
-border-radius: 0 4px 4px 0;
-color: var(--ink);
-}
-blockquote p { margin: .3rem 0; }
-table {
-border-collapse: collapse;
-width: 100%;
-margin: 1.2rem 0;
-font-size: .9rem;
-display: block;
-overflow-x: auto;
-}
-th, td {
-border: 1px solid var(--rule);
-padding: .45rem .6rem;
-text-align: left;
-vertical-align: top;
-}
-th { background: var(--code-bg); font-weight: 600; }
-tr:hover td { background: rgba(127,127,127,.06); }
-code {
-background: var(--code-bg);
-padding: .12em .35em;
-border-radius: 3px;
-font-size: .875em;
-font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-word-break: break-word;
-}
-pre { background: var(--code-bg); padding: .9rem; border-radius: 5px; overflow-x: auto; }
-pre code { background: none; padding: 0; }
-#TOC {
-background: var(--code-bg);
-border: 1px solid var(--rule);
-border-radius: 5px;
-padding: 1rem 1.3rem;
-margin: 2rem 0;
-font-size: .92rem;
-}
-#TOC ul { padding-left: 1.1rem; margin: .3rem 0; }
-#TOC > ul { padding-left: .6rem; }
-#TOC a { text-decoration: none; }
-#TOC a:hover { text-decoration: underline; }
-a { color: var(--accent); }
-hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
-ul, ol { padding-left: 1.4rem; }
-li { margin: .25rem 0; }
 @media print {
-body { max-width: none; padding: 0; font-size: 10pt; }
-h1 { page-break-before: always; }
-h1.title, #TOC + h1 { page-break-before: avoid; }
-blockquote { border-left-color: #999; background: #f5f5f5; }
-table { display: table; font-size: 9pt; }
+html {
+color-scheme: light only;
 }
-</style>
+html, body, pre, code {
+background-color: transparent;
+}
+body, a, a:visited, blockquote {
+color: black;
+}
+pre, code {
+padding: 0;
+}
+p, h2, h3 {
+orphans: 3;
+widows: 3;
+}
+h2, h3, h4 {
+page-break-after: avoid;
+}
+} </style>
+  <style type="text/css">:root {--ink: #1a1a1a;--muted: #5c5c5c;--rule: #d8d8d8;--bg: #ffffff;--accent: #1c4e80;--warn-bg: #fff8e6;--warn-rule: #d4a017;--code-bg: #f4f4f4;}@media (prefers-color-scheme: dark) {:root {--ink: #e6e6e6;--muted: #a0a0a0;--rule: #3a3a3a;--bg: #16181a;--accent: #7ab0e0;--warn-bg: #2a2415;--warn-rule: #a67c00;--code-bg: #232629;}}html { -webkit-text-size-adjust: 100%; }body {max-width: 46rem;margin: 0 auto;padding: 2.5rem 1.25rem 6rem;background: var(--bg);color: var(--ink);font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,"Helvetica Neue", Arial, sans-serif;}h1, h2, h3 { line-height: 1.25; font-weight: 600; }h1 {font-size: 1.6rem;margin: 2.8rem 0 1rem;padding-bottom: .4rem;border-bottom: 2px solid var(--rule);}h1.title {font-size: 2rem;border: 0;margin-top: 0;}h2 { font-size: 1.22rem; margin: 2rem 0 .7rem; color: var(--accent); }h3 { font-size: 1.03rem; margin: 1.5rem 0 .5rem; }p.subtitle {color: var(--muted);font-size: 1.05rem;margin-top: -.4rem;}p.date { color: var(--muted); font-size: .9rem; }blockquote {margin: 1.4rem 0;padding: .85rem 1.1rem;background: var(--warn-bg);border-left: 4px solid var(--warn-rule);border-radius: 0 4px 4px 0;color: var(--ink);}blockquote p { margin: .3rem 0; }table {border-collapse: collapse;width: 100%;margin: 1.2rem 0;font-size: .9rem;display: block;overflow-x: auto;}th, td {border: 1px solid var(--rule);padding: .45rem .6rem;text-align: left;vertical-align: top;}th { background: var(--code-bg); font-weight: 600; }tr:hover td { background: rgba(127,127,127,.06); }code {background: var(--code-bg);padding: .12em .35em;border-radius: 3px;font-size: .875em;font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;word-break: break-word;}pre { background: var(--code-bg); padding: .9rem; border-radius: 5px; overflow-x: auto; }pre code { background: none; padding: 0; }#TOC {background: var(--code-bg);border: 1px solid var(--rule);border-radius: 5px;padding: 1rem 1.3rem;margin: 2rem 0;font-size: .92rem;}#TOC ul { padding-left: 1.1rem; margin: .3rem 0; }#TOC > ul { padding-left: .6rem; }#TOC a { text-decoration: none; }#TOC a:hover { text-decoration: underline; }a { color: var(--accent); }hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }ul, ol { padding-left: 1.4rem; }li { margin: .25rem 0; }@media print {body { max-width: none; padding: 0; font-size: 10pt; }h1 { page-break-before: always; }h1.title, #TOC + h1 { page-break-before: avoid; }blockquote { border-left-color: #999; background: #f5f5f5; }table { display: table; font-size: 9pt; }}</style>
 </head>
 <body>
 <header id="title-block-header">
@@ -287,6 +205,8 @@ Conformity</a></li>
 <li><a href="#composition" id="toc-composition">8.1 Composition</a></li>
 <li><a href="#licence-distribution" id="toc-licence-distribution">8.2
 Licence distribution</a></li>
+<li><a href="#known-unknowns" id="toc-known-unknowns">8.3 Known
+unknowns</a></li>
 </ul></li>
 <li><a href="#appendix-a.-article-14-vulnerability-and-incident-reporting-runbook" id="toc-appendix-a.-article-14-vulnerability-and-incident-reporting-runbook">Appendix
 A. Article 14 vulnerability and incident reporting runbook</a>
@@ -386,26 +306,26 @@ with the log and is recorded as a gap in section 6.</p>
 <col style="width: 50%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>Item</th>
 <th>Value</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>Manufacturer contact</td>
 <td><manufacturer name> — redacted in this published example. The real
 file carries the full legal name, the registered address, the national
 business-register entry and the tax identification number, and the
 address must match the developer record in both stores.</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Single point of contact</td>
 <td>&lt;to be completed — a stable address for cybersecurity matters,
 e.g. security@example.invalid. No such address exists today; see section
 6.&gt;</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Product identification</td>
 <td>iOS: bundle identifier <ios bundle id>, version 1.0.15 (build 9),
 App Store ID <app store id>. Android: application identifier
@@ -417,12 +337,12 @@ the vendor segment from an earlier company name which likewise cannot be
 changed. Both are recorded here as they are; the identifiers themselves
 are redacted in this published example.</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Intended purpose</td>
 <td>Household food inventory and expiry tracking with receipt
 scanning.</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Known limitations</td>
 <td>The product requires network access and the manufacturer’s backend.
 Receipt and voice processing depend on third-party services; if those
@@ -430,23 +350,23 @@ are unavailable, the corresponding features do not work. Reminder
 delivery on Android degrades to an inexact schedule when the exact-alarm
 permission is not granted.</td>
 </tr>
-<tr class="even">
+<tr>
 <td>End of support period</td>
 <td>2031-07-01</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Security update information</td>
 <td>Security updates are delivered as ordinary application updates
 through the App Store and Google Play, and as server-side changes for
 the backend. Updates are free of charge.</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Vulnerability reporting</td>
 <td>&lt;to be completed — no published vulnerability reporting channel
 exists today. See VH-05 and VH-06 in the requirements matrix and the gap
 list in section 6.&gt;</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Secure configuration guidance</td>
 <td>The product has no user-configurable security settings beyond the
 platform permissions it requests. Default configuration is the secure
@@ -520,14 +440,14 @@ subsystems</h2>
 <col style="width: 33%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>Subsystem</th>
 <th>Location</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>Authentication and token handling</td>
 <td><code>data/api/ApiClient.kt · core-design/.../auth/FamilyTokenStore.kt · ios/App/Networking/TokenStore.swift</code></td>
 <td>Identity through Google Sign-In and Sign in with Apple; an opaque
@@ -535,28 +455,28 @@ token in the X-Mobile-Token header. The token is bound to the API host
 by an HTTP interceptor so it cannot leak to another host on a redirect.
 It is stored unencrypted in the application sandbox.</td>
 </tr>
-<tr class="even">
+<tr>
 <td>HTTP transport</td>
 <td><code>data/api/ApiClient.kt · ios/App/Networking/APIClient.swift</code></td>
 <td>HTTPS only; cleartext traffic is not enabled. No certificate
 pinning; at target SDK 35 the platform default excludes user-installed
 certificate authorities.</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Request logging</td>
 <td><code>data/api/ApiClient.kt:35</code></td>
 <td>The HTTP logging interceptor is instantiated only in debug builds
 and at a level that excludes headers, so authentication material is
 never written to the system log in a release build.</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Local storage</td>
 <td><code>android/app/src/main/AndroidManifest.xml</code></td>
 <td>allowBackup=false, so the token store cannot be extracted through
 platform backup. No database is used on the client; primary data lives
 server-side.</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Reminder delivery</td>
 <td><code>reminders/ReminderScheduler.kt · reminders/ReminderAlarmReceiver.kt · reminders/BootReceiver.kt</code></td>
 <td>Scheduled locally through AlarmManager. The receiver that fires a
@@ -564,7 +484,7 @@ reminder is not exported; the boot receiver is exported only because the
 platform requires it to receive BOOT_COMPLETED. Pending intents are
 immutable.</td>
 </tr>
-<tr class="even">
+<tr>
 <td>External processing</td>
 <td><code>services/ai/config.py · backend services/receipts/, services/voice/</code></td>
 <td>Receipt images and voice recordings are transmitted for processing.
@@ -597,14 +517,14 @@ Vulnerability handling processes (Annex I, Part II)</h2>
 <col style="width: 33%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>Process</th>
 <th>Status</th>
 <th>Note</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>SBOM</td>
 <td>met</td>
 <td>A machine-readable bill of materials covering all three parts of the
@@ -613,14 +533,14 @@ resolved build output, not from manifests. Licence data is incomplete:
 of 278 components, 4 carry a determined licence. Determination for the
 Maven and PyPI components is a known gap; see section 6.</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Coordinated vulnerability disclosure policy</td>
 <td>not_met</td>
 <td>No coordinated vulnerability disclosure policy is published. Neither
 repository contains a SECURITY.md, and no .well-known/security.txt is
 served. This is a genuine gap, not an unconfirmed one.</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Vulnerability reporting channel</td>
 <td>not_met</td>
 <td>There is no dedicated address for reporting vulnerabilities. The
@@ -628,14 +548,14 @@ published privacy policy gives a general support address; the Google
 Play listing gives a personal mailbox. Neither is a security
 contact.</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Publication of security advisories</td>
 <td>not_met</td>
 <td>No security advisories have been published, and there is no channel
 through which they would be. No vulnerability has been reported to the
 manufacturer to date.</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Update distribution</td>
 <td>met</td>
 <td>Updates are free of charge and are delivered through the platform
@@ -685,40 +605,40 @@ to consumers; there is no self-hosted deployment.</p>
 <col style="width: 33%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>Ref</th>
 <th>Entry point</th>
 <th>Location</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>EP-1</td>
 <td>Mobile application UI (iOS)</td>
 <td><code>ios/App/App.swift, AppRouter.swift</code></td>
 </tr>
-<tr class="even">
+<tr>
 <td>EP-2</td>
 <td>Mobile application UI (Android)</td>
 <td><code>android/app/src/main/AndroidManifest.xml — exported launcher activity</code></td>
 </tr>
-<tr class="odd">
+<tr>
 <td>EP-3</td>
 <td>HTTPS API</td>
 <td><code>https://api.example.invalid/api/v1/</code></td>
 </tr>
-<tr class="even">
+<tr>
 <td>EP-4</td>
 <td>Android boot receiver (exported, BOOT_COMPLETED and
 MY_PACKAGE_REPLACED)</td>
 <td><code>reminders/BootReceiver.kt</code></td>
 </tr>
-<tr class="odd">
+<tr>
 <td>EP-5</td>
 <td>Camera, photo library, microphone and speech recognition</td>
 <td><code>ios/App/Info.plist usage descriptions; Android media permissions</code></td>
 </tr>
-<tr class="even">
+<tr>
 <td>EP-6</td>
 <td>Telegram, used for notification delivery and as an authentication
 channel</td>
@@ -735,7 +655,7 @@ channel</td>
 <col style="width: 25%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>Ref</th>
 <th>Asset</th>
 <th>Properties</th>
@@ -743,46 +663,46 @@ channel</td>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>A-1</td>
 <td>Receipt images and any other photograph the user submits</td>
 <td>C</td>
 <td>May contain payment card numbers, addresses or identity documents
 the product did not ask for</td>
 </tr>
-<tr class="even">
+<tr>
 <td>A-2</td>
 <td>Voice recordings</td>
 <td>C</td>
 <td></td>
 </tr>
-<tr class="odd">
+<tr>
 <td>A-3</td>
 <td>Medication course data</td>
 <td>C, I</td>
 <td>Health-adjacent personal data</td>
 </tr>
-<tr class="even">
+<tr>
 <td>A-4</td>
 <td>Authentication token (X-Mobile-Token)</td>
 <td>C</td>
 <td>Bearer-equivalent; possession grants account access</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>A-5</td>
 <td>Account and household data — email, name, user and place
 identifiers, inventory</td>
 <td>C, I</td>
 <td></td>
 </tr>
-<tr class="even">
+<tr>
 <td>A-6</td>
 <td>Signing identity and store credentials</td>
 <td>C, I</td>
 <td>Apple distribution certificate and App Store Connect key, held in CI
 secrets</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>A-7</td>
 <td>Integrity of the released binary and the record of what it
 contains</td>
@@ -804,7 +724,7 @@ artefact</li>
 <li><strong>TB-7</strong> — Manufacturer to the outside world</li>
 </ul>
 <h2 id="identified-risks">3.3 Identified risks</h2>
-<table style="width:100%;">
+<table style="width:99%;">
 <colgroup>
 <col style="width: 14%" />
 <col style="width: 14%" />
@@ -815,7 +735,7 @@ artefact</li>
 <col style="width: 14%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>Ref</th>
 <th>Risk</th>
 <th>STRIDE</th>
@@ -826,7 +746,7 @@ artefact</li>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>R-01</td>
 <td>Unrelated sensitive documents forwarded to external processors
 through the receipt scanner</td>
@@ -836,7 +756,7 @@ through the receipt scanner</td>
 <td>mitigate</td>
 <td>EI-07, EI-05</td>
 </tr>
-<tr class="even">
+<tr>
 <td>R-03</td>
 <td>The composition of a released version is not recorded</td>
 <td>tampering, repudiation</td>
@@ -845,7 +765,7 @@ through the receipt scanner</td>
 <td>mitigate</td>
 <td>VH-01, EI-06, EI-01</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>R-05</td>
 <td>A vulnerability report has nowhere to arrive</td>
 <td>repudiation</td>
@@ -854,7 +774,7 @@ through the receipt scanner</td>
 <td>accept</td>
 <td>VH-05, VH-06</td>
 </tr>
-<tr class="even">
+<tr>
 <td>R-07</td>
 <td>AGPL-3.0 component in a network-facing backend serving proprietary
 clients</td>
@@ -864,7 +784,7 @@ clients</td>
 <td>accept</td>
 <td>VH-01</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>R-08</td>
 <td>No function survives loss of the backend or of a third-party
 processor</td>
@@ -874,7 +794,7 @@ processor</td>
 <td>accept</td>
 <td>EI-08</td>
 </tr>
-<tr class="even">
+<tr>
 <td>R-16</td>
 <td>No security testing, so vulnerabilities are found by others or not
 at all</td>
@@ -884,7 +804,7 @@ at all</td>
 <td>accept</td>
 <td>VH-03, EI-01</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>R-04</td>
 <td>Build toolchain is not pinned</td>
 <td>tampering</td>
@@ -893,7 +813,7 @@ at all</td>
 <td>accept</td>
 <td>EI-06</td>
 </tr>
-<tr class="even">
+<tr>
 <td>R-11</td>
 <td>No one is designated to file an Article 14 report</td>
 <td>repudiation</td>
@@ -902,7 +822,7 @@ at all</td>
 <td>accept</td>
 <td>VH-02</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>R-12</td>
 <td>Signing certificate export password held in plaintext in the release
 workflow</td>
@@ -912,7 +832,7 @@ workflow</td>
 <td>mitigate</td>
 <td>EI-04, EI-06</td>
 </tr>
-<tr class="even">
+<tr>
 <td>R-17</td>
 <td>The only update channel is controlled by two third parties</td>
 <td>denial of service</td>
@@ -921,7 +841,7 @@ workflow</td>
 <td>mitigate</td>
 <td>VH-07, EI-03</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>R-06</td>
 <td>Users cannot learn that an update contained a security fix</td>
 <td>repudiation</td>
@@ -930,7 +850,7 @@ workflow</td>
 <td>mitigate</td>
 <td>VH-04, VH-08</td>
 </tr>
-<tr class="even">
+<tr>
 <td>R-14</td>
 <td>Security-relevant events are neither recorded nor surfaced</td>
 <td>repudiation</td>
@@ -939,7 +859,7 @@ workflow</td>
 <td>accept</td>
 <td>EI-12, EI-04</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>R-15</td>
 <td>Data at the external processors is outside both the deletion and the
 export path</td>
@@ -949,7 +869,7 @@ export path</td>
 <td>mitigate</td>
 <td>EI-13</td>
 </tr>
-<tr class="even">
+<tr>
 <td>R-02</td>
 <td>Authentication token stored unencrypted on the device</td>
 <td>information disclosure, spoofing</td>
@@ -958,7 +878,7 @@ export path</td>
 <td>mitigate</td>
 <td>EI-05, EI-04, EI-11</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>R-09</td>
 <td>Release build without shrinking or obfuscation</td>
 <td>information disclosure</td>
@@ -967,7 +887,7 @@ export path</td>
 <td>accept</td>
 <td>EI-11, EI-10</td>
 </tr>
-<tr class="even">
+<tr>
 <td>R-13</td>
 <td>Public contact for the product is a personal mailbox</td>
 <td>repudiation</td>
@@ -976,7 +896,7 @@ export path</td>
 <td>accept</td>
 <td>VH-06</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>R-18</td>
 <td>Secure defaults are inherited from the platform rather than asserted
 by the product</td>
@@ -1511,114 +1431,114 @@ coverage</h2>
 <col style="width: 33%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>Requirement</th>
 <th>Title</th>
 <th>Risks</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>EI-01</td>
 <td>No known exploitable vulnerabilities</td>
 <td>R-03, R-16</td>
 </tr>
-<tr class="even">
+<tr>
 <td>EI-02</td>
 <td>Secure by default configuration</td>
 <td>R-18</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>EI-03</td>
 <td>Vulnerabilities addressed through security updates</td>
 <td>R-17</td>
 </tr>
-<tr class="even">
+<tr>
 <td>EI-04</td>
 <td>Protection from unauthorised access</td>
 <td>R-02, R-12, R-14</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>EI-05</td>
 <td>Confidentiality of data</td>
 <td>R-01, R-02</td>
 </tr>
-<tr class="even">
+<tr>
 <td>EI-06</td>
 <td>Integrity of data</td>
 <td>R-03, R-04, R-12</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>EI-07</td>
 <td>Data minimisation</td>
 <td>R-01</td>
 </tr>
-<tr class="even">
+<tr>
 <td>EI-08</td>
 <td>Availability of essential functions</td>
 <td>R-08</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>EI-09</td>
 <td>No adverse effect on availability of other devices or networks</td>
 <td>R-18</td>
 </tr>
-<tr class="even">
+<tr>
 <td>EI-10</td>
 <td>Limitation of attack surface</td>
 <td>R-09</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>EI-11</td>
 <td>Mitigation of the impact of exploitation</td>
 <td>R-02, R-09</td>
 </tr>
-<tr class="even">
+<tr>
 <td>EI-12</td>
 <td>Recording and monitoring of security-relevant activity</td>
 <td>R-14</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>EI-13</td>
 <td>Data deletion and portability</td>
 <td>R-15</td>
 </tr>
-<tr class="even">
+<tr>
 <td>VH-01</td>
 <td>Identification of components and the SBOM</td>
 <td>R-03, R-07</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>VH-02</td>
 <td>Addressing vulnerabilities without delay</td>
 <td>R-11</td>
 </tr>
-<tr class="even">
+<tr>
 <td>VH-03</td>
 <td>Regular security testing and review</td>
 <td>R-16</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>VH-04</td>
 <td>Public disclosure of fixed vulnerabilities</td>
 <td>R-06</td>
 </tr>
-<tr class="even">
+<tr>
 <td>VH-05</td>
 <td>Coordinated vulnerability disclosure policy</td>
 <td>R-05</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>VH-06</td>
 <td>Channel for receiving vulnerability reports</td>
 <td>R-05, R-13</td>
 </tr>
-<tr class="even">
+<tr>
 <td>VH-07</td>
 <td>Secure distribution of updates</td>
 <td>R-17</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>VH-08</td>
 <td>Timely, free-of-charge updates with a security advisory</td>
 <td>R-06</td>
@@ -1652,49 +1572,49 @@ user information.</p>
 <col style="width: 50%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>Factor</th>
 <th>Assessment</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>The statutory floor</td>
 <td>Article 13(8) sets five years unless the expected product lifetime
 is shorter. The manufacturer does not consider it shorter and claims no
 shorter service life.</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Mobile platform support</td>
 <td>The binding practical constraint. The clients target iOS 16 and API
 26 upward; both platform vendors withdraw support for older releases on
 their own schedule, which the manufacturer does not control.</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Runtime and framework support</td>
 <td>Swift, Kotlin and Python major versions, and the Compose and SwiftUI
 framework generations in use, each have their own support horizon
 shorter than five years.</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Dependence on a manufacturer-operated backend</td>
 <td>The applications do not function without it, so the support
 commitment is also a commitment to keep a service running for five
 years, not only to ship patches.</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Dependence on third-party processors</td>
 <td>Two core features depend on Google Gemini and OpenAI. Their
 availability, pricing and terms are outside the manufacturer’s control
 for the whole period.</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Commercial expectation</td>
 <td>The product is sold with in-app purchases including subscription
 tiers, which creates a user expectation of continued service independent
 of the Regulation.</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Size of the manufacturer</td>
 <td>A sole proprietorship. A five-year commitment is a real constraint
 rather than a formality, and is stated deliberately rather than by
@@ -1726,24 +1646,24 @@ requirement.</p>
 <col style="width: 50%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>Means</th>
 <th>Role</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>STRIDE</td>
 <td>A threat identification method, applied across the trust boundaries
 in section 3.</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Resolved-build bill of materials</td>
 <td>Components enumerated from resolved build output for all three parts
 of the product rather than from manifests, and matched against the OSV
 vulnerability database.</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Integrity checks on the evidence itself</td>
 <td>A requirement cannot be recorded as met without attached evidence, a
 risk cannot be shown as reduced without a named control, and the
@@ -1764,26 +1684,26 @@ listed in full rather than summarised.</p>
 <col style="width: 33%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>Suite</th>
 <th>Files</th>
 <th>Note</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>pytest (backend)</td>
 <td>None</td>
 <td>Functional test suite for the Python backend, with coverage
 measurement. Not security-specific.</td>
 </tr>
-<tr class="even">
+<tr>
 <td>iOS compile check</td>
 <td>None</td>
 <td>An unsigned simulator build run on demand in continuous integration.
 There is no automated test suite for the iOS client.</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Android</td>
 <td>0</td>
 <td>No automated test suite exists for the Android client.</td>
@@ -1801,51 +1721,51 @@ are inspections, not executed tests, and are recorded as such.</p>
 <col style="width: 50%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>Test suite</th>
 <th>Requirements</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>Authentication token attached only to the API host —
 data/api/ApiClient.kt:19</td>
 <td>EI-04, EI-05</td>
 </tr>
-<tr class="even">
+<tr>
 <td>HTTP request logging compiled into debug builds only, headers
 excluded — data/api/ApiClient.kt:35</td>
 <td>EI-05</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Platform backup of application data disabled — AndroidManifest.xml,
 allowBackup=false</td>
 <td>EI-02, EI-05</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Pending intents immutable — reminders/ReminderNotifier.kt</td>
 <td>EI-06</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Alarm receiver not exported; boot receiver exported only as the
 platform requires — AndroidManifest.xml</td>
 <td>EI-10</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Notification permission re-checked at posting time, not at
 scheduling time — reminders/ReminderNotifier.kt</td>
 <td>EI-02</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>No cleartext HTTP; API base URL is HTTPS on both clients</td>
 <td>EI-05</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Account deletion endpoint present and reachable from the client —
 DELETE /profile</td>
 <td>EI-13</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Data export scoped to the caller and excluding credentials and other
 users’ rows — api/routers/profile.py:693</td>
 <td>EI-13, EI-05</td>
@@ -1860,25 +1780,25 @@ users’ rows — api/routers/profile.py:693</td>
 <col style="width: 33%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>Tool</th>
 <th>Configuration</th>
 <th>Note</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>Android lint (level None)</td>
 <td><code>lintVitalAnalyzeRelease</code></td>
 <td>Runs as part of the release build. Correctness and API-usage checks,
 not a security scanner.</td>
 </tr>
-<tr class="even">
+<tr>
 <td>ruff (level None)</td>
 <td><code>.ruff.toml</code></td>
 <td>Style and correctness linting for the Python backend.</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>OSV matching (level None)</td>
 <td><code>vuln_scan.py against sbom.cdx.json</code></td>
 <td>Component versions matched against the OSV database. Results are
@@ -1941,18 +1861,23 @@ dependencies that are not shipped with the product are excluded.</p>
 <h2 id="licence-distribution">8.2 Licence distribution</h2>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Licence</th>
 <th>Components</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>Apache-2.0</td>
 <td>4</td>
 </tr>
 </tbody>
 </table>
+<h2 id="known-unknowns">8.3 Known unknowns</h2>
+<p>This SBOM carries no machine-readable coverage record: it was not
+produced by <code>sbom_gen.py</code>, or by a version that predates the
+record. Gaps in coverage, if any, are not stated here, and the absence
+of this record is not evidence that coverage is complete.</p>
 <blockquote>
 <p>The SBOM is not subject to mandatory publication. It is retained as
 part of the technical documentation and made available to the market
@@ -2035,7 +1960,7 @@ incident at the installation, not in the product.</li>
 <col style="width: 25%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>Trigger</th>
 <th>Stage</th>
 <th>Deadline</th>
@@ -2043,42 +1968,42 @@ incident at the installation, not in the product.</li>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>Actively exploited vulnerability</td>
 <td>24h early warning</td>
 <td>without undue delay, and in any event within 24 hours of the
 manufacturer becoming aware</td>
 <td>Article 14(2)(a)</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Actively exploited vulnerability</td>
 <td>72h full notification</td>
 <td>without undue delay, and in any event within 72 hours of the
 manufacturer becoming aware</td>
 <td>Article 14(2)(b)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Actively exploited vulnerability</td>
 <td>Final report</td>
 <td>no later than 14 days after a corrective or mitigating measure
 becomes available</td>
 <td>Article 14(2)(c)</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Severe incident affecting the product’s security</td>
 <td>24h early warning</td>
 <td>without undue delay, and in any event within 24 hours of the
 manufacturer becoming aware</td>
 <td>Article 14(4)(a)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Severe incident affecting the product’s security</td>
 <td>72h full notification</td>
 <td>without undue delay, and in any event within 72 hours of the
 manufacturer becoming aware</td>
 <td>Article 14(4)(b)</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Severe incident affecting the product’s security</td>
 <td>Final report</td>
 <td>within one month of the submission of the 72-hour notification</td>
@@ -2106,19 +2031,19 @@ in VH-06 as absent.</p>
 <h2 id="a.4-named-filer-and-deputy">A.4 Named filer and deputy</h2>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Role</th>
 <th>Name</th>
 <th>Contact</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>Manufacturer (primary)</td>
 <td><to be completed></td>
 <td><to be completed></td>
 </tr>
-<tr class="even">
+<tr>
 <td>Deputy (deputy)</td>
 <td><to be completed></td>
 <td><to be completed></td>
@@ -2146,21 +2071,21 @@ not leave this blank until an actual event — confirming it in advance is
 exactly what the 24-hour clock does not leave time to do.</p>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>Field</th>
 <th>Value</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>Country</td>
 <td>&lt;to be completed — Poland&gt;</td>
 </tr>
-<tr class="even">
+<tr>
 <td>CSIRT</td>
 <td><to be completed></td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Contact</td>
 <td><to be completed></td>
 </tr>
