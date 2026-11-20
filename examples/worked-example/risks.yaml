@@ -1,0 +1,545 @@
+# Sample Product — cybersecurity risk assessment
+# Section 3 of the Annex VII technical file.
+
+meta:
+  product: "Sample Product"
+  product_version: "iOS 1.0.15 / Android 1.2.39"
+  assessed_at: "2026-08-21"
+  method: "static_source_review"
+  methodology: "STRIDE across trust boundaries; risk rating = likelihood x impact, each 1-5"
+  limitations:
+    - "no dynamic testing and no penetration testing"
+    - "no assessment of the backend's own infrastructure, hosting or server-side data handling"
+    - "no assessment of the external processing services; they are treated as opaque recipients"
+    - "the assessment was performed by the manufacturer on its own product and has not been reviewed by a third party"
+
+system:
+  description: >
+    A household food inventory and expiry tracking product consisting of two mobile applications
+    (iOS, Swift and SwiftUI; Android, Kotlin and Jetpack Compose) and the backend service at
+    api.example.invalid that both require. The applications hold no primary data: inventory,
+    medication courses and reminder schedules are resolved server-side. Receipt and voice
+    processing are performed by external services called from the backend. Distribution is
+    through the App Store and Google Play to consumers; there is no self-hosted deployment.
+
+  entry_points:
+    - id: EP-1
+      name: "Mobile application UI (iOS)"
+      ref: "ios/App/App.swift, AppRouter.swift"
+    - id: EP-2
+      name: "Mobile application UI (Android)"
+      ref: "android/app/src/main/AndroidManifest.xml — exported launcher activity"
+    - id: EP-3
+      name: "HTTPS API"
+      ref: "https://api.example.invalid/api/v1/"
+    - id: EP-4
+      name: "Android boot receiver (exported, BOOT_COMPLETED and MY_PACKAGE_REPLACED)"
+      ref: "reminders/BootReceiver.kt"
+    - id: EP-5
+      name: "Camera, photo library, microphone and speech recognition"
+      ref: "ios/App/Info.plist usage descriptions; Android media permissions"
+    - id: EP-6
+      name: "Telegram, used for notification delivery and as an authentication channel"
+      ref: "https://example.invalid/privacy"
+
+  external_dependencies:
+    - "Google Gemini and OpenAI - receipt and voice processing; receive user content"
+    - "Telegram - notification delivery and one authentication path"
+    - "Sentry - runtime error reports"
+    - "Google Analytics GA4 - website analytics"
+    - "Google Sign-In and Sign in with Apple - identity"
+    - "App Store and Google Play - distribution and update delivery"
+    - "GitHub Actions - build, signing and release"
+
+  trust_boundaries:
+    - id: TB-1
+      name: "User device to application"
+      note: "The device may be lost, shared or rooted; the platform sandbox is the control."
+    - id: TB-2
+      name: "Application to backend"
+      note: "Public internet; the authentication token is the only credential."
+    - id: TB-3
+      name: "Backend to external AI processors"
+      note: "User content leaves the product boundary and the manufacturer's control."
+    - id: TB-4
+      name: "Backend to Telegram"
+      note: "Carries both notifications and an authentication path."
+    - id: TB-5
+      name: "Application and backend to Sentry"
+      note: "Error reports may contain incidental user data."
+    - id: TB-6
+      name: "Build and release pipeline to published artefact"
+      note: "Signing material lives in CI secrets; the toolchain is resolved at build time."
+    - id: TB-7
+      name: "Manufacturer to the outside world"
+      note: "The channel by which a vulnerability report would arrive. Currently absent."
+
+  assets:
+    - id: A-1
+      name: "Receipt images and any other photograph the user submits"
+      note: "May contain payment card numbers, addresses or identity documents the product did not ask for"
+      cia: ["confidentiality"]
+    - id: A-2
+      name: "Voice recordings"
+      cia: ["confidentiality"]
+    - id: A-3
+      name: "Medication course data"
+      note: "Health-adjacent personal data"
+      cia: ["confidentiality", "integrity"]
+    - id: A-4
+      name: "Authentication token (X-Mobile-Token)"
+      note: "Bearer-equivalent; possession grants account access"
+      cia: ["confidentiality"]
+    - id: A-5
+      name: "Account and household data — email, name, user and place identifiers, inventory"
+      cia: ["confidentiality", "integrity"]
+    - id: A-6
+      name: "Signing identity and store credentials"
+      note: "Apple distribution certificate and App Store Connect key, held in CI secrets"
+      cia: ["confidentiality", "integrity"]
+    - id: A-7
+      name: "Integrity of the released binary and the record of what it contains"
+      cia: ["integrity"]
+
+risks:
+  - id: R-01
+    title: "Unrelated sensitive documents forwarded to external processors through the receipt scanner"
+    stride: ["information_disclosure"]
+    boundary: "TB-3"
+    assets: ["A-1"]
+    description: >
+      The receipt scanner accepts any photograph and forwards it for processing. A user
+      photographing a bank statement, an identity document or a payment card transmits that
+      image to Google Gemini or OpenAI. The product performs no inspection, no redaction and no
+      refusal. This is the intended flow working exactly as designed on unintended input.
+    likelihood: 4
+    impact: 4
+    existing_controls:
+      - "The processing is disclosed in the published privacy policy"
+      - "Transmission is over HTTPS"
+      - "Both providers are used on paid tiers, where per their published terms the data is not used to train models by default and neither opt-in has been taken"
+      - "Retention at the providers is bounded rather than indefinite: up to 30 days at OpenAI, a default maximum of 55 days at Google"
+    control_refs:
+      - "https://example.invalid/privacy"
+      - "services/ai/config.py — billed model identifiers"
+      - "product.yaml section_2.external_processing_terms"
+    residual_likelihood: 4
+    residual_impact: 3
+    treatment: "mitigate"
+    treatment_note: >
+      The likelihood is unchanged: nothing stops a user photographing the wrong document, because
+      the product does not look at what it is sending. What the paid tiers change is the
+      consequence — the image is not absorbed into a training set and it ages out of the
+      providers' logs within weeks. That is a genuine reduction in impact and it is why the
+      residual rating moves, but the requirement in EI-07 is about not sending the data in the
+      first place, and it remains unmet.
+
+      Cheapest available further reduction, in order: set the Google log window to 7 days instead
+      of the default 55, which is a configuration change; then a warning at the point of capture;
+      then on-device detection of card-number patterns before upload.
+    annex_i: ["EI-07", "EI-05"]
+
+  - id: R-02
+    title: "Authentication token stored unencrypted on the device"
+    stride: ["information_disclosure", "spoofing"]
+    boundary: "TB-1"
+    assets: ["A-4", "A-5"]
+    description: >
+      The token is written to a DataStore preferences file in plaintext. Anyone able to read the
+      application's sandbox — a rooted or jailbroken device, a forensic image, a malicious
+      application exploiting a platform flaw — obtains a credential that grants full account
+      access, and there is no server-side signal that it was taken.
+    likelihood: 2
+    impact: 4
+    existing_controls:
+      - "Platform application sandbox"
+      - "allowBackup=false prevents extraction through platform backup"
+      - "The token is bound to the API host by the HTTP interceptor, so it cannot leak on a redirect"
+    control_refs:
+      - "android/app/src/main/AndroidManifest.xml"
+      - "core-design/src/main/java/com/example/coredesign/auth/FamilyTokenStore.kt"
+      - "data/api/ApiClient.kt"
+    residual_likelihood: 2
+    residual_impact: 4
+    treatment: "mitigate"
+    treatment_note: >
+      The sandbox and the backup setting cover the ordinary case. They do not cover a
+      compromised device. The platform keystore is not used, and no server-side token binding or
+      revocation on anomaly exists.
+    annex_i: ["EI-05", "EI-04", "EI-11"]
+
+  - id: R-03
+    title: "The composition of a released version is not recorded"
+    stride: ["tampering", "repudiation"]
+    boundary: "TB-6"
+    assets: ["A-7"]
+    description: >
+      The Swift package lock file is not committed. Package versions are resolved afresh on each
+      build machine, so two builds of the same version number may contain different dependency
+      versions. When an advisory lands on a dependency, the manufacturer cannot state from its
+      own records whether a released version is affected.
+    likelihood: 5
+    impact: 3
+    existing_controls:
+      - "The release pipeline logs the resolved package graph, so composition is recoverable while the log exists"
+    control_refs:
+      - ".github/workflows/ios_deploy.yml — step 'Resolve Swift Package dependencies'"
+    residual_likelihood: 3
+    residual_impact: 3
+    treatment: "mitigate"
+    treatment_note: >
+      Recovery from CI logs worked for 1.0.15 and is recorded in the SBOM, but logs expire.
+      Planned: commit the lock file and publish it as a build artefact on every release.
+    annex_i: ["VH-01", "EI-06", "EI-01"]
+
+  - id: R-04
+    title: "Build toolchain is not pinned"
+    stride: ["tampering"]
+    boundary: "TB-6"
+    assets: ["A-7"]
+    description: >
+      Both release workflows request the latest stable Xcode rather than a fixed version. Two
+      builds two days apart in August 2026 used Xcode 16.2 and Xcode 26.6. The production
+      process described in the technical file therefore does not describe a reproducible build,
+      and a compiler change between releases is invisible in the release record.
+    likelihood: 5
+    impact: 2
+    existing_controls: []
+    control_refs: []
+    residual_likelihood: 5
+    residual_impact: 2
+    treatment: "accept"
+    treatment_note: "Planned: pin an explicit Xcode version in both workflows and raise it by deliberate commit."
+    annex_i: ["EI-06"]
+
+  - id: R-05
+    title: "A vulnerability report has nowhere to arrive"
+    stride: ["repudiation"]
+    boundary: "TB-7"
+    assets: ["A-5", "A-7"]
+    description: >
+      No coordinated disclosure policy is published, no SECURITY.md exists in either repository
+      and no security contact address is served. A researcher who finds a flaw either writes to
+      a general support mailbox, publishes without contact, or does nothing. The manufacturer
+      would learn of the flaw last.
+    likelihood: 3
+    impact: 4
+    existing_controls: []
+    control_refs: []
+    residual_likelihood: 3
+    residual_impact: 4
+    treatment: "accept"
+    treatment_note: >
+      Planned and cheap: a SECURITY.md in both repositories, a .well-known/security.txt on
+      example.invalid, and one stable address that outlives any individual.
+    annex_i: ["VH-05", "VH-06"]
+
+  - id: R-06
+    title: "Users cannot learn that an update contained a security fix"
+    stride: ["repudiation"]
+    boundary: "TB-7"
+    assets: ["A-5"]
+    description: >
+      No advisory accompanies any release. A user cannot tell whether a given version fixed
+      something that affects them, and therefore cannot judge the urgency of updating or take
+      any compensating action.
+    likelihood: 3
+    impact: 3
+    existing_controls:
+      - "Platform automatic update, where the user has left it enabled, delivers fixes without the user needing to decide"
+    control_refs: []
+    residual_likelihood: 3
+    residual_impact: 2
+    treatment: "mitigate"
+    treatment_note: "Automatic update reduces impact but does not satisfy the disclosure requirement, which is separate."
+    annex_i: ["VH-04", "VH-08"]
+
+  - id: R-07
+    title: "AGPL-3.0 component in a network-facing backend serving proprietary clients"
+    stride: ["repudiation"]
+    boundary: "TB-2"
+    assets: ["A-7"]
+    description: >
+      pymupdf 1.27.2.3 is a direct dependency of the backend and is licensed
+      AGPL-3.0-or-later. The network clause of that licence is engaged by exactly this
+      deployment shape: users interact with the software over a network. The licence
+      consequences for the proprietary applications and the backend have not been assessed.
+    likelihood: 4
+    impact: 3
+    existing_controls: []
+    control_refs:
+      - "requirements.txt — pymupdf==1.27.2.3"
+      - "services/receipts/pdf_render.py — the only usage site"
+    residual_likelihood: 4
+    residual_impact: 3
+    treatment: "accept"
+    treatment_note: >
+      Replacement with a permissively licensed renderer is planned; the usage is confined to one
+      module of about sixty lines with three call sites, so the change is contained. Recorded
+      here because a bill of materials that lists the component without naming the consequence
+      would be a bill of materials that hides the finding.
+    annex_i: ["VH-01"]
+
+  - id: R-08
+    title: "No function survives loss of the backend or of a third-party processor"
+    stride: ["denial_of_service"]
+    boundary: "TB-3"
+    assets: ["A-5", "A-3"]
+    description: >
+      The applications store no primary data locally. If the backend is unavailable the product
+      shows a login screen; if Gemini or OpenAI is unavailable, receipt and voice capture fail.
+      Medication reminders are scheduled from a server-resolved queue, so an outage spanning the
+      daily refresh silently stops reminders the user is relying on.
+    likelihood: 3
+    impact: 4
+    existing_controls:
+      - "Android re-arms alarms after reboot and re-schedules from a cached daily queue"
+    control_refs:
+      - "reminders/ReminderScheduler.kt, reminders/BootReceiver.kt"
+    residual_likelihood: 3
+    residual_impact: 3
+    treatment: "accept"
+    treatment_note: >
+      No offline mode, no degraded read-only view and no user-visible signal that reminders have
+      stopped. The last point is the one that matters most, because a silent failure of a
+      medication reminder is worse than a visible one.
+    annex_i: ["EI-08"]
+
+  - id: R-09
+    title: "Release build without shrinking or obfuscation"
+    stride: ["information_disclosure"]
+    boundary: "TB-1"
+    assets: ["A-7", "A-5"]
+    description: >
+      The Android release build sets isMinifyEnabled = false. Class names, endpoint paths,
+      request models and the token header name are readable directly from the package, which
+      lowers the effort required to explore the API surface.
+    likelihood: 4
+    impact: 2
+    existing_controls:
+      - "The API enforces authorisation server-side; readability of the client does not confer access"
+    control_refs:
+      - "android/app/build.gradle.kts"
+    residual_likelihood: 4
+    residual_impact: 2
+    treatment: "accept"
+    treatment_note: >
+      Accepted with justification: obfuscation is not a security control, and treating it as one
+      would be security through obscurity. It is recorded because it affects the effort side of
+      the equation, not because its absence is a defect.
+    annex_i: ["EI-11", "EI-10"]
+
+  - id: R-11
+    title: "No one is designated to file an Article 14 report"
+    stride: ["repudiation"]
+    boundary: "TB-7"
+    assets: ["A-5"]
+    description: >
+      Article 14 has applied since 11 September 2026 and allows twenty-four hours for an early
+      warning. No filer and no deputy are designated, the relevant CSIRT has not been
+      identified, no account exists on the Single Reporting Platform, and there is no recorded
+      criterion or owner for deciding that exploitation is real. The clock would start
+      retroactively with nothing to show when.
+    likelihood: 2
+    impact: 5
+    existing_controls: []
+    control_refs:
+      - "reporting.yaml — the runbook exists but its fields are unfilled"
+    residual_likelihood: 2
+    residual_impact: 5
+    treatment: "accept"
+    treatment_note: >
+      Low likelihood, severe consequence, and cheap to fix: naming two people and identifying
+      one CSIRT closes most of it. Nothing here requires engineering work.
+    annex_i: ["VH-02"]
+
+  - id: R-12
+    title: "Signing certificate export password held in plaintext in the release workflow"
+    stride: ["spoofing", "tampering"]
+    boundary: "TB-6"
+    assets: ["A-6"]
+    description: >
+      The iOS release workflow imports the distribution certificate using a password written
+      literally into the workflow file. The certificate itself comes from a repository secret,
+      so the password alone grants nothing, but it removes the second factor: anyone obtaining
+      the encrypted certificate also has what unlocks it.
+    likelihood: 2
+    impact: 5
+    existing_controls:
+      - "The certificate is stored as a repository secret, not in the repository"
+      - "The keychain created during the build is temporary and scoped to the runner"
+    control_refs:
+      - ".github/workflows/ios_deploy.yml — step 'Install Apple Certificate'"
+    residual_likelihood: 2
+    residual_impact: 4
+    treatment: "mitigate"
+    treatment_note: "Planned: move the export password into a repository secret. One line."
+    annex_i: ["EI-04", "EI-06"]
+
+  - id: R-13
+    title: "Public contact for the product is a personal mailbox"
+    stride: ["repudiation"]
+    boundary: "TB-7"
+    assets: ["A-5"]
+    description: >
+      The contact published in the store listing is an individual's personal address rather than
+      a role address belonging to the manufacturer. It does not survive a change of person, is
+      not monitored as a security channel, and does not satisfy the requirement for a contact
+      point at which the manufacturer can be reached about vulnerabilities.
+    likelihood: 3
+    impact: 2
+    existing_controls: []
+    control_refs: []
+    residual_likelihood: 3
+    residual_impact: 2
+    treatment: "accept"
+    treatment_note: "Planned together with R-05: one role address, published in both stores, in the policy and in SECURITY.md."
+    annex_i: ["VH-06"]
+
+  - id: R-14
+    title: "Security-relevant events are neither recorded nor surfaced"
+    stride: ["repudiation"]
+    boundary: "TB-2"
+    assets: ["A-5", "A-4"]
+    description: >
+      Authentication failures, sign-in from a new device, household membership changes and data
+      access are not recorded as security events and are never shown to the user. An account
+      accessed with a stolen token leaves no trace the user could see, and the manufacturer has
+      no record from which to reconstruct what happened after an incident.
+    likelihood: 3
+    impact: 3
+    existing_controls:
+      - "Sentry receives runtime errors, which is unrelated to security event recording but would capture some anomalous failures"
+    control_refs: []
+    residual_likelihood: 3
+    residual_impact: 3
+    treatment: "accept"
+    treatment_note: >
+      This is the requirement with the largest gap between what exists and what Annex I asks for,
+      and closing it is backend work rather than a configuration change.
+    annex_i: ["EI-12", "EI-04"]
+
+  - id: R-15
+    title: "Data at the external processors is outside both the deletion and the export path"
+    stride: ["information_disclosure"]
+    boundary: "TB-2"
+    assets: ["A-1", "A-2", "A-3", "A-5"]
+    description: >
+      Deletion and export are both implemented for data the manufacturer holds: an export endpoint
+      returns the caller's own data in machine-readable and human-readable form, and an account
+      deletion endpoint exists which the manufacturer attests has been verified end to end. Two
+      things remain open.
+
+      The deletion verification is the manufacturer's own and has not been audited by anyone else.
+      And data already transmitted to Google Gemini, OpenAI or Sentry sits outside both paths: it
+      is neither exported to the user nor removed when the account is deleted. That tail is
+      bounded rather than open-ended — the providers' published retention windows are 30 and 55
+      days — but during those weeks a user who has deleted their account still has a copy of their
+      receipt sitting somewhere they were never told about in those terms.
+    likelihood: 3
+    impact: 3
+    existing_controls:
+      - "GET /profile/export returns the caller's own data as JSON and HTML, scoped to the user and excluding credentials and other users' rows"
+      - "DELETE /profile exists and is reachable from the client"
+      - "The manufacturer attests that end-to-end deletion has been verified and the verification recorded"
+    control_refs:
+      - "api/routers/profile.py:693"
+      - "data/api/MedicineApiService.kt"
+      - "annex_i.yaml EI-13 — customer attestation, 21 August 2026, unverified"
+    residual_likelihood: 2
+    residual_impact: 2
+    treatment: "mitigate"
+    treatment_note: >
+      What the manufacturer holds is covered, and the export path was verified in code rather than
+      taken on trust. The residual risk is now almost entirely about the external processors: a
+      user who deletes their account has no assurance about the copy of their receipt image that
+      Gemini or OpenAI received. Closing it does not require a negotiation: the retention windows
+      are published, the Google one is configurable down to 7 days, and stating both in the
+      privacy policy would turn an unknown into a disclosed limit.
+    annex_i: ["EI-13"]
+
+  - id: R-16
+    title: "No security testing, so vulnerabilities are found by others or not at all"
+    stride: ["information_disclosure", "elevation_of_privilege"]
+    boundary: "TB-2"
+    assets: ["A-5", "A-4", "A-1"]
+    description: >
+      No penetration test, no external assessment and no recurring security review has been
+      performed on either client or the backend. Functional tests and linters do not look for
+      security defects. A vulnerability in the product would therefore be discovered by a user,
+      a researcher or an attacker before it was discovered by the manufacturer — and, per R-05,
+      the first two have no way to report it.
+    likelihood: 3
+    impact: 4
+    existing_controls:
+      - "Component versions are matched against the OSV database, which covers known defects in dependencies but nothing in the product's own code"
+      - "Android lint runs in the release build"
+    control_refs:
+      - "vuln_scan.py against sbom.cdx.json"
+    residual_likelihood: 3
+    residual_impact: 4
+    treatment: "accept"
+    treatment_note: >
+      Accepted for now and named as the largest single blind spot in this assessment. Dependency
+      scanning covers borrowed code; nothing covers the code written here. A first external
+      assessment is the highest-value item on the roadmap.
+    annex_i: ["VH-03", "EI-01"]
+
+  - id: R-17
+    title: "The only update channel is controlled by two third parties"
+    stride: ["denial_of_service"]
+    boundary: "TB-7"
+    assets: ["A-7", "A-5"]
+    description: >
+      Security updates reach users solely through the App Store and Google Play. If either
+      listing is suspended — for a policy breach, an expired agreement, a broken privacy-policy
+      link, or a developer-account problem — the manufacturer loses the ability to ship a
+      security fix to that platform's users entirely, and has no side channel to reach them.
+      Suspension does not require any fault in the software itself: a policy change, an expired
+      developer agreement or an account issue is enough.
+    likelihood: 2
+    impact: 5
+    existing_controls:
+      - "Both platforms verify package signatures and support automatic update, so a shipped fix reaches users quickly"
+      - "Backend fixes reach all users without any store involvement"
+    control_refs:
+      - ".github/workflows/ios_deploy.yml"
+    residual_likelihood: 2
+    residual_impact: 4
+    treatment: "mitigate"
+    treatment_note: >
+      The backend path gives partial coverage: a server-side mitigation can be deployed without
+      the stores. Client-side fixes have no alternative route. Keeping both listings in good
+      standing is therefore a security control, not only a commercial matter.
+    annex_i: ["VH-07", "EI-03"]
+
+  - id: R-18
+    title: "Secure defaults are inherited from the platform rather than asserted by the product"
+    stride: ["tampering", "information_disclosure"]
+    boundary: "TB-1"
+    assets: ["A-4", "A-5"]
+    description: >
+      Several protections in this assessment are platform behaviour, not product code: user
+      certificate authorities are excluded because the Android target SDK is 35, transport is
+      protected because the platform enforces it, and the application sandbox isolates the token
+      store. A change of target SDK, a platform policy change, or running on an older or
+      modified system weakens these without any change to the product, and nothing in the
+      product would detect or report it.
+    likelihood: 2
+    impact: 3
+    existing_controls:
+      - "Target SDK 35 and minimum SDK 26 on Android; deployment target iOS 16 on the client"
+      - "allowBackup=false is an explicit product setting rather than an inherited default"
+      - "The API base URL is HTTPS in code, independent of platform policy"
+    control_refs:
+      - "android/app/build.gradle.kts"
+      - "android/app/src/main/AndroidManifest.xml"
+      - "data/api/ApiClient.kt"
+    residual_likelihood: 2
+    residual_impact: 2
+    treatment: "mitigate"
+    treatment_note: >
+      Recorded so the technical file does not present platform behaviour as product design. No
+      certificate pinning and no runtime integrity check is implemented; the mitigation is that
+      the few settings that are the product's own are set explicitly rather than left to default.
+    annex_i: ["EI-02", "EI-09"]

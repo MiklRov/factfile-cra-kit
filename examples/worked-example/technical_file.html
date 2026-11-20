@@ -1,0 +1,2313 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2026-08-21" />
+  <title>Technical documentation — Sample Product iOS 1.0.15 (build 9) / Android 1.2.39 (versionCode 79)</title>
+  <style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+.display.math{display: block; text-align: center; margin: 0.5rem auto;}
+
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+  <style type="text/css">
+:root {
+--ink: #1a1a1a;
+--muted: #5c5c5c;
+--rule: #d8d8d8;
+--bg: #ffffff;
+--accent: #1c4e80;
+--warn-bg: #fff8e6;
+--warn-rule: #d4a017;
+--code-bg: #f4f4f4;
+}
+@media (prefers-color-scheme: dark) {
+:root {
+--ink: #e6e6e6;
+--muted: #a0a0a0;
+--rule: #3a3a3a;
+--bg: #16181a;
+--accent: #7ab0e0;
+--warn-bg: #2a2415;
+--warn-rule: #a67c00;
+--code-bg: #232629;
+}
+}
+html { -webkit-text-size-adjust: 100%; }
+body {
+max-width: 46rem;
+margin: 0 auto;
+padding: 2.5rem 1.25rem 6rem;
+background: var(--bg);
+color: var(--ink);
+font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+"Helvetica Neue", Arial, sans-serif;
+}
+h1, h2, h3 { line-height: 1.25; font-weight: 600; }
+h1 {
+font-size: 1.6rem;
+margin: 2.8rem 0 1rem;
+padding-bottom: .4rem;
+border-bottom: 2px solid var(--rule);
+}
+h1.title {
+font-size: 2rem;
+border: 0;
+margin-top: 0;
+}
+h2 { font-size: 1.22rem; margin: 2rem 0 .7rem; color: var(--accent); }
+h3 { font-size: 1.03rem; margin: 1.5rem 0 .5rem; }
+p.subtitle {
+color: var(--muted);
+font-size: 1.05rem;
+margin-top: -.4rem;
+}
+p.date { color: var(--muted); font-size: .9rem; }
+
+blockquote {
+margin: 1.4rem 0;
+padding: .85rem 1.1rem;
+background: var(--warn-bg);
+border-left: 4px solid var(--warn-rule);
+border-radius: 0 4px 4px 0;
+color: var(--ink);
+}
+blockquote p { margin: .3rem 0; }
+table {
+border-collapse: collapse;
+width: 100%;
+margin: 1.2rem 0;
+font-size: .9rem;
+display: block;
+overflow-x: auto;
+}
+th, td {
+border: 1px solid var(--rule);
+padding: .45rem .6rem;
+text-align: left;
+vertical-align: top;
+}
+th { background: var(--code-bg); font-weight: 600; }
+tr:hover td { background: rgba(127,127,127,.06); }
+code {
+background: var(--code-bg);
+padding: .12em .35em;
+border-radius: 3px;
+font-size: .875em;
+font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+word-break: break-word;
+}
+pre { background: var(--code-bg); padding: .9rem; border-radius: 5px; overflow-x: auto; }
+pre code { background: none; padding: 0; }
+#TOC {
+background: var(--code-bg);
+border: 1px solid var(--rule);
+border-radius: 5px;
+padding: 1rem 1.3rem;
+margin: 2rem 0;
+font-size: .92rem;
+}
+#TOC ul { padding-left: 1.1rem; margin: .3rem 0; }
+#TOC > ul { padding-left: .6rem; }
+#TOC a { text-decoration: none; }
+#TOC a:hover { text-decoration: underline; }
+a { color: var(--accent); }
+hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
+ul, ol { padding-left: 1.4rem; }
+li { margin: .25rem 0; }
+@media print {
+body { max-width: none; padding: 0; font-size: 10pt; }
+h1 { page-break-before: always; }
+h1.title, #TOC + h1 { page-break-before: avoid; }
+blockquote { border-left-color: #999; background: #f5f5f5; }
+table { display: table; font-size: 9pt; }
+}
+</style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Technical documentation — Sample Product iOS 1.0.15
+(build 9) / Android 1.2.39 (versionCode 79)</h1>
+<p class="subtitle">Annex VII to Regulation (EU) 2024/2847</p>
+<p class="date">2026-08-21</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#general-description-of-the-product" id="toc-general-description-of-the-product">1. General description of
+the product</a>
+<ul>
+<li><a href="#intended-purpose" id="toc-intended-purpose">1.1 Intended
+purpose</a></li>
+<li><a href="#intended-users" id="toc-intended-users">1.2 Intended
+users</a></li>
+<li><a href="#reasonably-foreseeable-misuse" id="toc-reasonably-foreseeable-misuse">1.3 Reasonably foreseeable
+misuse</a></li>
+<li><a href="#note-on-scope" id="toc-note-on-scope">1.4 Note on
+scope</a></li>
+<li><a href="#versions-affecting-conformity" id="toc-versions-affecting-conformity">1.5 Versions affecting
+conformity</a></li>
+<li><a href="#information-to-the-user-annex-ii" id="toc-information-to-the-user-annex-ii">1.6 Information to the user
+(Annex II)</a></li>
+</ul></li>
+<li><a href="#design-development-and-production" id="toc-design-development-and-production">2. Design, development and
+production</a>
+<ul>
+<li><a href="#architecture" id="toc-architecture">2.1
+Architecture</a></li>
+<li><a href="#component-integration" id="toc-component-integration">2.2
+Component integration</a></li>
+<li><a href="#security-relevant-subsystems" id="toc-security-relevant-subsystems">2.3 Security-relevant
+subsystems</a></li>
+<li><a href="#production-and-monitoring" id="toc-production-and-monitoring">2.4 Production and
+monitoring</a></li>
+<li><a href="#vulnerability-handling-processes-annex-i-part-ii" id="toc-vulnerability-handling-processes-annex-i-part-ii">2.5
+Vulnerability handling processes (Annex I, Part II)</a></li>
+</ul></li>
+<li><a href="#cybersecurity-risk-assessment" id="toc-cybersecurity-risk-assessment">3. Cybersecurity risk
+assessment</a>
+<ul>
+<li><a href="#limitations-of-the-assessment" id="toc-limitations-of-the-assessment">3.1 Limitations of the
+assessment</a></li>
+<li><a href="#system-description" id="toc-system-description">3.2 System
+description</a></li>
+<li><a href="#identified-risks" id="toc-identified-risks">3.3 Identified
+risks</a></li>
+<li><a href="#risk-detail" id="toc-risk-detail">3.4 Risk detail</a></li>
+<li><a href="#annex-i-requirement-coverage" id="toc-annex-i-requirement-coverage">3.5 Annex I requirement
+coverage</a></li>
+</ul></li>
+<li><a href="#support-period" id="toc-support-period">4. Support
+period</a>
+<ul>
+<li><a href="#rationale" id="toc-rationale">4.1 Rationale</a></li>
+<li><a href="#factors-considered-article-138" id="toc-factors-considered-article-138">4.2 Factors considered (Article
+13(8))</a></li>
+<li><a href="#end-of-support-notification" id="toc-end-of-support-notification">4.3 End-of-support
+notification</a></li>
+</ul></li>
+<li><a href="#applied-standards-and-specifications" id="toc-applied-standards-and-specifications">5. Applied standards and
+specifications</a>
+<ul>
+<li><a href="#harmonised-standards" id="toc-harmonised-standards">5.1
+Harmonised standards</a></li>
+<li><a href="#other-means-applied" id="toc-other-means-applied">5.2
+Other means applied</a></li>
+</ul></li>
+<li><a href="#test-reports" id="toc-test-reports">6. Test reports</a>
+<ul>
+<li><a href="#automated-tests" id="toc-automated-tests">6.1 Automated
+tests</a></li>
+<li><a href="#tests-mapped-to-essential-requirements" id="toc-tests-mapped-to-essential-requirements">6.2 Tests mapped to
+essential requirements</a></li>
+<li><a href="#static-analysis" id="toc-static-analysis">6.3 Static
+analysis</a></li>
+<li><a href="#evidence-gaps" id="toc-evidence-gaps">6.4 Evidence
+gaps</a></li>
+</ul></li>
+<li><a href="#eu-declaration-of-conformity" id="toc-eu-declaration-of-conformity">7. EU Declaration of
+Conformity</a></li>
+<li><a href="#software-bill-of-materials" id="toc-software-bill-of-materials">8. Software bill of materials</a>
+<ul>
+<li><a href="#composition" id="toc-composition">8.1 Composition</a></li>
+<li><a href="#licence-distribution" id="toc-licence-distribution">8.2
+Licence distribution</a></li>
+</ul></li>
+<li><a href="#appendix-a.-article-14-vulnerability-and-incident-reporting-runbook" id="toc-appendix-a.-article-14-vulnerability-and-incident-reporting-runbook">Appendix
+A. Article 14 vulnerability and incident reporting runbook</a>
+<ul>
+<li><a href="#a.1-the-two-triggers" id="toc-a.1-the-two-triggers">A.1
+The two triggers</a></li>
+<li><a href="#a.2-deadlines" id="toc-a.2-deadlines">A.2
+Deadlines</a></li>
+<li><a href="#a.3-operators-self-hosters-and-other-third-party-deployments" id="toc-a.3-operators-self-hosters-and-other-third-party-deployments">A.3
+Operators, self-hosters and other third-party deployments</a></li>
+<li><a href="#a.4-named-filer-and-deputy" id="toc-a.4-named-filer-and-deputy">A.4 Named filer and deputy</a></li>
+<li><a href="#a.5-identifying-the-relevant-csirt" id="toc-a.5-identifying-the-relevant-csirt">A.5 Identifying the relevant
+CSIRT</a></li>
+<li><a href="#a.6-draft-notification-templates" id="toc-a.6-draft-notification-templates">A.6 Draft notification
+templates</a></li>
+<li><a href="#a.7-readiness-checklist" id="toc-a.7-readiness-checklist">A.7 Readiness checklist</a></li>
+</ul></li>
+</ul>
+</nav>
+<blockquote>
+<p><strong>This technical file was assembled by the manufacturer using
+cra-kit. It is not legal advice and it does not constitute a conformity
+assessment by a third party. Where a requirement could not be
+substantiated from the code, the build or a public record, it is
+recorded as not met or as unconfirmed rather than assumed. Section 6
+lists the gaps explicitly.</strong></p>
+</blockquote>
+<h1 id="general-description-of-the-product">1. General description of
+the product</h1>
+<p><strong>Product:</strong> Sample Product<br />
+<strong>Version:</strong> iOS 1.0.15 (build 9) / Android 1.2.39
+(versionCode 79)<br />
+<strong>Type:</strong> Product with digital elements — two mobile
+applications and the backend service they require<br />
+<strong>Licence:</strong> Proprietary. Free to install, with in-app
+purchases.</p>
+<h2 id="intended-purpose">1.1 Intended purpose</h2>
+<p>The product keeps track of food a household already owns and of when
+it expires. A user photographs a shop receipt; the product extracts the
+items and files them into named storage locations (fridge, freezer,
+pantry, medicine cabinet), then reminds the user before something
+expires. It also maintains a shopping list, a weekly menu and a
+medication course tracker. The stated aim is to reduce household food
+waste.</p>
+<h2 id="intended-users">1.2 Intended users</h2>
+<p>Consumers, in a household setting. Multiple people may share one
+household. The product is sold directly to end users through Apple’s App
+Store and Google Play; it is not deployed or self-hosted by anyone other
+than the manufacturer, and there is no on-premises or reseller
+distribution.</p>
+<h2 id="reasonably-foreseeable-misuse">1.3 Reasonably foreseeable
+misuse</h2>
+<p>Two uses are foreseeable and were not designed for. First, the
+medication course tracker invites use as a clinical adherence tool; it
+is not one, it makes no clinical claim, and a missed or late reminder
+must not be relied upon for medication that matters. Second, the receipt
+scanner accepts any photograph, so users may submit documents that are
+not receipts — including documents containing payment card numbers or
+identifiers — which are then transmitted to external processing services
+named in section 2. The product does not detect or refuse such
+input.</p>
+<h2 id="note-on-scope">1.4 Note on scope</h2>
+<p>The product boundary covers three parts: the iOS application, the
+Android application and the backend service at api.example.invalid. The
+backend is inside the boundary because the applications cannot perform
+their core functions without it. Receipt extraction, the item inventory,
+medication schedules and reminder times are all resolved server-side; an
+application without the backend shows a login screen and nothing else.
+Its dependencies are therefore part of the bill of materials in section
+8. Four external services are outside the boundary and are not part of
+this product, but they receive user content and are documented in
+section 2 as external interfaces: Google Gemini and OpenAI (receipt and
+voice processing), Telegram (authentication and notification delivery)
+and Sentry (error reports). The two applications share one backend, one
+account system and one token format, but they are separate binaries with
+separate release cycles and separate identifiers. Where a statement in
+this file is true of only one platform, it says so.</p>
+<h2 id="versions-affecting-conformity">1.5 Versions affecting
+conformity</h2>
+<p>This file covers iOS 1.0.15, build 9 (placed on the market 1 July
+2026, current version published 19 August 2026) and Android 1.2.39,
+versionCode 79 (current version published 18 August 2026).</p>
+<p>Both version identifiers were confirmed against the live store
+records rather than taken from the repository: the iOS entry against the
+App Store catalogue, the Android entry against the production track in
+the Google Play Console. The resolved dependency trees in section 8 were
+taken from these versions.</p>
+<p>The composition of the released iOS 1.0.15 is established from the
+continuous integration run that produced it, not from a lock file: the
+repository does not commit Package.resolved. That recovery route expires
+with the log and is recorded as a gap in section 6.</p>
+<h2 id="information-to-the-user-annex-ii">1.6 Information to the user
+(Annex II)</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Item</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Manufacturer contact</td>
+<td><manufacturer name> — redacted in this published example. The real
+file carries the full legal name, the registered address, the national
+business-register entry and the tax identification number, and the
+address must match the developer record in both stores.</td>
+</tr>
+<tr class="even">
+<td>Single point of contact</td>
+<td>&lt;to be completed — a stable address for cybersecurity matters,
+e.g. security@example.invalid. No such address exists today; see section
+6.&gt;</td>
+</tr>
+<tr class="odd">
+<td>Product identification</td>
+<td>iOS: bundle identifier <ios bundle id>, version 1.0.15 (build 9),
+App Store ID <app store id>. Android: application identifier
+<android application id>, version 1.2.39 (versionCode 79), published
+under the product name. The Android application identifier retains the
+product’s original working name and cannot be changed for a published
+application; the iOS bundle identifier contains a typographic error in
+the vendor segment from an earlier company name which likewise cannot be
+changed. Both are recorded here as they are; the identifiers themselves
+are redacted in this published example.</td>
+</tr>
+<tr class="even">
+<td>Intended purpose</td>
+<td>Household food inventory and expiry tracking with receipt
+scanning.</td>
+</tr>
+<tr class="odd">
+<td>Known limitations</td>
+<td>The product requires network access and the manufacturer’s backend.
+Receipt and voice processing depend on third-party services; if those
+are unavailable, the corresponding features do not work. Reminder
+delivery on Android degrades to an inexact schedule when the exact-alarm
+permission is not granted.</td>
+</tr>
+<tr class="even">
+<td>End of support period</td>
+<td>2031-07-01</td>
+</tr>
+<tr class="odd">
+<td>Security update information</td>
+<td>Security updates are delivered as ordinary application updates
+through the App Store and Google Play, and as server-side changes for
+the backend. Updates are free of charge.</td>
+</tr>
+<tr class="even">
+<td>Vulnerability reporting</td>
+<td>&lt;to be completed — no published vulnerability reporting channel
+exists today. See VH-05 and VH-06 in the requirements matrix and the gap
+list in section 6.&gt;</td>
+</tr>
+<tr class="odd">
+<td>Secure configuration guidance</td>
+<td>The product has no user-configurable security settings beyond the
+platform permissions it requests. Default configuration is the secure
+configuration; there is nothing for the user to harden.</td>
+</tr>
+</tbody>
+</table>
+<h1 id="design-development-and-production">2. Design, development and
+production</h1>
+<h2 id="architecture">2.1 Architecture</h2>
+<p>Two mobile clients and one backend. The iOS client is written in
+Swift with SwiftUI (deployment target iOS 16.0); the Android client is
+written in Kotlin with Jetpack Compose (minimum SDK 26, target SDK 35).
+Both talk to a single HTTPS API at https://api.example.invalid/api/v1/
+and hold no primary data locally: the inventory, medication courses and
+reminder schedule live server-side. Authentication is by an opaque token
+carried in the X-Mobile-Token header. On iOS the token is obtained
+through Google Sign-In or Sign in with Apple; on Android through Google
+Sign-In. Telegram is additionally used as an authentication channel per
+the published privacy policy. The backend is a Python service. It
+performs receipt and voice processing by calling external services
+rather than locally.</p>
+<p>Terms under which the external recipients hold this data</p>
+<p>Because user content leaves the product boundary at these interfaces,
+the terms under which the recipients hold it form part of the assessment
+rather than a commercial footnote. Both providers are used on their paid
+tiers, evidenced by the billed model identifiers named in
+services/ai/config.py.</p>
+<p>Training. Neither provider uses this data to train models on the paid
+tier by default. OpenAI’s documentation states that “data sent to the
+OpenAI API is not used to train or improve OpenAI models (unless you
+explicitly opt in to share data with us)”. Google’s states that for a
+billing-enabled project “prompts and responses within logs are not used
+for product improvement or development”. Neither opt-in has been
+taken.</p>
+<p>Retention, which is a separate question and is not zero. OpenAI
+retains abuse-monitoring logs containing prompts and responses “for up
+to 30 days”. Google retains logs “for a default maximum period of 55
+days”, configurable down to 7, 14 or 28. So a receipt image submitted
+today exists outside the manufacturer’s control for weeks after the user
+has forgotten it, and continues to exist there if the user deletes their
+account in the meantime.</p>
+<p>Zero-data-retention controls exist at both providers and are not in
+use here. OpenAI’s require prior approval and additional terms; Google’s
+are available for paid services, with the caveat that certain features
+retain data regardless. Reducing the Google log window from 55 days to 7
+is a configuration change and is the cheapest available reduction of
+this exposure.</p>
+<p>Sources: OpenAI, Data controls in the OpenAI platform; Google, Gemini
+API Data Logging and Sharing, and Zero data retention in the Gemini
+Developer API. Retrieved 21 August 2026.</p>
+<h2 id="component-integration">2.2 Component integration</h2>
+<p>The bill of materials in section 8 lists 278 components across the
+three parts: 4 Swift packages in the iOS client, 242 Maven artefacts in
+the Android client and 32 Python distributions in the backend. The iOS
+figures come from the resolved package graph recorded by the release
+build; the Android figures from a resolved Gradle dependency tree
+(configuration prodReleaseRuntimeClasspath), not from parsing build
+files. The distinction matters: on the Android side, parsing the build
+files alone yields 43 components against 242 actually resolved. Eight
+Android components are proprietary Google Play Services artefacts
+distributed under the Android Software Development Kit licence rather
+than an open-source licence. One backend component, pymupdf 1.27.2.3, is
+licensed AGPL-3.0-or-later; see section 6.</p>
+<h2 id="security-relevant-subsystems">2.3 Security-relevant
+subsystems</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Subsystem</th>
+<th>Location</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Authentication and token handling</td>
+<td><code>data/api/ApiClient.kt · core-design/.../auth/FamilyTokenStore.kt · ios/App/Networking/TokenStore.swift</code></td>
+<td>Identity through Google Sign-In and Sign in with Apple; an opaque
+token in the X-Mobile-Token header. The token is bound to the API host
+by an HTTP interceptor so it cannot leak to another host on a redirect.
+It is stored unencrypted in the application sandbox.</td>
+</tr>
+<tr class="even">
+<td>HTTP transport</td>
+<td><code>data/api/ApiClient.kt · ios/App/Networking/APIClient.swift</code></td>
+<td>HTTPS only; cleartext traffic is not enabled. No certificate
+pinning; at target SDK 35 the platform default excludes user-installed
+certificate authorities.</td>
+</tr>
+<tr class="odd">
+<td>Request logging</td>
+<td><code>data/api/ApiClient.kt:35</code></td>
+<td>The HTTP logging interceptor is instantiated only in debug builds
+and at a level that excludes headers, so authentication material is
+never written to the system log in a release build.</td>
+</tr>
+<tr class="even">
+<td>Local storage</td>
+<td><code>android/app/src/main/AndroidManifest.xml</code></td>
+<td>allowBackup=false, so the token store cannot be extracted through
+platform backup. No database is used on the client; primary data lives
+server-side.</td>
+</tr>
+<tr class="odd">
+<td>Reminder delivery</td>
+<td><code>reminders/ReminderScheduler.kt · reminders/ReminderAlarmReceiver.kt · reminders/BootReceiver.kt</code></td>
+<td>Scheduled locally through AlarmManager. The receiver that fires a
+reminder is not exported; the boot receiver is exported only because the
+platform requires it to receive BOOT_COMPLETED. Pending intents are
+immutable.</td>
+</tr>
+<tr class="even">
+<td>External processing</td>
+<td><code>services/ai/config.py · backend services/receipts/, services/voice/</code></td>
+<td>Receipt images and voice recordings are transmitted for processing.
+Google Gemini is the primary provider (models/gemini-3.6-flash, with
+models/gemini-3.1-flash-lite as the cheap reserve); OpenAI (gpt-4o-mini
+and gpt-4o-mini-transcribe) is a cross-provider fallback that fires only
+during a full Gemini outage and is disabled when no key is configured.
+Both are used on their paid, billed tiers, which is what determines how
+the providers treat the data — see 2.6. Telegram carries notifications
+and one authentication path; Sentry receives error reports. These are
+the points at which user content leaves the product boundary.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="production-and-monitoring">2.4 Production and monitoring</h2>
+<p>Both applications are built and released by GitHub Actions. The iOS
+release workflow (ios_deploy.yml) runs on every push touching the iOS
+sources, resolves Swift packages, signs with a distribution certificate
+held in repository secrets and uploads to TestFlight. Neither workflow
+pins its toolchain: both request the latest stable Xcode. Two builds two
+days apart in August 2026 used Xcode 16.2 and Xcode 26.6 respectively.
+The released 1.0.15 was produced by Xcode 26.6. This is recorded as a
+finding in section 6. Runtime errors are reported to Sentry.</p>
+<h2 id="vulnerability-handling-processes-annex-i-part-ii">2.5
+Vulnerability handling processes (Annex I, Part II)</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Process</th>
+<th>Status</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>SBOM</td>
+<td>met</td>
+<td>A machine-readable bill of materials covering all three parts of the
+product is maintained and is included as section 8. It is generated from
+resolved build output, not from manifests. Licence data is incomplete:
+of 278 components, 4 carry a determined licence. Determination for the
+Maven and PyPI components is a known gap; see section 6.</td>
+</tr>
+<tr class="even">
+<td>Coordinated vulnerability disclosure policy</td>
+<td>not_met</td>
+<td>No coordinated vulnerability disclosure policy is published. Neither
+repository contains a SECURITY.md, and no .well-known/security.txt is
+served. This is a genuine gap, not an unconfirmed one.</td>
+</tr>
+<tr class="odd">
+<td>Vulnerability reporting channel</td>
+<td>not_met</td>
+<td>There is no dedicated address for reporting vulnerabilities. The
+published privacy policy gives a general support address; the Google
+Play listing gives a personal mailbox. Neither is a security
+contact.</td>
+</tr>
+<tr class="even">
+<td>Publication of security advisories</td>
+<td>not_met</td>
+<td>No security advisories have been published, and there is no channel
+through which they would be. No vulnerability has been reported to the
+manufacturer to date.</td>
+</tr>
+<tr class="odd">
+<td>Update distribution</td>
+<td>met</td>
+<td>Updates are free of charge and are delivered through the platform
+update mechanisms, which verify package signatures. Users may disable
+automatic updates at the platform level. Security fixes are not
+separable from feature releases: a user receives them as part of the
+next application version.</td>
+</tr>
+</tbody>
+</table>
+<h1 id="cybersecurity-risk-assessment">3. Cybersecurity risk
+assessment</h1>
+<p><strong>Product:</strong> Sample Product iOS 1.0.15 / Android
+1.2.39<br />
+<strong>Assessment date:</strong> 2026-08-21<br />
+<strong>Method:</strong> STRIDE across trust boundaries; risk rating =
+likelihood x impact, each 1-5</p>
+<blockquote>
+<p>This section is drawn up pursuant to Article 13(2) and point 3 of
+Annex VII to Regulation (EU) 2024/2847.</p>
+</blockquote>
+<h2 id="limitations-of-the-assessment">3.1 Limitations of the
+assessment</h2>
+<ul>
+<li>no dynamic testing and no penetration testing</li>
+<li>no assessment of the backend’s own infrastructure, hosting or
+server-side data handling</li>
+<li>no assessment of the external processing services; they are treated
+as opaque recipients</li>
+<li>the assessment was performed by the manufacturer on its own product
+and has not been reviewed by a third party</li>
+</ul>
+<h2 id="system-description">3.2 System description</h2>
+<p>A household food inventory and expiry tracking product consisting of
+two mobile applications (iOS, Swift and SwiftUI; Android, Kotlin and
+Jetpack Compose) and the backend service at api.example.invalid that
+both require. The applications hold no primary data: inventory,
+medication courses and reminder schedules are resolved server-side.
+Receipt and voice processing are performed by external services called
+from the backend. Distribution is through the App Store and Google Play
+to consumers; there is no self-hosted deployment.</p>
+<h3 id="entry-points">Entry points</h3>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Ref</th>
+<th>Entry point</th>
+<th>Location</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>EP-1</td>
+<td>Mobile application UI (iOS)</td>
+<td><code>ios/App/App.swift, AppRouter.swift</code></td>
+</tr>
+<tr class="even">
+<td>EP-2</td>
+<td>Mobile application UI (Android)</td>
+<td><code>android/app/src/main/AndroidManifest.xml — exported launcher activity</code></td>
+</tr>
+<tr class="odd">
+<td>EP-3</td>
+<td>HTTPS API</td>
+<td><code>https://api.example.invalid/api/v1/</code></td>
+</tr>
+<tr class="even">
+<td>EP-4</td>
+<td>Android boot receiver (exported, BOOT_COMPLETED and
+MY_PACKAGE_REPLACED)</td>
+<td><code>reminders/BootReceiver.kt</code></td>
+</tr>
+<tr class="odd">
+<td>EP-5</td>
+<td>Camera, photo library, microphone and speech recognition</td>
+<td><code>ios/App/Info.plist usage descriptions; Android media permissions</code></td>
+</tr>
+<tr class="even">
+<td>EP-6</td>
+<td>Telegram, used for notification delivery and as an authentication
+channel</td>
+<td><code>https://example.invalid/privacy</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="assets">Assets</h3>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Ref</th>
+<th>Asset</th>
+<th>Properties</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A-1</td>
+<td>Receipt images and any other photograph the user submits</td>
+<td>C</td>
+<td>May contain payment card numbers, addresses or identity documents
+the product did not ask for</td>
+</tr>
+<tr class="even">
+<td>A-2</td>
+<td>Voice recordings</td>
+<td>C</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>A-3</td>
+<td>Medication course data</td>
+<td>C, I</td>
+<td>Health-adjacent personal data</td>
+</tr>
+<tr class="even">
+<td>A-4</td>
+<td>Authentication token (X-Mobile-Token)</td>
+<td>C</td>
+<td>Bearer-equivalent; possession grants account access</td>
+</tr>
+<tr class="odd">
+<td>A-5</td>
+<td>Account and household data — email, name, user and place
+identifiers, inventory</td>
+<td>C, I</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>A-6</td>
+<td>Signing identity and store credentials</td>
+<td>C, I</td>
+<td>Apple distribution certificate and App Store Connect key, held in CI
+secrets</td>
+</tr>
+<tr class="odd">
+<td>A-7</td>
+<td>Integrity of the released binary and the record of what it
+contains</td>
+<td>I</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>C — confidentiality, I — integrity, A — availability</p>
+<h3 id="trust-boundaries">Trust boundaries</h3>
+<ul>
+<li><strong>TB-1</strong> — User device to application</li>
+<li><strong>TB-2</strong> — Application to backend</li>
+<li><strong>TB-3</strong> — Backend to external AI processors</li>
+<li><strong>TB-4</strong> — Backend to Telegram</li>
+<li><strong>TB-5</strong> — Application and backend to Sentry</li>
+<li><strong>TB-6</strong> — Build and release pipeline to published
+artefact</li>
+<li><strong>TB-7</strong> — Manufacturer to the outside world</li>
+</ul>
+<h2 id="identified-risks">3.3 Identified risks</h2>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Ref</th>
+<th>Risk</th>
+<th>STRIDE</th>
+<th>Inherent</th>
+<th>Residual</th>
+<th>Treatment</th>
+<th>Requirements</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>R-01</td>
+<td>Unrelated sensitive documents forwarded to external processors
+through the receipt scanner</td>
+<td>information disclosure</td>
+<td>16 (critical)</td>
+<td>12 (high)</td>
+<td>mitigate</td>
+<td>EI-07, EI-05</td>
+</tr>
+<tr class="even">
+<td>R-03</td>
+<td>The composition of a released version is not recorded</td>
+<td>tampering, repudiation</td>
+<td>15 (critical)</td>
+<td>9 (medium)</td>
+<td>mitigate</td>
+<td>VH-01, EI-06, EI-01</td>
+</tr>
+<tr class="odd">
+<td>R-05</td>
+<td>A vulnerability report has nowhere to arrive</td>
+<td>repudiation</td>
+<td>12 (high)</td>
+<td>12 (high)</td>
+<td>accept</td>
+<td>VH-05, VH-06</td>
+</tr>
+<tr class="even">
+<td>R-07</td>
+<td>AGPL-3.0 component in a network-facing backend serving proprietary
+clients</td>
+<td>repudiation</td>
+<td>12 (high)</td>
+<td>12 (high)</td>
+<td>accept</td>
+<td>VH-01</td>
+</tr>
+<tr class="odd">
+<td>R-08</td>
+<td>No function survives loss of the backend or of a third-party
+processor</td>
+<td>denial of service</td>
+<td>12 (high)</td>
+<td>9 (medium)</td>
+<td>accept</td>
+<td>EI-08</td>
+</tr>
+<tr class="even">
+<td>R-16</td>
+<td>No security testing, so vulnerabilities are found by others or not
+at all</td>
+<td>information disclosure, elevation of privilege</td>
+<td>12 (high)</td>
+<td>12 (high)</td>
+<td>accept</td>
+<td>VH-03, EI-01</td>
+</tr>
+<tr class="odd">
+<td>R-04</td>
+<td>Build toolchain is not pinned</td>
+<td>tampering</td>
+<td>10 (high)</td>
+<td>10 (high)</td>
+<td>accept</td>
+<td>EI-06</td>
+</tr>
+<tr class="even">
+<td>R-11</td>
+<td>No one is designated to file an Article 14 report</td>
+<td>repudiation</td>
+<td>10 (high)</td>
+<td>10 (high)</td>
+<td>accept</td>
+<td>VH-02</td>
+</tr>
+<tr class="odd">
+<td>R-12</td>
+<td>Signing certificate export password held in plaintext in the release
+workflow</td>
+<td>spoofing, tampering</td>
+<td>10 (high)</td>
+<td>8 (medium)</td>
+<td>mitigate</td>
+<td>EI-04, EI-06</td>
+</tr>
+<tr class="even">
+<td>R-17</td>
+<td>The only update channel is controlled by two third parties</td>
+<td>denial of service</td>
+<td>10 (high)</td>
+<td>8 (medium)</td>
+<td>mitigate</td>
+<td>VH-07, EI-03</td>
+</tr>
+<tr class="odd">
+<td>R-06</td>
+<td>Users cannot learn that an update contained a security fix</td>
+<td>repudiation</td>
+<td>9 (medium)</td>
+<td>6 (medium)</td>
+<td>mitigate</td>
+<td>VH-04, VH-08</td>
+</tr>
+<tr class="even">
+<td>R-14</td>
+<td>Security-relevant events are neither recorded nor surfaced</td>
+<td>repudiation</td>
+<td>9 (medium)</td>
+<td>9 (medium)</td>
+<td>accept</td>
+<td>EI-12, EI-04</td>
+</tr>
+<tr class="odd">
+<td>R-15</td>
+<td>Data at the external processors is outside both the deletion and the
+export path</td>
+<td>information disclosure</td>
+<td>9 (medium)</td>
+<td>4 (low)</td>
+<td>mitigate</td>
+<td>EI-13</td>
+</tr>
+<tr class="even">
+<td>R-02</td>
+<td>Authentication token stored unencrypted on the device</td>
+<td>information disclosure, spoofing</td>
+<td>8 (medium)</td>
+<td>8 (medium)</td>
+<td>mitigate</td>
+<td>EI-05, EI-04, EI-11</td>
+</tr>
+<tr class="odd">
+<td>R-09</td>
+<td>Release build without shrinking or obfuscation</td>
+<td>information disclosure</td>
+<td>8 (medium)</td>
+<td>8 (medium)</td>
+<td>accept</td>
+<td>EI-11, EI-10</td>
+</tr>
+<tr class="even">
+<td>R-13</td>
+<td>Public contact for the product is a personal mailbox</td>
+<td>repudiation</td>
+<td>6 (medium)</td>
+<td>6 (medium)</td>
+<td>accept</td>
+<td>VH-06</td>
+</tr>
+<tr class="odd">
+<td>R-18</td>
+<td>Secure defaults are inherited from the platform rather than asserted
+by the product</td>
+<td>tampering, information disclosure</td>
+<td>6 (medium)</td>
+<td>4 (low)</td>
+<td>mitigate</td>
+<td>EI-02, EI-09</td>
+</tr>
+</tbody>
+</table>
+<h2 id="risk-detail">3.4 Risk detail</h2>
+<h3 id="r-01-unrelated-sensitive-documents-forwarded-to-external-processors-through-the-receipt-scanner">R-01
+— Unrelated sensitive documents forwarded to external processors through
+the receipt scanner</h3>
+<p>The receipt scanner accepts any photograph and forwards it for
+processing. A user photographing a bank statement, an identity document
+or a payment card transmits that image to Google Gemini or OpenAI. The
+product performs no inspection, no redaction and no refusal. This is the
+intended flow working exactly as designed on unintended input.</p>
+<ul>
+<li><strong>Trust boundary:</strong> TB-3</li>
+<li><strong>Affected assets:</strong> A-1</li>
+<li><strong>Inherent rating:</strong> likelihood 4 x impact 4 =
+<strong>16</strong> (critical)</li>
+<li><strong>Residual rating:</strong> likelihood 4 x impact 3 =
+<strong>12</strong> (high)</li>
+<li><strong>Treatment:</strong> mitigate</li>
+</ul>
+<p><strong>Existing controls:</strong></p>
+<ul>
+<li>The processing is disclosed in the published privacy policy</li>
+<li>Transmission is over HTTPS</li>
+<li>Both providers are used on paid tiers, where per their published
+terms the data is not used to train models by default and neither opt-in
+has been taken</li>
+<li>Retention at the providers is bounded rather than indefinite: up to
+30 days at OpenAI, a default maximum of 55 days at Google</li>
+</ul>
+<p><strong>Evidence in code:</strong></p>
+<ul>
+<li><code>https://example.invalid/privacy</code></li>
+<li><code>services/ai/config.py — billed model identifiers</code></li>
+<li><code>product.yaml section_2.external_processing_terms</code></li>
+</ul>
+<p><strong>Rationale:</strong> The likelihood is unchanged: nothing
+stops a user photographing the wrong document, because the product does
+not look at what it is sending. What the paid tiers change is the
+consequence — the image is not absorbed into a training set and it ages
+out of the providers’ logs within weeks. That is a genuine reduction in
+impact and it is why the residual rating moves, but the requirement in
+EI-07 is about not sending the data in the first place, and it remains
+unmet. Cheapest available further reduction, in order: set the Google
+log window to 7 days instead of the default 55, which is a configuration
+change; then a warning at the point of capture; then on-device detection
+of card-number patterns before upload.</p>
+<p><strong>Covers requirements:</strong> EI-07, EI-05</p>
+<h3 id="r-03-the-composition-of-a-released-version-is-not-recorded">R-03
+— The composition of a released version is not recorded</h3>
+<p>The Swift package lock file is not committed. Package versions are
+resolved afresh on each build machine, so two builds of the same version
+number may contain different dependency versions. When an advisory lands
+on a dependency, the manufacturer cannot state from its own records
+whether a released version is affected.</p>
+<ul>
+<li><strong>Trust boundary:</strong> TB-6</li>
+<li><strong>Affected assets:</strong> A-7</li>
+<li><strong>Inherent rating:</strong> likelihood 5 x impact 3 =
+<strong>15</strong> (critical)</li>
+<li><strong>Residual rating:</strong> likelihood 3 x impact 3 =
+<strong>9</strong> (medium)</li>
+<li><strong>Treatment:</strong> mitigate</li>
+</ul>
+<p><strong>Existing controls:</strong></p>
+<ul>
+<li>The release pipeline logs the resolved package graph, so composition
+is recoverable while the log exists</li>
+</ul>
+<p><strong>Evidence in code:</strong></p>
+<ul>
+<li><code>.github/workflows/ios_deploy.yml — step &#39;Resolve Swift Package dependencies&#39;</code></li>
+</ul>
+<p><strong>Rationale:</strong> Recovery from CI logs worked for 1.0.15
+and is recorded in the SBOM, but logs expire. Planned: commit the lock
+file and publish it as a build artefact on every release.</p>
+<p><strong>Covers requirements:</strong> VH-01, EI-06, EI-01</p>
+<h3 id="r-05-a-vulnerability-report-has-nowhere-to-arrive">R-05 — A
+vulnerability report has nowhere to arrive</h3>
+<p>No coordinated disclosure policy is published, no SECURITY.md exists
+in either repository and no security contact address is served. A
+researcher who finds a flaw either writes to a general support mailbox,
+publishes without contact, or does nothing. The manufacturer would learn
+of the flaw last.</p>
+<ul>
+<li><strong>Trust boundary:</strong> TB-7</li>
+<li><strong>Affected assets:</strong> A-5, A-7</li>
+<li><strong>Inherent rating:</strong> likelihood 3 x impact 4 =
+<strong>12</strong> (high)</li>
+<li><strong>Residual rating:</strong> likelihood 3 x impact 4 =
+<strong>12</strong> (high)</li>
+<li><strong>Treatment:</strong> accept</li>
+</ul>
+<p><strong>Rationale:</strong> Planned and cheap: a SECURITY.md in both
+repositories, a .well-known/security.txt on example.invalid, and one
+stable address that outlives any individual.</p>
+<p><strong>Covers requirements:</strong> VH-05, VH-06</p>
+<h3 id="r-07-agpl-3.0-component-in-a-network-facing-backend-serving-proprietary-clients">R-07
+— AGPL-3.0 component in a network-facing backend serving proprietary
+clients</h3>
+<p>pymupdf 1.27.2.3 is a direct dependency of the backend and is
+licensed AGPL-3.0-or-later. The network clause of that licence is
+engaged by exactly this deployment shape: users interact with the
+software over a network. The licence consequences for the proprietary
+applications and the backend have not been assessed.</p>
+<ul>
+<li><strong>Trust boundary:</strong> TB-2</li>
+<li><strong>Affected assets:</strong> A-7</li>
+<li><strong>Inherent rating:</strong> likelihood 4 x impact 3 =
+<strong>12</strong> (high)</li>
+<li><strong>Residual rating:</strong> likelihood 4 x impact 3 =
+<strong>12</strong> (high)</li>
+<li><strong>Treatment:</strong> accept</li>
+</ul>
+<p><strong>Evidence in code:</strong></p>
+<ul>
+<li><code>requirements.txt — pymupdf==1.27.2.3</code></li>
+<li><code>services/receipts/pdf_render.py — the only usage site</code></li>
+</ul>
+<p><strong>Rationale:</strong> Replacement with a permissively licensed
+renderer is planned; the usage is confined to one module of about sixty
+lines with three call sites, so the change is contained. Recorded here
+because a bill of materials that lists the component without naming the
+consequence would be a bill of materials that hides the finding.</p>
+<p><strong>Covers requirements:</strong> VH-01</p>
+<h3 id="r-08-no-function-survives-loss-of-the-backend-or-of-a-third-party-processor">R-08
+— No function survives loss of the backend or of a third-party
+processor</h3>
+<p>The applications store no primary data locally. If the backend is
+unavailable the product shows a login screen; if Gemini or OpenAI is
+unavailable, receipt and voice capture fail. Medication reminders are
+scheduled from a server-resolved queue, so an outage spanning the daily
+refresh silently stops reminders the user is relying on.</p>
+<ul>
+<li><strong>Trust boundary:</strong> TB-3</li>
+<li><strong>Affected assets:</strong> A-5, A-3</li>
+<li><strong>Inherent rating:</strong> likelihood 3 x impact 4 =
+<strong>12</strong> (high)</li>
+<li><strong>Residual rating:</strong> likelihood 3 x impact 3 =
+<strong>9</strong> (medium)</li>
+<li><strong>Treatment:</strong> accept</li>
+</ul>
+<p><strong>Existing controls:</strong></p>
+<ul>
+<li>Android re-arms alarms after reboot and re-schedules from a cached
+daily queue</li>
+</ul>
+<p><strong>Evidence in code:</strong></p>
+<ul>
+<li><code>reminders/ReminderScheduler.kt, reminders/BootReceiver.kt</code></li>
+</ul>
+<p><strong>Rationale:</strong> No offline mode, no degraded read-only
+view and no user-visible signal that reminders have stopped. The last
+point is the one that matters most, because a silent failure of a
+medication reminder is worse than a visible one.</p>
+<p><strong>Covers requirements:</strong> EI-08</p>
+<h3 id="r-16-no-security-testing-so-vulnerabilities-are-found-by-others-or-not-at-all">R-16
+— No security testing, so vulnerabilities are found by others or not at
+all</h3>
+<p>No penetration test, no external assessment and no recurring security
+review has been performed on either client or the backend. Functional
+tests and linters do not look for security defects. A vulnerability in
+the product would therefore be discovered by a user, a researcher or an
+attacker before it was discovered by the manufacturer — and, per R-05,
+the first two have no way to report it.</p>
+<ul>
+<li><strong>Trust boundary:</strong> TB-2</li>
+<li><strong>Affected assets:</strong> A-5, A-4, A-1</li>
+<li><strong>Inherent rating:</strong> likelihood 3 x impact 4 =
+<strong>12</strong> (high)</li>
+<li><strong>Residual rating:</strong> likelihood 3 x impact 4 =
+<strong>12</strong> (high)</li>
+<li><strong>Treatment:</strong> accept</li>
+</ul>
+<p><strong>Existing controls:</strong></p>
+<ul>
+<li>Component versions are matched against the OSV database, which
+covers known defects in dependencies but nothing in the product’s own
+code</li>
+<li>Android lint runs in the release build</li>
+</ul>
+<p><strong>Evidence in code:</strong></p>
+<ul>
+<li><code>vuln_scan.py against sbom.cdx.json</code></li>
+</ul>
+<p><strong>Rationale:</strong> Accepted for now and named as the largest
+single blind spot in this assessment. Dependency scanning covers
+borrowed code; nothing covers the code written here. A first external
+assessment is the highest-value item on the roadmap.</p>
+<p><strong>Covers requirements:</strong> VH-03, EI-01</p>
+<h3 id="r-04-build-toolchain-is-not-pinned">R-04 — Build toolchain is
+not pinned</h3>
+<p>Both release workflows request the latest stable Xcode rather than a
+fixed version. Two builds two days apart in August 2026 used Xcode 16.2
+and Xcode 26.6. The production process described in the technical file
+therefore does not describe a reproducible build, and a compiler change
+between releases is invisible in the release record.</p>
+<ul>
+<li><strong>Trust boundary:</strong> TB-6</li>
+<li><strong>Affected assets:</strong> A-7</li>
+<li><strong>Inherent rating:</strong> likelihood 5 x impact 2 =
+<strong>10</strong> (high)</li>
+<li><strong>Residual rating:</strong> likelihood 5 x impact 2 =
+<strong>10</strong> (high)</li>
+<li><strong>Treatment:</strong> accept</li>
+</ul>
+<p><strong>Rationale:</strong> Planned: pin an explicit Xcode version in
+both workflows and raise it by deliberate commit.</p>
+<p><strong>Covers requirements:</strong> EI-06</p>
+<h3 id="r-11-no-one-is-designated-to-file-an-article-14-report">R-11 —
+No one is designated to file an Article 14 report</h3>
+<p>Article 14 has applied since 11 September 2026 and allows twenty-four
+hours for an early warning. No filer and no deputy are designated, the
+relevant CSIRT has not been identified, no account exists on the Single
+Reporting Platform, and there is no recorded criterion or owner for
+deciding that exploitation is real. The clock would start retroactively
+with nothing to show when.</p>
+<ul>
+<li><strong>Trust boundary:</strong> TB-7</li>
+<li><strong>Affected assets:</strong> A-5</li>
+<li><strong>Inherent rating:</strong> likelihood 2 x impact 5 =
+<strong>10</strong> (high)</li>
+<li><strong>Residual rating:</strong> likelihood 2 x impact 5 =
+<strong>10</strong> (high)</li>
+<li><strong>Treatment:</strong> accept</li>
+</ul>
+<p><strong>Evidence in code:</strong></p>
+<ul>
+<li><code>reporting.yaml — the runbook exists but its fields are unfilled</code></li>
+</ul>
+<p><strong>Rationale:</strong> Low likelihood, severe consequence, and
+cheap to fix: naming two people and identifying one CSIRT closes most of
+it. Nothing here requires engineering work.</p>
+<p><strong>Covers requirements:</strong> VH-02</p>
+<h3 id="r-12-signing-certificate-export-password-held-in-plaintext-in-the-release-workflow">R-12
+— Signing certificate export password held in plaintext in the release
+workflow</h3>
+<p>The iOS release workflow imports the distribution certificate using a
+password written literally into the workflow file. The certificate
+itself comes from a repository secret, so the password alone grants
+nothing, but it removes the second factor: anyone obtaining the
+encrypted certificate also has what unlocks it.</p>
+<ul>
+<li><strong>Trust boundary:</strong> TB-6</li>
+<li><strong>Affected assets:</strong> A-6</li>
+<li><strong>Inherent rating:</strong> likelihood 2 x impact 5 =
+<strong>10</strong> (high)</li>
+<li><strong>Residual rating:</strong> likelihood 2 x impact 4 =
+<strong>8</strong> (medium)</li>
+<li><strong>Treatment:</strong> mitigate</li>
+</ul>
+<p><strong>Existing controls:</strong></p>
+<ul>
+<li>The certificate is stored as a repository secret, not in the
+repository</li>
+<li>The keychain created during the build is temporary and scoped to the
+runner</li>
+</ul>
+<p><strong>Evidence in code:</strong></p>
+<ul>
+<li><code>.github/workflows/ios_deploy.yml — step &#39;Install Apple Certificate&#39;</code></li>
+</ul>
+<p><strong>Rationale:</strong> Planned: move the export password into a
+repository secret. One line.</p>
+<p><strong>Covers requirements:</strong> EI-04, EI-06</p>
+<h3 id="r-17-the-only-update-channel-is-controlled-by-two-third-parties">R-17
+— The only update channel is controlled by two third parties</h3>
+<p>Security updates reach users solely through the App Store and Google
+Play. If either listing is suspended — for a policy breach, an expired
+agreement, a broken privacy-policy link, or a developer-account problem
+— the manufacturer loses the ability to ship a security fix to that
+platform’s users entirely, and has no side channel to reach them.
+Suspension does not require any fault in the software itself: a policy
+change, an expired developer agreement or an account issue is
+enough.</p>
+<ul>
+<li><strong>Trust boundary:</strong> TB-7</li>
+<li><strong>Affected assets:</strong> A-7, A-5</li>
+<li><strong>Inherent rating:</strong> likelihood 2 x impact 5 =
+<strong>10</strong> (high)</li>
+<li><strong>Residual rating:</strong> likelihood 2 x impact 4 =
+<strong>8</strong> (medium)</li>
+<li><strong>Treatment:</strong> mitigate</li>
+</ul>
+<p><strong>Existing controls:</strong></p>
+<ul>
+<li>Both platforms verify package signatures and support automatic
+update, so a shipped fix reaches users quickly</li>
+<li>Backend fixes reach all users without any store involvement</li>
+</ul>
+<p><strong>Evidence in code:</strong></p>
+<ul>
+<li><code>.github/workflows/ios_deploy.yml</code></li>
+</ul>
+<p><strong>Rationale:</strong> The backend path gives partial coverage:
+a server-side mitigation can be deployed without the stores. Client-side
+fixes have no alternative route. Keeping both listings in good standing
+is therefore a security control, not only a commercial matter.</p>
+<p><strong>Covers requirements:</strong> VH-07, EI-03</p>
+<h3 id="r-06-users-cannot-learn-that-an-update-contained-a-security-fix">R-06
+— Users cannot learn that an update contained a security fix</h3>
+<p>No advisory accompanies any release. A user cannot tell whether a
+given version fixed something that affects them, and therefore cannot
+judge the urgency of updating or take any compensating action.</p>
+<ul>
+<li><strong>Trust boundary:</strong> TB-7</li>
+<li><strong>Affected assets:</strong> A-5</li>
+<li><strong>Inherent rating:</strong> likelihood 3 x impact 3 =
+<strong>9</strong> (medium)</li>
+<li><strong>Residual rating:</strong> likelihood 3 x impact 2 =
+<strong>6</strong> (medium)</li>
+<li><strong>Treatment:</strong> mitigate</li>
+</ul>
+<p><strong>Existing controls:</strong></p>
+<ul>
+<li>Platform automatic update, where the user has left it enabled,
+delivers fixes without the user needing to decide</li>
+</ul>
+<p><strong>Rationale:</strong> Automatic update reduces impact but does
+not satisfy the disclosure requirement, which is separate.</p>
+<p><strong>Covers requirements:</strong> VH-04, VH-08</p>
+<h3 id="r-14-security-relevant-events-are-neither-recorded-nor-surfaced">R-14
+— Security-relevant events are neither recorded nor surfaced</h3>
+<p>Authentication failures, sign-in from a new device, household
+membership changes and data access are not recorded as security events
+and are never shown to the user. An account accessed with a stolen token
+leaves no trace the user could see, and the manufacturer has no record
+from which to reconstruct what happened after an incident.</p>
+<ul>
+<li><strong>Trust boundary:</strong> TB-2</li>
+<li><strong>Affected assets:</strong> A-5, A-4</li>
+<li><strong>Inherent rating:</strong> likelihood 3 x impact 3 =
+<strong>9</strong> (medium)</li>
+<li><strong>Residual rating:</strong> likelihood 3 x impact 3 =
+<strong>9</strong> (medium)</li>
+<li><strong>Treatment:</strong> accept</li>
+</ul>
+<p><strong>Existing controls:</strong></p>
+<ul>
+<li>Sentry receives runtime errors, which is unrelated to security event
+recording but would capture some anomalous failures</li>
+</ul>
+<p><strong>Rationale:</strong> This is the requirement with the largest
+gap between what exists and what Annex I asks for, and closing it is
+backend work rather than a configuration change.</p>
+<p><strong>Covers requirements:</strong> EI-12, EI-04</p>
+<h3 id="r-15-data-at-the-external-processors-is-outside-both-the-deletion-and-the-export-path">R-15
+— Data at the external processors is outside both the deletion and the
+export path</h3>
+<p>Deletion and export are both implemented for data the manufacturer
+holds: an export endpoint returns the caller’s own data in
+machine-readable and human-readable form, and an account deletion
+endpoint exists which the manufacturer attests has been verified end to
+end. Two things remain open. The deletion verification is the
+manufacturer’s own and has not been audited by anyone else. And data
+already transmitted to Google Gemini, OpenAI or Sentry sits outside both
+paths: it is neither exported to the user nor removed when the account
+is deleted. That tail is bounded rather than open-ended — the providers’
+published retention windows are 30 and 55 days — but during those weeks
+a user who has deleted their account still has a copy of their receipt
+sitting somewhere they were never told about in those terms.</p>
+<ul>
+<li><strong>Trust boundary:</strong> TB-2</li>
+<li><strong>Affected assets:</strong> A-1, A-2, A-3, A-5</li>
+<li><strong>Inherent rating:</strong> likelihood 3 x impact 3 =
+<strong>9</strong> (medium)</li>
+<li><strong>Residual rating:</strong> likelihood 2 x impact 2 =
+<strong>4</strong> (low)</li>
+<li><strong>Treatment:</strong> mitigate</li>
+</ul>
+<p><strong>Existing controls:</strong></p>
+<ul>
+<li>GET /profile/export returns the caller’s own data as JSON and HTML,
+scoped to the user and excluding credentials and other users’ rows</li>
+<li>DELETE /profile exists and is reachable from the client</li>
+<li>The manufacturer attests that end-to-end deletion has been verified
+and the verification recorded</li>
+</ul>
+<p><strong>Evidence in code:</strong></p>
+<ul>
+<li><code>api/routers/profile.py:693</code></li>
+<li><code>data/api/MedicineApiService.kt</code></li>
+<li><code>annex_i.yaml EI-13 — customer attestation, 21 August 2026, unverified</code></li>
+</ul>
+<p><strong>Rationale:</strong> What the manufacturer holds is covered,
+and the export path was verified in code rather than taken on trust. The
+residual risk is now almost entirely about the external processors: a
+user who deletes their account has no assurance about the copy of their
+receipt image that Gemini or OpenAI received. Closing it does not
+require a negotiation: the retention windows are published, the Google
+one is configurable down to 7 days, and stating both in the privacy
+policy would turn an unknown into a disclosed limit.</p>
+<p><strong>Covers requirements:</strong> EI-13</p>
+<h3 id="r-02-authentication-token-stored-unencrypted-on-the-device">R-02
+— Authentication token stored unencrypted on the device</h3>
+<p>The token is written to a DataStore preferences file in plaintext.
+Anyone able to read the application’s sandbox — a rooted or jailbroken
+device, a forensic image, a malicious application exploiting a platform
+flaw — obtains a credential that grants full account access, and there
+is no server-side signal that it was taken.</p>
+<ul>
+<li><strong>Trust boundary:</strong> TB-1</li>
+<li><strong>Affected assets:</strong> A-4, A-5</li>
+<li><strong>Inherent rating:</strong> likelihood 2 x impact 4 =
+<strong>8</strong> (medium)</li>
+<li><strong>Residual rating:</strong> likelihood 2 x impact 4 =
+<strong>8</strong> (medium)</li>
+<li><strong>Treatment:</strong> mitigate</li>
+</ul>
+<p><strong>Existing controls:</strong></p>
+<ul>
+<li>Platform application sandbox</li>
+<li>allowBackup=false prevents extraction through platform backup</li>
+<li>The token is bound to the API host by the HTTP interceptor, so it
+cannot leak on a redirect</li>
+</ul>
+<p><strong>Evidence in code:</strong></p>
+<ul>
+<li><code>android/app/src/main/AndroidManifest.xml</code></li>
+<li><code>core-design/src/main/java/com/example/coredesign/auth/FamilyTokenStore.kt</code></li>
+<li><code>data/api/ApiClient.kt</code></li>
+</ul>
+<p><strong>Rationale:</strong> The sandbox and the backup setting cover
+the ordinary case. They do not cover a compromised device. The platform
+keystore is not used, and no server-side token binding or revocation on
+anomaly exists.</p>
+<p><strong>Covers requirements:</strong> EI-05, EI-04, EI-11</p>
+<h3 id="r-09-release-build-without-shrinking-or-obfuscation">R-09 —
+Release build without shrinking or obfuscation</h3>
+<p>The Android release build sets isMinifyEnabled = false. Class names,
+endpoint paths, request models and the token header name are readable
+directly from the package, which lowers the effort required to explore
+the API surface.</p>
+<ul>
+<li><strong>Trust boundary:</strong> TB-1</li>
+<li><strong>Affected assets:</strong> A-7, A-5</li>
+<li><strong>Inherent rating:</strong> likelihood 4 x impact 2 =
+<strong>8</strong> (medium)</li>
+<li><strong>Residual rating:</strong> likelihood 4 x impact 2 =
+<strong>8</strong> (medium)</li>
+<li><strong>Treatment:</strong> accept</li>
+</ul>
+<p><strong>Existing controls:</strong></p>
+<ul>
+<li>The API enforces authorisation server-side; readability of the
+client does not confer access</li>
+</ul>
+<p><strong>Evidence in code:</strong></p>
+<ul>
+<li><code>android/app/build.gradle.kts</code></li>
+</ul>
+<p><strong>Rationale:</strong> Accepted with justification: obfuscation
+is not a security control, and treating it as one would be security
+through obscurity. It is recorded because it affects the effort side of
+the equation, not because its absence is a defect.</p>
+<p><strong>Covers requirements:</strong> EI-11, EI-10</p>
+<h3 id="r-13-public-contact-for-the-product-is-a-personal-mailbox">R-13
+— Public contact for the product is a personal mailbox</h3>
+<p>The contact published in the store listing is an individual’s
+personal address rather than a role address belonging to the
+manufacturer. It does not survive a change of person, is not monitored
+as a security channel, and does not satisfy the requirement for a
+contact point at which the manufacturer can be reached about
+vulnerabilities.</p>
+<ul>
+<li><strong>Trust boundary:</strong> TB-7</li>
+<li><strong>Affected assets:</strong> A-5</li>
+<li><strong>Inherent rating:</strong> likelihood 3 x impact 2 =
+<strong>6</strong> (medium)</li>
+<li><strong>Residual rating:</strong> likelihood 3 x impact 2 =
+<strong>6</strong> (medium)</li>
+<li><strong>Treatment:</strong> accept</li>
+</ul>
+<p><strong>Rationale:</strong> Planned together with R-05: one role
+address, published in both stores, in the policy and in SECURITY.md.</p>
+<p><strong>Covers requirements:</strong> VH-06</p>
+<h3 id="r-18-secure-defaults-are-inherited-from-the-platform-rather-than-asserted-by-the-product">R-18
+— Secure defaults are inherited from the platform rather than asserted
+by the product</h3>
+<p>Several protections in this assessment are platform behaviour, not
+product code: user certificate authorities are excluded because the
+Android target SDK is 35, transport is protected because the platform
+enforces it, and the application sandbox isolates the token store. A
+change of target SDK, a platform policy change, or running on an older
+or modified system weakens these without any change to the product, and
+nothing in the product would detect or report it.</p>
+<ul>
+<li><strong>Trust boundary:</strong> TB-1</li>
+<li><strong>Affected assets:</strong> A-4, A-5</li>
+<li><strong>Inherent rating:</strong> likelihood 2 x impact 3 =
+<strong>6</strong> (medium)</li>
+<li><strong>Residual rating:</strong> likelihood 2 x impact 2 =
+<strong>4</strong> (low)</li>
+<li><strong>Treatment:</strong> mitigate</li>
+</ul>
+<p><strong>Existing controls:</strong></p>
+<ul>
+<li>Target SDK 35 and minimum SDK 26 on Android; deployment target iOS
+16 on the client</li>
+<li>allowBackup=false is an explicit product setting rather than an
+inherited default</li>
+<li>The API base URL is HTTPS in code, independent of platform
+policy</li>
+</ul>
+<p><strong>Evidence in code:</strong></p>
+<ul>
+<li><code>android/app/build.gradle.kts</code></li>
+<li><code>android/app/src/main/AndroidManifest.xml</code></li>
+<li><code>data/api/ApiClient.kt</code></li>
+</ul>
+<p><strong>Rationale:</strong> Recorded so the technical file does not
+present platform behaviour as product design. No certificate pinning and
+no runtime integrity check is implemented; the mitigation is that the
+few settings that are the product’s own are set explicitly rather than
+left to default.</p>
+<p><strong>Covers requirements:</strong> EI-02, EI-09</p>
+<h2 id="annex-i-requirement-coverage">3.5 Annex I requirement
+coverage</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Requirement</th>
+<th>Title</th>
+<th>Risks</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>EI-01</td>
+<td>No known exploitable vulnerabilities</td>
+<td>R-03, R-16</td>
+</tr>
+<tr class="even">
+<td>EI-02</td>
+<td>Secure by default configuration</td>
+<td>R-18</td>
+</tr>
+<tr class="odd">
+<td>EI-03</td>
+<td>Vulnerabilities addressed through security updates</td>
+<td>R-17</td>
+</tr>
+<tr class="even">
+<td>EI-04</td>
+<td>Protection from unauthorised access</td>
+<td>R-02, R-12, R-14</td>
+</tr>
+<tr class="odd">
+<td>EI-05</td>
+<td>Confidentiality of data</td>
+<td>R-01, R-02</td>
+</tr>
+<tr class="even">
+<td>EI-06</td>
+<td>Integrity of data</td>
+<td>R-03, R-04, R-12</td>
+</tr>
+<tr class="odd">
+<td>EI-07</td>
+<td>Data minimisation</td>
+<td>R-01</td>
+</tr>
+<tr class="even">
+<td>EI-08</td>
+<td>Availability of essential functions</td>
+<td>R-08</td>
+</tr>
+<tr class="odd">
+<td>EI-09</td>
+<td>No adverse effect on availability of other devices or networks</td>
+<td>R-18</td>
+</tr>
+<tr class="even">
+<td>EI-10</td>
+<td>Limitation of attack surface</td>
+<td>R-09</td>
+</tr>
+<tr class="odd">
+<td>EI-11</td>
+<td>Mitigation of the impact of exploitation</td>
+<td>R-02, R-09</td>
+</tr>
+<tr class="even">
+<td>EI-12</td>
+<td>Recording and monitoring of security-relevant activity</td>
+<td>R-14</td>
+</tr>
+<tr class="odd">
+<td>EI-13</td>
+<td>Data deletion and portability</td>
+<td>R-15</td>
+</tr>
+<tr class="even">
+<td>VH-01</td>
+<td>Identification of components and the SBOM</td>
+<td>R-03, R-07</td>
+</tr>
+<tr class="odd">
+<td>VH-02</td>
+<td>Addressing vulnerabilities without delay</td>
+<td>R-11</td>
+</tr>
+<tr class="even">
+<td>VH-03</td>
+<td>Regular security testing and review</td>
+<td>R-16</td>
+</tr>
+<tr class="odd">
+<td>VH-04</td>
+<td>Public disclosure of fixed vulnerabilities</td>
+<td>R-06</td>
+</tr>
+<tr class="even">
+<td>VH-05</td>
+<td>Coordinated vulnerability disclosure policy</td>
+<td>R-05</td>
+</tr>
+<tr class="odd">
+<td>VH-06</td>
+<td>Channel for receiving vulnerability reports</td>
+<td>R-05, R-13</td>
+</tr>
+<tr class="even">
+<td>VH-07</td>
+<td>Secure distribution of updates</td>
+<td>R-17</td>
+</tr>
+<tr class="odd">
+<td>VH-08</td>
+<td>Timely, free-of-charge updates with a security advisory</td>
+<td>R-06</td>
+</tr>
+</tbody>
+</table>
+<h1 id="support-period">4. Support period</h1>
+<p><strong>Support period:</strong> 5 years<br />
+<strong>End date:</strong> 2031-07-01<br />
+<strong>Availability of issued updates:</strong> no less than 5
+years</p>
+<h2 id="rationale">4.1 Rationale</h2>
+<p>Five years from the date the product was first placed on the market,
+1 July 2026. The Regulation sets five years as the floor unless the
+expected product lifetime is shorter; the manufacturer does not consider
+it shorter. A household inventory application is used for as long as the
+household keeps using it, and no shorter service life is claimed. The
+binding practical constraint is the mobile platform, not the product:
+the iOS client targets iOS 16 and above and the Android client API 26
+and above, and both platform vendors withdraw support for older releases
+on their own schedule. The manufacturer commits to the five-year period
+for the product as released; users running an operating system version
+that has itself left support may be unable to receive updates for
+reasons outside the manufacturer’s control, and this is stated in the
+user information.</p>
+<h2 id="factors-considered-article-138">4.2 Factors considered (Article
+13(8))</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Factor</th>
+<th>Assessment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>The statutory floor</td>
+<td>Article 13(8) sets five years unless the expected product lifetime
+is shorter. The manufacturer does not consider it shorter and claims no
+shorter service life.</td>
+</tr>
+<tr class="even">
+<td>Mobile platform support</td>
+<td>The binding practical constraint. The clients target iOS 16 and API
+26 upward; both platform vendors withdraw support for older releases on
+their own schedule, which the manufacturer does not control.</td>
+</tr>
+<tr class="odd">
+<td>Runtime and framework support</td>
+<td>Swift, Kotlin and Python major versions, and the Compose and SwiftUI
+framework generations in use, each have their own support horizon
+shorter than five years.</td>
+</tr>
+<tr class="even">
+<td>Dependence on a manufacturer-operated backend</td>
+<td>The applications do not function without it, so the support
+commitment is also a commitment to keep a service running for five
+years, not only to ship patches.</td>
+</tr>
+<tr class="odd">
+<td>Dependence on third-party processors</td>
+<td>Two core features depend on Google Gemini and OpenAI. Their
+availability, pricing and terms are outside the manufacturer’s control
+for the whole period.</td>
+</tr>
+<tr class="even">
+<td>Commercial expectation</td>
+<td>The product is sold with in-app purchases including subscription
+tiers, which creates a user expectation of continued service independent
+of the Regulation.</td>
+</tr>
+<tr class="odd">
+<td>Size of the manufacturer</td>
+<td>A sole proprietorship. A five-year commitment is a real constraint
+rather than a formality, and is stated deliberately rather than by
+default.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="end-of-support-notification">4.3 End-of-support
+notification</h2>
+<p>&lt;to be completed — the product does not currently notify users
+when support ends, and no mechanism to do so exists. The support period
+is stated in the user information but is not surfaced in the
+applications themselves.&gt;</p>
+<h1 id="applied-standards-and-specifications">5. Applied standards and
+specifications</h1>
+<h2 id="harmonised-standards">5.1 Harmonised standards</h2>
+<p>None applied.</p>
+<p>None. As at August 2026 there is no harmonised standard supporting
+Regulation (EU) 2024/2847 cited in the Official Journal. Standardisation
+request M/606 was accepted by CEN, CENELEC and ETSI on 3 April 2025 and
+the work is ongoing. The presumption of conformity is therefore
+unavailable, and conformity is substantiated directly through the risk
+assessment in section 3 and the evidence recorded against each essential
+requirement.</p>
+<h2 id="other-means-applied">5.2 Other means applied</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Means</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>STRIDE</td>
+<td>A threat identification method, applied across the trust boundaries
+in section 3.</td>
+</tr>
+<tr class="even">
+<td>Resolved-build bill of materials</td>
+<td>Components enumerated from resolved build output for all three parts
+of the product rather than from manifests, and matched against the OSV
+vulnerability database.</td>
+</tr>
+<tr class="odd">
+<td>Integrity checks on the evidence itself</td>
+<td>A requirement cannot be recorded as met without attached evidence, a
+risk cannot be shown as reduced without a named control, and the
+document does not build if the data contradicts itself.</td>
+</tr>
+</tbody>
+</table>
+<h1 id="test-reports">6. Test reports</h1>
+<p>No penetration test and no external security assessment has been
+performed on this product. No third party has reviewed this technical
+file. What follows is the manufacturer’s own testing, and the gaps are
+listed in full rather than summarised.</p>
+<h2 id="automated-tests">6.1 Automated tests</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Suite</th>
+<th>Files</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>pytest (backend)</td>
+<td>None</td>
+<td>Functional test suite for the Python backend, with coverage
+measurement. Not security-specific.</td>
+</tr>
+<tr class="even">
+<td>iOS compile check</td>
+<td>None</td>
+<td>An unsigned simulator build run on demand in continuous integration.
+There is no automated test suite for the iOS client.</td>
+</tr>
+<tr class="odd">
+<td>Android</td>
+<td>0</td>
+<td>No automated test suite exists for the Android client.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="tests-mapped-to-essential-requirements">6.2 Tests mapped to
+essential requirements</h2>
+<p>The following were verified by direct inspection of the code and the
+build output during preparation of this file, on 20 August 2026. They
+are inspections, not executed tests, and are recorded as such.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Test suite</th>
+<th>Requirements</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Authentication token attached only to the API host —
+data/api/ApiClient.kt:19</td>
+<td>EI-04, EI-05</td>
+</tr>
+<tr class="even">
+<td>HTTP request logging compiled into debug builds only, headers
+excluded — data/api/ApiClient.kt:35</td>
+<td>EI-05</td>
+</tr>
+<tr class="odd">
+<td>Platform backup of application data disabled — AndroidManifest.xml,
+allowBackup=false</td>
+<td>EI-02, EI-05</td>
+</tr>
+<tr class="even">
+<td>Pending intents immutable — reminders/ReminderNotifier.kt</td>
+<td>EI-06</td>
+</tr>
+<tr class="odd">
+<td>Alarm receiver not exported; boot receiver exported only as the
+platform requires — AndroidManifest.xml</td>
+<td>EI-10</td>
+</tr>
+<tr class="even">
+<td>Notification permission re-checked at posting time, not at
+scheduling time — reminders/ReminderNotifier.kt</td>
+<td>EI-02</td>
+</tr>
+<tr class="odd">
+<td>No cleartext HTTP; API base URL is HTTPS on both clients</td>
+<td>EI-05</td>
+</tr>
+<tr class="even">
+<td>Account deletion endpoint present and reachable from the client —
+DELETE /profile</td>
+<td>EI-13</td>
+</tr>
+<tr class="odd">
+<td>Data export scoped to the caller and excluding credentials and other
+users’ rows — api/routers/profile.py:693</td>
+<td>EI-13, EI-05</td>
+</tr>
+</tbody>
+</table>
+<h2 id="static-analysis">6.3 Static analysis</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Tool</th>
+<th>Configuration</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Android lint (level None)</td>
+<td><code>lintVitalAnalyzeRelease</code></td>
+<td>Runs as part of the release build. Correctness and API-usage checks,
+not a security scanner.</td>
+</tr>
+<tr class="even">
+<td>ruff (level None)</td>
+<td><code>.ruff.toml</code></td>
+<td>Style and correctness linting for the Python backend.</td>
+</tr>
+<tr class="odd">
+<td>OSV matching (level None)</td>
+<td><code>vuln_scan.py against sbom.cdx.json</code></td>
+<td>Component versions matched against the OSV database. Results are
+identifier matches requiring assessment, not confirmed exposure. The
+pass is incomplete across the Maven and PyPI components.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="evidence-gaps">6.4 Evidence gaps</h2>
+<ul>
+<li>No coordinated vulnerability disclosure policy is published, and no
+security contact address exists. This blocks VH-05 and VH-06.</li>
+<li>The Swift package lock file is not committed to the repository, so
+the exact composition of a released version is recoverable only from
+continuous integration logs, which expire. The composition of 1.0.15 was
+recovered this way and is recorded, but the practice is not
+sustainable.</li>
+<li>Neither release workflow pins its build toolchain. Two builds two
+days apart used different major Xcode versions. The production process
+is therefore not reproducible as described.</li>
+<li>Licence determination is incomplete: of 278 components, 4 have a
+determined licence. The Maven and PyPI components are not yet
+resolved.</li>
+<li>One backend component, pymupdf 1.27.2.3, is licensed
+AGPL-3.0-or-later and is a direct dependency of a network-facing service
+that serves proprietary clients. The licence consequences have not been
+assessed and replacement is planned.</li>
+<li>No penetration test or external security assessment has been
+performed.</li>
+<li>The applications do not notify users when the support period
+ends.</li>
+</ul>
+<h1 id="eu-declaration-of-conformity">7. EU Declaration of
+Conformity</h1>
+<p>See the separate document <code>declaration_of_conformity.md</code>,
+which forms an integral part of this documentation.</p>
+<h1 id="software-bill-of-materials">8. Software bill of materials</h1>
+<p>Requirement: Annex I, Part II, point 1 — a software bill of materials
+in a commonly used machine-readable format covering at the very least
+the top-level dependencies of the product.</p>
+<p><strong>Format:</strong> CycloneDX 1.6<br />
+<strong>Serial number:</strong>
+<code>urn:uuid:1e8dd6cd-7eed-5a50-97a3-45afdfb2de3e</code><br />
+<strong>Generated:</strong> 2026-08-21T00:20:00Z<br />
+<strong>File:</strong> <code>sbom.cdx.json</code></p>
+<h2 id="composition">8.1 Composition</h2>
+<ul>
+<li>Total components: <strong>278</strong>
+<ul>
+<li>gradle: 242</li>
+<li>pypi: 32</li>
+<li>swiftpm: 4</li>
+</ul></li>
+<li>Direct dependencies: <strong>77</strong></li>
+<li>Without a stated licence: <strong>274</strong></li>
+</ul>
+<p>Coverage exceeds the statutory minimum: the full dependency tree of
+the shipped product is included, not only the top level. Build-time
+dependencies that are not shipped with the product are excluded.</p>
+<h2 id="licence-distribution">8.2 Licence distribution</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Licence</th>
+<th>Components</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Apache-2.0</td>
+<td>4</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>The SBOM is not subject to mandatory publication. It is retained as
+part of the technical documentation and made available to the market
+surveillance authority upon reasoned request.</p>
+</blockquote>
+<h1 id="appendix-a.-article-14-vulnerability-and-incident-reporting-runbook">Appendix
+A. Article 14 vulnerability and incident reporting runbook</h1>
+<blockquote>
+<p>This appendix is not one of the eight sections Annex VII requires. It
+is supplementary material cra-kit provides as a practical addition: a
+runbook for the Article 14 reporting obligation, which took effect on
+2026-09-11 and runs on a much shorter clock than anything else in this
+pack. It does not detect vulnerabilities or incidents, does not decide
+whether the 24-hour clock has started, and does not submit anything to
+ENISA or a CSIRT — that judgment is the manufacturer’s alone, made by a
+human, at the time.</p>
+</blockquote>
+<h2 id="a.1-the-two-triggers">A.1 The two triggers</h2>
+<p>The 24-hour clock starts only on the manufacturer’s actual knowledge
+that exploitation of a vulnerability, or a severe incident, is real and
+is affecting <strong>this product</strong>. A CVE existing in the SBOM,
+a scanner finding, an unconfirmed report, or exploitation confirmed in a
+different product does <strong>not</strong> start it.</p>
+<h3 id="actively-exploited-vulnerability-article-141-2">Actively
+exploited vulnerability (Article 14(1)-(2))</h3>
+<p><strong>Starts the clock when:</strong></p>
+<p>The manufacturer has actual knowledge, with reasonable certainty,
+that a vulnerability in ITS OWN product with digital elements is being
+actively exploited — not that it merely could be. “Becoming aware” is
+the trigger; a suspicion, a scan result, or an unconfirmed report is
+not.</p>
+<p><strong>Does NOT start the clock:</strong></p>
+<ul>
+<li>A CVE identifier exists for a component in the SBOM, with no
+evidence it is being exploited in this product.</li>
+<li>A vulnerability scanner, SAST tool, or software-composition-analysis
+run flags a known CVE in a dependency.</li>
+<li>A security researcher discloses a vulnerability, including under
+coordinated disclosure, before exploitation is confirmed.</li>
+<li>The same CVE is confirmed exploited in a DIFFERENT product or a
+different vendor’s build — exploitation is assessed per product, not per
+component.</li>
+<li>A component maintainer’s advisory describes exploitation of the
+component in the abstract, with no evidence that this product’s specific
+integration is affected and is being exploited.</li>
+<li>An internal red-team or pentest finding demonstrates a theoretical
+exploit path with no evidence it has been used against a real
+deployment.</li>
+</ul>
+<h3 id="severe-incident-affecting-the-products-security-article-143-4">Severe
+incident affecting the product’s security (Article 14(3)-(4))</h3>
+<p><strong>Starts the clock when:</strong></p>
+<p>The manufacturer becomes aware of an incident that has an actual
+negative impact on the security of ITS OWN product with digital elements
+— for example, it compromises the product’s ability to protect the
+confidentiality, integrity or availability of data or functions, or it
+has resulted in the execution of malicious code through the product.
+This is about the product’s own security, not about whatever happened
+inside a customer’s environment. See
+<code>operator_and_self_hoster_note</code> below.</p>
+<p><strong>Does NOT start the clock:</strong></p>
+<ul>
+<li>A customer reports an operational outage or a misconfiguration at
+their own installation, with no indication the product itself is
+compromised.</li>
+<li>A general industry breach or incident is reported that does not
+implicate this product.</li>
+<li>An internal security test or audit turns up a finding with no actual
+incident having occurred.</li>
+<li>A single customer’s credentials are stolen or misused through no
+fault of the product (e.g. phishing, credential reuse) — that is an
+incident at the installation, not in the product.</li>
+</ul>
+<h2 id="a.2-deadlines">A.2 Deadlines</h2>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Trigger</th>
+<th>Stage</th>
+<th>Deadline</th>
+<th>Legal basis</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Actively exploited vulnerability</td>
+<td>24h early warning</td>
+<td>without undue delay, and in any event within 24 hours of the
+manufacturer becoming aware</td>
+<td>Article 14(2)(a)</td>
+</tr>
+<tr class="even">
+<td>Actively exploited vulnerability</td>
+<td>72h full notification</td>
+<td>without undue delay, and in any event within 72 hours of the
+manufacturer becoming aware</td>
+<td>Article 14(2)(b)</td>
+</tr>
+<tr class="odd">
+<td>Actively exploited vulnerability</td>
+<td>Final report</td>
+<td>no later than 14 days after a corrective or mitigating measure
+becomes available</td>
+<td>Article 14(2)(c)</td>
+</tr>
+<tr class="even">
+<td>Severe incident affecting the product’s security</td>
+<td>24h early warning</td>
+<td>without undue delay, and in any event within 24 hours of the
+manufacturer becoming aware</td>
+<td>Article 14(4)(a)</td>
+</tr>
+<tr class="odd">
+<td>Severe incident affecting the product’s security</td>
+<td>72h full notification</td>
+<td>without undue delay, and in any event within 72 hours of the
+manufacturer becoming aware</td>
+<td>Article 14(4)(b)</td>
+</tr>
+<tr class="even">
+<td>Severe incident affecting the product’s security</td>
+<td>Final report</td>
+<td>within one month of the submission of the 72-hour notification</td>
+<td>Article 14(4)(c)</td>
+</tr>
+</tbody>
+</table>
+<p>The final report deadline differs by trigger: for an exploited
+vulnerability it is <strong>14 days after a corrective or mitigating
+measure becomes available</strong> — anchored to the fix, which may land
+well outside 14 days from first awareness. For a severe incident it is
+<strong>one month after the 72-hour notification</strong>, on a fixed
+clock that is not tied to any fix at all.</p>
+<h2 id="a.3-operators-self-hosters-and-other-third-party-deployments">A.3
+Operators, self-hosters and other third-party deployments</h2>
+<p>This product has no operators, deployers or self-hosters. It is
+distributed to consumers through the App Store and Google Play and runs
+against a backend the manufacturer operates itself. There is therefore
+no third party who would notice exploitation before the manufacturer
+does, and no third party the manufacturer could ask. The corollary is
+uncomfortable: the manufacturer’s only realistic route to learning that
+its product is being exploited in the field is its own monitoring, which
+is described in EI-12 as absent, or a report through a channel described
+in VH-06 as absent.</p>
+<h2 id="a.4-named-filer-and-deputy">A.4 Named filer and deputy</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Role</th>
+<th>Name</th>
+<th>Contact</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Manufacturer (primary)</td>
+<td><to be completed></td>
+<td><to be completed></td>
+</tr>
+<tr class="even">
+<td>Deputy (deputy)</td>
+<td><to be completed></td>
+<td><to be completed></td>
+</tr>
+</tbody>
+</table>
+<p>A deputy exists so the 24-hour clock survives one person being on
+leave, unreachable, or asleep. Both the primary and the deputy should be
+able to file a notification alone, without waiting for the other.</p>
+<h2 id="a.5-identifying-the-relevant-csirt">A.5 Identifying the relevant
+CSIRT</h2>
+<p><strong>Status:</strong> not_identified</p>
+<blockquote>
+<p><strong>Not yet identified.</strong> This is a field the manufacturer
+must resolve — cra-kit does not invent a CSIRT contact, since a wrong or
+fabricated one is worse than an honestly blank one.</p>
+</blockquote>
+<p>cra-kit cannot determine this for you: which CSIRT is “the
+coordinator” depends on facts only the manufacturer has (place of main
+establishment; where the product’s users are concentrated) and on each
+Member State’s own designation. Consult ENISA’s published list of
+national CSIRTs and single points of contact, confirm which one applies
+to your situation, and record the outcome below. Do not guess, and do
+not leave this blank until an actual event — confirming it in advance is
+exactly what the 24-hour clock does not leave time to do.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Country</td>
+<td>&lt;to be completed — Poland&gt;</td>
+</tr>
+<tr class="even">
+<td>CSIRT</td>
+<td><to be completed></td>
+</tr>
+<tr class="odd">
+<td>Contact</td>
+<td><to be completed></td>
+</tr>
+</tbody>
+</table>
+<p>Notifications go simultaneously to ENISA via the Article 16 single
+reporting platform. Where that platform is not yet operational for a
+given Member State or trigger type, use the interim channel your
+national CSIRT coordinator publishes.</p>
+<h2 id="a.6-draft-notification-templates">A.6 Draft notification
+templates</h2>
+<p>Bracketed fields (<code>[LIKE THIS]</code>) mark facts that can only
+be known at the time of a real event and must never be filled in ahead
+of one.</p>
+<h3 id="hour-early-warning">24-hour early warning</h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Article 14(2)(a) / 14(4)(a) — 24-hour early warning</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>Submitted via: <span class="co">[</span><span class="ot">ENISA single reporting platform (Article 16) / national CSIRT interim channel — delete as applicable</span><span class="co">]</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>**To:** <span class="co">[</span><span class="ot">NAME OF CSIRT DESIGNATED AS COORDINATOR</span><span class="co">]</span>, simultaneously to ENISA</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>**From:** <span class="co">[</span><span class="ot">MANUFACTURER NAME</span><span class="co">]</span> — filed by <span class="co">[</span><span class="ot">FILER NAME</span><span class="co">]</span>, <span class="co">[</span><span class="ot">FILER ROLE</span><span class="co">]</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>**Date/time of this notification:** <span class="co">[</span><span class="ot">DATE, TIME, TIMEZONE</span><span class="co">]</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>**Date/time the manufacturer became aware:** <span class="co">[</span><span class="ot">DATE, TIME, TIMEZONE</span><span class="co">]</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>**Trigger type:** <span class="co">[</span><span class="ot"> actively exploited vulnerability | severe incident — choose ONE; file separately if both apply </span><span class="co">]</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>**Product:** <span class="co">[</span><span class="ot">PRODUCT NAME</span><span class="co">]</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>**Affected versions:** <span class="co">[</span><span class="ot">AFFECTED VERSIONS</span><span class="co">]</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>**Member States concerned, where known at this stage:** <span class="co">[</span><span class="ot">MEMBER STATES, or &quot;not yet known&quot;</span><span class="co">]</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>**Basis for concluding this notification is required:**</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>[ONE TO TWO SENTENCES: what confirmed, with reasonable certainty, that exploitation is</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>actively happening in THIS product / that this is a severe incident affecting THIS</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>product&#39;s own security. Not a CVE score. Not a scanner finding. Not a report about a</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>different product.]</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>This is an early warning under Article 14(2)(a) <span class="co">[</span><span class="ot">or 14(4)(a)</span><span class="co">]</span>. A full notification</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>will follow within 72 hours of the awareness time stated above, per Article 14(2)(b)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">or 14(4)(b)</span><span class="co">]</span>.</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>Filed by: <span class="co">[</span><span class="ot">FILER NAME</span><span class="co">]</span>, <span class="co">[</span><span class="ot">FILER ROLE</span><span class="co">]</span>, <span class="co">[</span><span class="ot">FILER CONTACT</span><span class="co">]</span></span></code></pre></div>
+<h3 id="hour-full-notification">72-hour full notification</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Article 14(2)(b) / 14(4)(b) — 72-hour full notification</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>**To:** <span class="co">[</span><span class="ot">CSIRT COORDINATOR</span><span class="co">]</span>, simultaneously to ENISA</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>**Reference:** early warning of <span class="co">[</span><span class="ot">DATE/TIME</span><span class="co">]</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>**Trigger type:** <span class="co">[</span><span class="ot"> actively exploited vulnerability | severe incident </span><span class="co">]</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>**Product:** <span class="co">[</span><span class="ot">PRODUCT NAME</span><span class="co">]</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>**Affected versions:** <span class="co">[</span><span class="ot">AFFECTED VERSIONS</span><span class="co">]</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>**General information about the vulnerability/incident:**</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">WHAT IT IS AND HOW IT MANIFESTS</span><span class="co">]</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>**Severity and impact, as currently assessed:**</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">SEVERITY / CVSS IF APPLICABLE / OBSERVED OR LIKELY IMPACT</span><span class="co">]</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>**Indicators of compromise, if available (incident only):**</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">IOCs, or &quot;none identified at this stage&quot;</span><span class="co">]</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>**Suspected cause / threat type, if known at this stage (incident only):**</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">SUSPECTED CAUSE, or &quot;under investigation&quot;</span><span class="co">]</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>**Corrective or mitigating measures taken or planned:**</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">MEASURES — e.g. patch in progress, workaround published, affected feature disabled</span><span class="co">]</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>**Cross-border relevance, if known:**</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">MEMBER STATES / MARKETS AFFECTED, or &quot;not yet known&quot;</span><span class="co">]</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>This notification is submitted under Article 14(2)(b) <span class="co">[</span><span class="ot">or 14(4)(b)</span><span class="co">]</span>, within 72 hours</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>of the manufacturer becoming aware. A final report will follow:</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>[14 days after a corrective or mitigating measure becomes available (vulnerability) |</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>within one month of this notification (incident)].</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>Filed by: <span class="co">[</span><span class="ot">FILER NAME</span><span class="co">]</span>, <span class="co">[</span><span class="ot">FILER ROLE</span><span class="co">]</span>, <span class="co">[</span><span class="ot">FILER CONTACT</span><span class="co">]</span></span></code></pre></div>
+<h3 id="final-report-exploited-vulnerability">Final report — exploited
+vulnerability</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Article 14(2)(c) — final report: actively exploited vulnerability</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>**To:** <span class="co">[</span><span class="ot">CSIRT COORDINATOR</span><span class="co">]</span>, simultaneously to ENISA</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>**Reference:** early warning of <span class="co">[</span><span class="ot">DATE</span><span class="co">]</span>, full notification of <span class="co">[</span><span class="ot">DATE</span><span class="co">]</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>**Product:** <span class="co">[</span><span class="ot">PRODUCT NAME</span><span class="co">]</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>**Affected versions:** <span class="co">[</span><span class="ot">AFFECTED VERSIONS</span><span class="co">]</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>**Description of the vulnerability:**</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">FULL DESCRIPTION</span><span class="co">]</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>**Severity and impact:**</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">FINAL SEVERITY ASSESSMENT AND IMPACT</span><span class="co">]</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>**Information about the malicious actor, where available:**</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">WHAT IS KNOWN, or &quot;not attributed&quot;</span><span class="co">]</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>**Security update or other corrective/mitigating measure made available:**</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">VERSION / PATCH / ADVISORY LINK</span><span class="co">]</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>**Date the corrective or mitigating measure became available:** <span class="co">[</span><span class="ot">DATE</span><span class="co">]</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>(This report is due no later than 14 days after that date — Article 14(2)(c). It is</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>anchored to the fix, not to the date of the 72-hour notification.)</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>Filed by: <span class="co">[</span><span class="ot">FILER NAME</span><span class="co">]</span>, <span class="co">[</span><span class="ot">FILER ROLE</span><span class="co">]</span>, <span class="co">[</span><span class="ot">FILER CONTACT</span><span class="co">]</span></span></code></pre></div>
+<h3 id="final-report-severe-incident">Final report — severe
+incident</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Article 14(4)(c) — final report: severe incident</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>**To:** <span class="co">[</span><span class="ot">CSIRT COORDINATOR</span><span class="co">]</span>, simultaneously to ENISA</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>**Reference:** early warning of <span class="co">[</span><span class="ot">DATE</span><span class="co">]</span>, full notification of <span class="co">[</span><span class="ot">DATE</span><span class="co">]</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>**Product:** <span class="co">[</span><span class="ot">PRODUCT NAME</span><span class="co">]</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>**Affected versions / installations:** <span class="co">[</span><span class="ot">AFFECTED VERSIONS</span><span class="co">]</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>**Detailed description of the incident:**</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">FULL DESCRIPTION</span><span class="co">]</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>**Severity and impact:**</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">FINAL SEVERITY ASSESSMENT AND IMPACT</span><span class="co">]</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>**Threat type or root cause:**</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">ROOT CAUSE</span><span class="co">]</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>**Mitigation measures taken or ongoing:**</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">MEASURES</span><span class="co">]</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>**Cross-border impact, if any:**</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">MEMBER STATES / MARKETS AFFECTED, or &quot;none identified&quot;</span><span class="co">]</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>This report is due within one month of the submission of the 72-hour notification</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>(submitted <span class="co">[</span><span class="ot">DATE</span><span class="co">]</span>) — Article 14(4)(c). It is NOT tied to the availability of a fix:</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>file it on the one-month clock regardless of remediation status.</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>Filed by: <span class="co">[</span><span class="ot">FILER NAME</span><span class="co">]</span>, <span class="co">[</span><span class="ot">FILER ROLE</span><span class="co">]</span>, <span class="co">[</span><span class="ot">FILER CONTACT</span><span class="co">]</span></span></code></pre></div>
+<h2 id="a.7-readiness-checklist">A.7 Readiness checklist</h2>
+<ul>
+<li><label><input type="checkbox"></input>Named filer identified</label></li>
+<li><label><input type="checkbox"></input>Deputy filer identified</label></li>
+<li><label><input type="checkbox"></input>CSIRT contact
+identified</label></li>
+<li><label><input type="checkbox"></input>Templates reviewed</label></li>
+<li><label><input type="checkbox"></input>One tabletop walkthrough
+completed</label></li>
+<li>Tabletop date: not recorded</li>
+</ul>
+<p>Nothing in this checklist is ticked. Article 14 has applied since 11
+September 2026 and this product has been on the market since 1 July
+2026. The gap is recorded as risk R-11. None of the remaining items
+requires engineering work: they require two names and one phone
+call.</p>
+</body>
+</html>

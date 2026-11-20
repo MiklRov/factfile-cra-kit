@@ -1,0 +1,437 @@
+meta:
+  schema_version: 0.1.0
+  compiled_at: '2026-08-21'
+  disclaimer: 'This technical file was assembled by the manufacturer using cra-kit. It is not legal advice
+    and it does not constitute a conformity assessment by a third party. Where a requirement could not
+    be substantiated from the code, the build or a public record, it is recorded as not met or as unconfirmed
+    rather than assumed. Section 6 lists the gaps explicitly.
+
+    '
+section_1:
+  product_name: Sample Product
+  product_version: iOS 1.0.15 (build 9) / Android 1.2.39 (versionCode 79)
+  product_type: Product with digital elements — two mobile applications and the backend service they require
+  license: Proprietary. Free to install, with in-app purchases.
+  intended_purpose: 'The product keeps track of food a household already owns and of when it expires. A
+    user photographs a shop receipt; the product extracts the items and files them into named storage
+    locations (fridge, freezer, pantry, medicine cabinet), then reminds the user before something expires.
+    It also maintains a shopping list, a weekly menu and a medication course tracker. The stated aim is
+    to reduce household food waste.
+
+    '
+  intended_users: 'Consumers, in a household setting. Multiple people may share one household. The product
+    is sold directly to end users through Apple''s App Store and Google Play; it is not deployed or self-hosted
+    by anyone other than the manufacturer, and there is no on-premises or reseller distribution.
+
+    '
+  reasonably_foreseeable_misuse: 'Two uses are foreseeable and were not designed for. First, the medication
+    course tracker invites use as a clinical adherence tool; it is not one, it makes no clinical claim,
+    and a missed or late reminder must not be relied upon for medication that matters. Second, the receipt
+    scanner accepts any photograph, so users may submit documents that are not receipts — including documents
+    containing payment card numbers or identifiers — which are then transmitted to external processing
+    services named in section 2. The product does not detect or refuse such input.
+
+    '
+  scope_note: 'The product boundary covers three parts: the iOS application, the Android application and
+    the backend service at api.example.invalid.
+
+    The backend is inside the boundary because the applications cannot perform their core functions without
+    it. Receipt extraction, the item inventory, medication schedules and reminder times are all resolved
+    server-side; an application without the backend shows a login screen and nothing else. Its dependencies
+    are therefore part of the bill of materials in section 8.
+
+    Four external services are outside the boundary and are not part of this product, but they receive
+    user content and are documented in section 2 as external interfaces: Google Gemini and OpenAI (receipt
+    and voice processing), Telegram (authentication and notification delivery) and Sentry (error reports).
+
+    The two applications share one backend, one account system and one token format, but they are separate
+    binaries with separate release cycles and separate identifiers. Where a statement in this file is
+    true of only one platform, it says so.
+
+    '
+  versions_affecting_compliance: 'This file covers iOS 1.0.15, build 9 (placed on the market 1 July 2026,
+    current version published 19 August 2026) and Android 1.2.39, versionCode 79 (current version published
+    18 August 2026).
+
+
+    Both version identifiers were confirmed against the live store records rather than taken from the
+    repository: the iOS entry against the App Store catalogue, the Android entry against the production
+    track in the Google Play Console. The resolved dependency trees in section 8 were taken from these
+    versions.
+
+
+    The composition of the released iOS 1.0.15 is established from the continuous integration run that
+    produced it, not from a lock file: the repository does not commit Package.resolved. That recovery
+    route expires with the log and is recorded as a gap in section 6.
+
+    '
+  annex_ii_user_information:
+    manufacturer_contact: '<manufacturer name> — redacted in this published example. The real file carries the full
+      legal name, the registered address, the national business-register entry and the tax
+      identification number, and the address must match the developer record in both stores.
+
+      '
+    single_point_of_contact: '<to be completed — a stable address for cybersecurity matters, e.g. security@example.invalid.
+      No such address exists today; see section 6.>
+
+      '
+    product_identification: 'iOS: bundle identifier <ios bundle id>, version 1.0.15 (build 9),
+      App Store ID <app store id>.
+
+      Android: application identifier <android application id>, version 1.2.39 (versionCode 79),
+      published under the product name.
+
+      The Android application identifier retains the product''s original working name and cannot be changed
+      for a published application; the iOS bundle identifier contains a typographic error in the vendor
+      segment from an earlier company name which likewise cannot be changed. Both are recorded
+      here as they are; the identifiers themselves are redacted in this published example.
+
+      '
+    intended_purpose_short: Household food inventory and expiry tracking with receipt scanning.
+    known_limitations: 'The product requires network access and the manufacturer''s backend. Receipt and
+      voice processing depend on third-party services; if those are unavailable, the corresponding features
+      do not work. Reminder delivery on Android degrades to an inexact schedule when the exact-alarm permission
+      is not granted.
+
+      '
+    support_period_end: '2031-07-01'
+    security_update_information: 'Security updates are delivered as ordinary application updates through
+      the App Store and Google Play, and as server-side changes for the backend. Updates are free of charge.
+
+      '
+    vulnerability_reporting: '<to be completed — no published vulnerability reporting channel exists today.
+      See VH-05 and VH-06 in the requirements matrix and the gap list in section 6.>
+
+      '
+    secure_configuration_guidance: 'The product has no user-configurable security settings beyond the
+      platform permissions it requests. Default configuration is the secure configuration; there is nothing
+      for the user to harden.
+
+      '
+section_2:
+  architecture: 'Two mobile clients and one backend. The iOS client is written in Swift with SwiftUI (deployment
+    target iOS 16.0); the Android client is written in Kotlin with Jetpack Compose (minimum SDK 26, target
+    SDK 35). Both talk to a single HTTPS API at https://api.example.invalid/api/v1/ and hold no primary
+    data locally: the inventory, medication courses and reminder schedule live server-side.
+
+    Authentication is by an opaque token carried in the X-Mobile-Token header. On iOS the token is obtained
+    through Google Sign-In or Sign in with Apple; on Android through Google Sign-In. Telegram is additionally
+    used as an authentication channel per the published privacy policy.
+
+    The backend is a Python service. It performs receipt and voice processing by calling external services
+    rather than locally.
+
+
+    Terms under which the external recipients hold this data
+
+
+    Because user content leaves the product boundary at these interfaces, the terms under which the recipients
+    hold it form part of the assessment rather than a commercial footnote. Both providers are used on
+    their paid tiers, evidenced by the billed model identifiers named in services/ai/config.py.
+
+
+    Training. Neither provider uses this data to train models on the paid tier by default. OpenAI''s documentation
+    states that "data sent to the OpenAI API is not used to train or improve OpenAI models (unless you
+    explicitly opt in to share data with us)". Google''s states that for a billing-enabled project "prompts
+    and responses within logs are not used for product improvement or development". Neither opt-in has
+    been taken.
+
+
+    Retention, which is a separate question and is not zero. OpenAI retains abuse-monitoring logs containing
+    prompts and responses "for up to 30 days". Google retains logs "for a default maximum period of 55
+    days", configurable down to 7, 14 or 28. So a receipt image submitted today exists outside the manufacturer''s
+    control for weeks after the user has forgotten it, and continues to exist there if the user deletes
+    their account in the meantime.
+
+
+    Zero-data-retention controls exist at both providers and are not in use here. OpenAI''s require prior
+    approval and additional terms; Google''s are available for paid services, with the caveat that certain
+    features retain data regardless. Reducing the Google log window from 55 days to 7 is a configuration
+    change and is the cheapest available reduction of this exposure.
+
+
+    Sources: OpenAI, Data controls in the OpenAI platform; Google, Gemini API Data Logging and Sharing,
+    and Zero data retention in the Gemini Developer API. Retrieved 21 August 2026.
+
+    '
+  component_integration: 'The bill of materials in section 8 lists 278 components across the three parts:
+    4 Swift packages in the iOS client, 242 Maven artefacts in the Android client and 32 Python distributions
+    in the backend.
+
+    The iOS figures come from the resolved package graph recorded by the release build; the Android figures
+    from a resolved Gradle dependency tree (configuration prodReleaseRuntimeClasspath), not from parsing
+    build files. The distinction matters: on the Android side, parsing the build files alone yields 43
+    components against 242 actually resolved.
+
+    Eight Android components are proprietary Google Play Services artefacts distributed under the Android
+    Software Development Kit licence rather than an open-source licence. One backend component, pymupdf
+    1.27.2.3, is licensed AGPL-3.0-or-later; see section 6.
+
+    '
+  security_relevant_subsystems:
+  - name: Authentication and token handling
+    ref: data/api/ApiClient.kt · core-design/.../auth/FamilyTokenStore.kt · ios/App/Networking/TokenStore.swift
+    note: Identity through Google Sign-In and Sign in with Apple; an opaque token in the X-Mobile-Token
+      header. The token is bound to the API host by an HTTP interceptor so it cannot leak to another host
+      on a redirect. It is stored unencrypted in the application sandbox.
+  - name: HTTP transport
+    ref: data/api/ApiClient.kt · ios/App/Networking/APIClient.swift
+    note: HTTPS only; cleartext traffic is not enabled. No certificate pinning; at target SDK 35 the platform
+      default excludes user-installed certificate authorities.
+  - name: Request logging
+    ref: data/api/ApiClient.kt:35
+    note: The HTTP logging interceptor is instantiated only in debug builds and at a level that excludes
+      headers, so authentication material is never written to the system log in a release build.
+  - name: Local storage
+    ref: android/app/src/main/AndroidManifest.xml
+    note: allowBackup=false, so the token store cannot be extracted through platform backup. No database
+      is used on the client; primary data lives server-side.
+  - name: Reminder delivery
+    ref: reminders/ReminderScheduler.kt · reminders/ReminderAlarmReceiver.kt · reminders/BootReceiver.kt
+    note: Scheduled locally through AlarmManager. The receiver that fires a reminder is not exported;
+      the boot receiver is exported only because the platform requires it to receive BOOT_COMPLETED. Pending
+      intents are immutable.
+  - name: External processing
+    ref: services/ai/config.py · backend services/receipts/, services/voice/
+    note: Receipt images and voice recordings are transmitted for processing. Google Gemini is the primary
+      provider (models/gemini-3.6-flash, with models/gemini-3.1-flash-lite as the cheap reserve); OpenAI
+      (gpt-4o-mini and gpt-4o-mini-transcribe) is a cross-provider fallback that fires only during a full
+      Gemini outage and is disabled when no key is configured. Both are used on their paid, billed tiers,
+      which is what determines how the providers treat the data — see 2.6. Telegram carries notifications
+      and one authentication path; Sentry receives error reports. These are the points at which user content
+      leaves the product boundary.
+  production_and_monitoring: 'Both applications are built and released by GitHub Actions. The iOS release
+    workflow (ios_deploy.yml) runs on every push touching the iOS sources, resolves Swift packages, signs
+    with a distribution certificate held in repository secrets and uploads to TestFlight.
+
+    Neither workflow pins its toolchain: both request the latest stable Xcode. Two builds two days apart
+    in August 2026 used Xcode 16.2 and Xcode 26.6 respectively. The released 1.0.15 was produced by Xcode
+    26.6. This is recorded as a finding in section 6.
+
+    Runtime errors are reported to Sentry.
+
+    '
+  vulnerability_handling_processes:
+    sbom:
+      status: met
+      format: CycloneDX 1.6
+      note: 'A machine-readable bill of materials covering all three parts of the product is maintained
+        and is included as section 8. It is generated from resolved build output, not from manifests.
+        Licence data is incomplete: of 278 components, 4 carry a determined licence. Determination for
+        the Maven and PyPI components is a known gap; see section 6.
+
+        '
+    coordinated_disclosure_policy:
+      status: not_met
+      note: 'No coordinated vulnerability disclosure policy is published. Neither repository contains
+        a SECURITY.md, and no .well-known/security.txt is served. This is a genuine gap, not an unconfirmed
+        one.
+
+        '
+    reporting_channel:
+      status: not_met
+      note: 'There is no dedicated address for reporting vulnerabilities. The published privacy policy
+        gives a general support address; the Google Play listing gives a personal mailbox. Neither is
+        a security contact.
+
+        '
+    security_advisories:
+      status: not_met
+      note: 'No security advisories have been published, and there is no channel through which they would
+        be. No vulnerability has been reported to the manufacturer to date.
+
+        '
+    update_distribution:
+      status: met
+      mechanism: App Store and Google Play application updates; server-side deployment for the backend.
+      note: 'Updates are free of charge and are delivered through the platform update mechanisms, which
+        verify package signatures. Users may disable automatic updates at the platform level. Security
+        fixes are not separable from feature releases: a user receives them as part of the next application
+        version.
+
+        '
+section_4:
+  support_period_years: 5
+  end_date: '2031-07-01'
+  security_update_availability_years: 5
+  rationale: 'Five years from the date the product was first placed on the market, 1 July 2026. The Regulation
+    sets five years as the floor unless the expected product lifetime is shorter; the manufacturer does
+    not consider it shorter. A household inventory application is used for as long as the household keeps
+    using it, and no shorter service life is claimed.
+
+    The binding practical constraint is the mobile platform, not the product: the iOS client targets iOS
+    16 and above and the Android client API 26 and above, and both platform vendors withdraw support for
+    older releases on their own schedule. The manufacturer commits to the five-year period for the product
+    as released; users running an operating system version that has itself left support may be unable
+    to receive updates for reasons outside the manufacturer''s control, and this is stated in the user
+    information.
+
+    '
+  factors_considered:
+  - factor: The statutory floor
+    assessment: Article 13(8) sets five years unless the expected product lifetime is shorter. The manufacturer
+      does not consider it shorter and claims no shorter service life.
+  - factor: Mobile platform support
+    assessment: The binding practical constraint. The clients target iOS 16 and API 26 upward; both platform
+      vendors withdraw support for older releases on their own schedule, which the manufacturer does not
+      control.
+  - factor: Runtime and framework support
+    assessment: Swift, Kotlin and Python major versions, and the Compose and SwiftUI framework generations
+      in use, each have their own support horizon shorter than five years.
+  - factor: Dependence on a manufacturer-operated backend
+    assessment: The applications do not function without it, so the support commitment is also a commitment
+      to keep a service running for five years, not only to ship patches.
+  - factor: Dependence on third-party processors
+    assessment: Two core features depend on Google Gemini and OpenAI. Their availability, pricing and
+      terms are outside the manufacturer's control for the whole period.
+  - factor: Commercial expectation
+    assessment: The product is sold with in-app purchases including subscription tiers, which creates
+      a user expectation of continued service independent of the Regulation.
+  - factor: Size of the manufacturer
+    assessment: A sole proprietorship. A five-year commitment is a real constraint rather than a formality,
+      and is stated deliberately rather than by default.
+  end_of_support_notification: '<to be completed — the product does not currently notify users when support
+    ends, and no mechanism to do so exists. The support period is stated in the user information but is
+    not surfaced in the applications themselves.>
+
+    '
+section_5:
+  harmonised_standards_applied: []
+  harmonised_standards_note: 'None. As at August 2026 there is no harmonised standard supporting Regulation
+    (EU) 2024/2847 cited in the Official Journal. Standardisation request M/606 was accepted by CEN, CENELEC
+    and ETSI on 3 April 2025 and the work is ongoing. The presumption of conformity is therefore unavailable,
+    and conformity is substantiated directly through the risk assessment in section 3 and the evidence
+    recorded against each essential requirement.
+
+    '
+  common_specifications_applied: []
+  certification_schemes_applied: []
+  other_means_used:
+  - name: STRIDE
+    note: A threat identification method, applied across the trust boundaries in section 3.
+  - name: Resolved-build bill of materials
+    note: Components enumerated from resolved build output for all three parts of the product rather than
+      from manifests, and matched against the OSV vulnerability database.
+  - name: Integrity checks on the evidence itself
+    note: A requirement cannot be recorded as met without attached evidence, a risk cannot be shown as
+      reduced without a named control, and the document does not build if the data contradicts itself.
+section_6:
+  summary: 'No penetration test and no external security assessment has been performed on this product.
+    No third party has reviewed this technical file. What follows is the manufacturer''s own testing,
+    and the gaps are listed in full rather than summarised.
+
+    '
+  automated_tests:
+  - suite: pytest (backend)
+    files: null
+    note: Functional test suite for the Python backend, with coverage measurement. Not security-specific.
+  - suite: iOS compile check
+    files: null
+    note: An unsigned simulator build run on demand in continuous integration. There is no automated test
+      suite for the iOS client.
+  - suite: Android
+    files: 0
+    note: No automated test suite exists for the Android client.
+  security_relevant_tests:
+    note: 'The following were verified by direct inspection of the code and the build output during preparation
+      of this file, on 20 August 2026. They are inspections, not executed tests, and are recorded as such.
+
+      '
+    items:
+    - name: Authentication token attached only to the API host — data/api/ApiClient.kt:19
+      covers:
+      - EI-04
+      - EI-05
+    - name: HTTP request logging compiled into debug builds only, headers excluded — data/api/ApiClient.kt:35
+      covers:
+      - EI-05
+    - name: Platform backup of application data disabled — AndroidManifest.xml, allowBackup=false
+      covers:
+      - EI-02
+      - EI-05
+    - name: Pending intents immutable — reminders/ReminderNotifier.kt
+      covers:
+      - EI-06
+    - name: Alarm receiver not exported; boot receiver exported only as the platform requires — AndroidManifest.xml
+      covers:
+      - EI-10
+    - name: Notification permission re-checked at posting time, not at scheduling time — reminders/ReminderNotifier.kt
+      covers:
+      - EI-02
+    - name: No cleartext HTTP; API base URL is HTTPS on both clients
+      covers:
+      - EI-05
+    - name: Account deletion endpoint present and reachable from the client — DELETE /profile
+      covers:
+      - EI-13
+    - name: Data export scoped to the caller and excluding credentials and other users' rows — api/routers/profile.py:693
+      covers:
+      - EI-13
+      - EI-05
+  static_analysis:
+  - tool: Android lint
+    config: lintVitalAnalyzeRelease
+    level: null
+    note: Runs as part of the release build. Correctness and API-usage checks, not a security scanner.
+  - tool: ruff
+    config: .ruff.toml
+    level: null
+    note: Style and correctness linting for the Python backend.
+  - tool: OSV matching
+    config: vuln_scan.py against sbom.cdx.json
+    level: null
+    note: Component versions matched against the OSV database. Results are identifier matches requiring
+      assessment, not confirmed exposure. The pass is incomplete across the Maven and PyPI components.
+  gaps:
+  - No coordinated vulnerability disclosure policy is published, and no security contact address exists.
+    This blocks VH-05 and VH-06.
+  - The Swift package lock file is not committed to the repository, so the exact composition of a released
+    version is recoverable only from continuous integration logs, which expire. The composition of 1.0.15
+    was recovered this way and is recorded, but the practice is not sustainable.
+  - Neither release workflow pins its build toolchain. Two builds two days apart used different major
+    Xcode versions. The production process is therefore not reproducible as described.
+  - 'Licence determination is incomplete: of 278 components, 4 have a determined licence. The Maven and
+    PyPI components are not yet resolved.'
+  - One backend component, pymupdf 1.27.2.3, is licensed AGPL-3.0-or-later and is a direct dependency
+    of a network-facing service that serves proprietary clients. The licence consequences have not been
+    assessed and replacement is planned.
+  - No penetration test or external security assessment has been performed.
+  - The applications do not notify users when the support period ends.
+declaration:
+  product_identification: Sample Product — iOS application <ios bundle id> version 1.0.15 (build 9,
+    App Store ID <app store id>) and Android application <android application id> version 1.2.39 (versionCode 79),
+    together with the backend service at api.example.invalid on which both depend.
+  manufacturer_name: <manufacturer name>
+  manufacturer_address: <manufacturer address — redacted in this published example>
+  authorised_representative: null
+  sole_responsibility_statement: 'This declaration of conformity is issued under the sole responsibility
+    of the manufacturer.
+
+    '
+  object_of_declaration: 'Product with digital elements as identified above, placed on the Union market
+    from 1 July 2026.
+
+    '
+  conformity_statement: '<NOT ISSUED. This declaration is a draft and must not be signed in its present
+    state. Several essential requirements relating to vulnerability handling are recorded as not met in
+    the requirements matrix, and the gaps in section 6 are open. A declaration of conformity issued against
+    this evidence would be false.>
+
+    '
+  standards_referenced: []
+  standards_note: 'No harmonised standard supporting Regulation (EU) 2024/2847 has been cited in the Official
+    Journal as at the date of this file.
+
+    '
+  notified_body: null
+  notified_body_note: 'None involved. On the manufacturer''s reading, the product falls in the default
+    category: neither Annex III nor Annex IV lists a product of this kind, and the product''s core function
+    is not a security function. The applicable procedure is therefore Module A, internal control of production.
+    This reading has not been confirmed by a third party.
+
+    '
+  conformity_assessment_module: Module A — internal control of production (Annex VIII, point 1)
+  place_of_issue: <to be completed>
+  date_of_issue: <not issued>
+  signatory_name: <not signed>
+  signatory_function: <not signed>

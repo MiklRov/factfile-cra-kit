@@ -1,0 +1,362 @@
+meta:
+  schema_version: 0.1.0
+  product: Sample Product
+  product_version: iOS 1.0.15 / Android 1.2.39
+  compiled_at: '2026-08-21'
+  applies_from: '2026-09-11'
+  disclaimer: 'This runbook is operational-readiness material. It is not itself a document required by
+    Annex VII to Regulation (EU) 2024/2847, and filling it in does not, by itself, satisfy Article 14.
+    It exists so that, if a reportable event ever occurs, the manufacturer already has a named filer,
+    a deputy, an identified CSIRT contact, and a reviewed template — instead of improvising against a
+    24-hour deadline. It does not detect vulnerabilities or incidents, does not decide whether the 24-hour
+    clock has started, and does not submit anything to ENISA or a CSIRT. That judgment call belongs to
+    the manufacturer, made by a human, at the time it actually matters.
+
+    '
+triggers:
+  exploited_vulnerability:
+    name: Actively exploited vulnerability
+    legal_basis: Article 14(1)-(2)
+    clock_starts_when: 'The manufacturer has actual knowledge, with reasonable certainty, that a vulnerability
+      in ITS OWN product with digital elements is being actively exploited — not that it merely could
+      be. "Becoming aware" is the trigger; a suspicion, a scan result, or an unconfirmed report is not.
+
+      '
+    clock_does_NOT_start_when:
+    - A CVE identifier exists for a component in the SBOM, with no evidence it is being exploited in this
+      product.
+    - A vulnerability scanner, SAST tool, or software-composition-analysis run flags a known CVE in a
+      dependency.
+    - A security researcher discloses a vulnerability, including under coordinated disclosure, before
+      exploitation is confirmed.
+    - The same CVE is confirmed exploited in a DIFFERENT product or a different vendor's build — exploitation
+      is assessed per product, not per component.
+    - A component maintainer's advisory describes exploitation of the component in the abstract, with
+      no evidence that this product's specific integration is affected and is being exploited.
+    - An internal red-team or pentest finding demonstrates a theoretical exploit path with no evidence
+      it has been used against a real deployment.
+    stages:
+      early_warning:
+        legal_basis: Article 14(2)(a)
+        deadline: without undue delay, and in any event within 24 hours of the manufacturer becoming aware
+        content: 'Indicates, where applicable and already known, the Member States whose market or users
+          are believed to be concerned. Facts, not analysis: this stage exists to start the clock visibly,
+          not to explain the vulnerability in full.
+
+          '
+      full_notification:
+        legal_basis: Article 14(2)(b)
+        deadline: without undue delay, and in any event within 72 hours of the manufacturer becoming aware
+        content: 'General information about the vulnerability, its nature, and the corrective or mitigating
+          measures taken or planned. Supersedes the early warning; does not require the fix to already
+          exist.
+
+          '
+      final_report:
+        legal_basis: Article 14(2)(c)
+        deadline: no later than 14 days after a corrective or mitigating measure becomes available
+        content: 'Description of the vulnerability, its severity and impact, information about any malicious
+          actor where available, and the security update or other corrective/mitigating measure made available.
+          This deadline is anchored to the FIX, not to the 72-hour notification — it can fall well outside
+          14 days from first awareness if remediation takes longer.
+
+          '
+  severe_incident:
+    name: Severe incident affecting the product's security
+    legal_basis: Article 14(3)-(4)
+    clock_starts_when: 'The manufacturer becomes aware of an incident that has an actual negative impact
+      on the security of ITS OWN product with digital elements — for example, it compromises the product''s
+      ability to protect the confidentiality, integrity or availability of data or functions, or it has
+      resulted in the execution of malicious code through the product. This is about the product''s own
+      security, not about whatever happened inside a customer''s environment. See `operator_and_self_hoster_note`
+      below.
+
+      '
+    clock_does_NOT_start_when:
+    - A customer reports an operational outage or a misconfiguration at their own installation, with no
+      indication the product itself is compromised.
+    - A general industry breach or incident is reported that does not implicate this product.
+    - An internal security test or audit turns up a finding with no actual incident having occurred.
+    - A single customer's credentials are stolen or misused through no fault of the product (e.g. phishing,
+      credential reuse) — that is an incident at the installation, not in the product.
+    stages:
+      early_warning:
+        legal_basis: Article 14(4)(a)
+        deadline: without undue delay, and in any event within 24 hours of the manufacturer becoming aware
+        content: 'Indicates, where applicable and already known, the suspected cause and the Member States
+          believed to be concerned.
+
+          '
+      full_notification:
+        legal_basis: Article 14(4)(b)
+        deadline: without undue delay, and in any event within 72 hours of the manufacturer becoming aware
+        content: 'General information on the nature of the incident, its severity and impact, and the
+          measures taken or planned.
+
+          '
+      final_report:
+        legal_basis: Article 14(4)(c)
+        deadline: within one month of the submission of the 72-hour notification
+        content: 'Detailed description of the incident, its severity and impact, the threat type or root
+          cause, and mitigation measures taken or ongoing. Unlike the vulnerability final report, this
+          deadline is NOT tied to a fix being available — it is a fixed one-month clock from the 72-hour
+          notification regardless of remediation status.
+
+          '
+operator_and_self_hoster_note: 'This product has no operators, deployers or self-hosters. It is distributed
+  to consumers through the App Store and Google Play and runs against a backend the manufacturer operates
+  itself. There is therefore no third party who would notice exploitation before the manufacturer does,
+  and no third party the manufacturer could ask. The corollary is uncomfortable: the manufacturer''s only
+  realistic route to learning that its product is being exploited in the field is its own monitoring,
+  which is described in EI-12 as absent, or a report through a channel described in VH-06 as absent.
+
+  '
+filer:
+  primary:
+    role: Manufacturer
+    name: <to be completed>
+    contact: <to be completed>
+  deputy:
+    role: Deputy
+    name: <to be completed>
+    contact: <to be completed>
+    note: 'A deputy exists so the 24-hour clock survives one person being on leave, unreachable, or asleep.
+      Both the primary and the deputy should be able to file a notification alone, without waiting for
+      the other.
+
+      '
+csirt_contact:
+  status: not_identified
+  legal_basis: 'Article 14(7) — notification goes to the CSIRT designated as coordinator for the manufacturer,
+    generally the CSIRT of the Member State of main establishment, or of a Member State where the product
+    has a concentration of users, per each Member State''s designation under Article 14(7)-(8) and the
+    related NIS2 CSIRT framework. ENISA is notified simultaneously in every case, via the Article 16 single
+    reporting platform.
+
+    '
+  process_note: 'cra-kit cannot determine this for you: which CSIRT is "the coordinator" depends on facts
+    only the manufacturer has (place of main establishment; where the product''s users are concentrated)
+    and on each Member State''s own designation. Consult ENISA''s published list of national CSIRTs and
+    single points of contact, confirm which one applies to your situation, and record the outcome below.
+    Do not guess, and do not leave this blank until an actual event — confirming it in advance is exactly
+    what the 24-hour clock does not leave time to do.
+
+    '
+  identified_csirt:
+    country: <to be completed — Poland>
+    csirt_name: <to be completed>
+    contact: <to be completed>
+  enisa_platform_note: 'Notifications go simultaneously to ENISA via the Article 16 single reporting platform.
+    Where that platform is not yet operational for a given Member State or trigger type, use the interim
+    channel your national CSIRT coordinator publishes.
+
+    '
+templates:
+  early_warning_24h: '# Article 14(2)(a) / 14(4)(a) — 24-hour early warning
+
+
+    Submitted via: [ENISA single reporting platform (Article 16) / national CSIRT interim channel — delete
+    as applicable]
+
+
+    **To:** [NAME OF CSIRT DESIGNATED AS COORDINATOR], simultaneously to ENISA
+
+    **From:** [MANUFACTURER NAME] — filed by [FILER NAME], [FILER ROLE]
+
+    **Date/time of this notification:** [DATE, TIME, TIMEZONE]
+
+    **Date/time the manufacturer became aware:** [DATE, TIME, TIMEZONE]
+
+    **Trigger type:** [ actively exploited vulnerability | severe incident — choose ONE; file separately
+    if both apply ]
+
+
+    **Product:** [PRODUCT NAME]
+
+    **Affected versions:** [AFFECTED VERSIONS]
+
+
+    **Member States concerned, where known at this stage:** [MEMBER STATES, or "not yet known"]
+
+
+    **Basis for concluding this notification is required:**
+
+    [ONE TO TWO SENTENCES: what confirmed, with reasonable certainty, that exploitation is
+
+    actively happening in THIS product / that this is a severe incident affecting THIS
+
+    product''s own security. Not a CVE score. Not a scanner finding. Not a report about a
+
+    different product.]
+
+
+    This is an early warning under Article 14(2)(a) [or 14(4)(a)]. A full notification
+
+    will follow within 72 hours of the awareness time stated above, per Article 14(2)(b)
+
+    [or 14(4)(b)].
+
+
+    Filed by: [FILER NAME], [FILER ROLE], [FILER CONTACT]
+
+    '
+  full_notification_72h: '# Article 14(2)(b) / 14(4)(b) — 72-hour full notification
+
+
+    **To:** [CSIRT COORDINATOR], simultaneously to ENISA
+
+    **Reference:** early warning of [DATE/TIME]
+
+    **Trigger type:** [ actively exploited vulnerability | severe incident ]
+
+
+    **Product:** [PRODUCT NAME]
+
+    **Affected versions:** [AFFECTED VERSIONS]
+
+
+    **General information about the vulnerability/incident:**
+
+    [WHAT IT IS AND HOW IT MANIFESTS]
+
+
+    **Severity and impact, as currently assessed:**
+
+    [SEVERITY / CVSS IF APPLICABLE / OBSERVED OR LIKELY IMPACT]
+
+
+    **Indicators of compromise, if available (incident only):**
+
+    [IOCs, or "none identified at this stage"]
+
+
+    **Suspected cause / threat type, if known at this stage (incident only):**
+
+    [SUSPECTED CAUSE, or "under investigation"]
+
+
+    **Corrective or mitigating measures taken or planned:**
+
+    [MEASURES — e.g. patch in progress, workaround published, affected feature disabled]
+
+
+    **Cross-border relevance, if known:**
+
+    [MEMBER STATES / MARKETS AFFECTED, or "not yet known"]
+
+
+    This notification is submitted under Article 14(2)(b) [or 14(4)(b)], within 72 hours
+
+    of the manufacturer becoming aware. A final report will follow:
+
+    [14 days after a corrective or mitigating measure becomes available (vulnerability) |
+
+    within one month of this notification (incident)].
+
+
+    Filed by: [FILER NAME], [FILER ROLE], [FILER CONTACT]
+
+    '
+  final_report_vulnerability: '# Article 14(2)(c) — final report: actively exploited vulnerability
+
+
+    **To:** [CSIRT COORDINATOR], simultaneously to ENISA
+
+    **Reference:** early warning of [DATE], full notification of [DATE]
+
+
+    **Product:** [PRODUCT NAME]
+
+    **Affected versions:** [AFFECTED VERSIONS]
+
+
+    **Description of the vulnerability:**
+
+    [FULL DESCRIPTION]
+
+
+    **Severity and impact:**
+
+    [FINAL SEVERITY ASSESSMENT AND IMPACT]
+
+
+    **Information about the malicious actor, where available:**
+
+    [WHAT IS KNOWN, or "not attributed"]
+
+
+    **Security update or other corrective/mitigating measure made available:**
+
+    [VERSION / PATCH / ADVISORY LINK]
+
+
+    **Date the corrective or mitigating measure became available:** [DATE]
+
+    (This report is due no later than 14 days after that date — Article 14(2)(c). It is
+
+    anchored to the fix, not to the date of the 72-hour notification.)
+
+
+    Filed by: [FILER NAME], [FILER ROLE], [FILER CONTACT]
+
+    '
+  final_report_incident: '# Article 14(4)(c) — final report: severe incident
+
+
+    **To:** [CSIRT COORDINATOR], simultaneously to ENISA
+
+    **Reference:** early warning of [DATE], full notification of [DATE]
+
+
+    **Product:** [PRODUCT NAME]
+
+    **Affected versions / installations:** [AFFECTED VERSIONS]
+
+
+    **Detailed description of the incident:**
+
+    [FULL DESCRIPTION]
+
+
+    **Severity and impact:**
+
+    [FINAL SEVERITY ASSESSMENT AND IMPACT]
+
+
+    **Threat type or root cause:**
+
+    [ROOT CAUSE]
+
+
+    **Mitigation measures taken or ongoing:**
+
+    [MEASURES]
+
+
+    **Cross-border impact, if any:**
+
+    [MEMBER STATES / MARKETS AFFECTED, or "none identified"]
+
+
+    This report is due within one month of the submission of the 72-hour notification
+
+    (submitted [DATE]) — Article 14(4)(c). It is NOT tied to the availability of a fix:
+
+    file it on the one-month clock regardless of remediation status.
+
+
+    Filed by: [FILER NAME], [FILER ROLE], [FILER CONTACT]
+
+    '
+readiness_checklist:
+  named_filer_identified: false
+  deputy_identified: false
+  csirt_contact_identified: false
+  templates_reviewed: false
+  tabletop_completed: false
+  tabletop_date: null
+  note: 'Nothing in this checklist is ticked. Article 14 has applied since 11 September 2026 and this
+    product has been on the market since 1 July 2026. The gap is recorded as risk R-11. None of the remaining
+    items requires engineering work: they require two names and one phone call.
+
+    '

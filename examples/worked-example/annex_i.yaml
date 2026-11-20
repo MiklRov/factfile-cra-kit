@@ -1,0 +1,439 @@
+# Sample Product — essential requirements matrix, Annex I to Regulation (EU) 2024/2847
+#
+# Assessed by the manufacturer against its own product. A requirement is recorded as met
+# only where evidence is attached. Where the product does not meet a requirement, it says
+# not_met — this is a working document for a product that is already on the market, not a
+# certificate.
+
+meta:
+  regulation: "Regulation (EU) 2024/2847"
+  schema_version: "0.1.0"
+  product: "Sample Product"
+  product_version: "iOS 1.0.15 / Android 1.2.39"
+  assessed_at: "2026-08-21"
+  assessor: "<manufacturer name> (manufacturer)"
+
+part_i:
+  - id: EI-01
+    article: "Annex I, Part I, (2)(a)"
+    title: "No known exploitable vulnerabilities"
+    requirement: "The product is made available on the market without known exploitable vulnerabilities."
+    applicability: applicable
+    annex_vii: 3
+    status: in_progress
+    owner: "manufacturer"
+    evidence:
+      - type: sbom
+        ref: "sbom.cdx.json — 278 components across the three parts of the product"
+        note: "Generated from resolved build output, not from manifests."
+      - type: test_report
+        ref: "OSV.dev component matching, run against the SBOM"
+        note: >
+          Identifier matching only. A match is a starting point for assessment, not a finding of
+          exposure. At the time of writing the matching pass had not been completed for the
+          Maven and PyPI components.
+    notes: >
+      Not claimed as met. The check is incomplete: licence and vulnerability resolution covers
+      4 of 278 components. Until the matching pass runs across all three parts, the manufacturer
+      cannot state that the product ships without known exploitable vulnerabilities.
+
+  - id: EI-02
+    article: "Annex I, Part I, (2)(b)"
+    title: "Secure by default configuration"
+    requirement: "The product is made available with a secure by default configuration, with the ability to reset it to its original state."
+    applicability: applicable
+    annex_vii: 2
+    status: met
+    owner: "manufacturer"
+    evidence:
+      - type: config
+        ref: "android/app/src/main/AndroidManifest.xml — allowBackup=false"
+        note: "Application data, including the authentication token, cannot be extracted through platform backup."
+      - type: code_ref
+        ref: "data/api/ApiClient.kt, ios/App/Networking/APIClient.swift — HTTPS base URL, cleartext traffic not enabled"
+      - type: design_doc
+        ref: "product.yaml section_1.annex_ii_user_information.secure_configuration_guidance"
+        note: >
+          The product exposes no user-configurable security settings. There is no insecure
+          configuration a user can select, and reset to original state is the platform's own
+          uninstall and reinstall.
+
+  - id: EI-03
+    article: "Annex I, Part I, (2)(c)"
+    title: "Vulnerabilities addressed through security updates"
+    requirement: "The product can be updated to address vulnerabilities, including automatic updates where applicable, with notification to the user."
+    applicability: applicable
+    annex_vii: 2
+    status: met
+    owner: "manufacturer"
+    evidence:
+      - type: process_doc
+        ref: "product.yaml section_2.vulnerability_handling_processes.update_distribution"
+        note: >
+          Updates are distributed through the App Store and Google Play. Both platforms support
+          automatic updates and both notify the user; the user may disable automatic updates at
+          the platform level. Backend fixes reach all users without any action.
+
+  - id: EI-04
+    article: "Annex I, Part I, (2)(d)"
+    title: "Protection from unauthorised access"
+    requirement: "The product protects against unauthorised access by appropriate control mechanisms, and reports on possible unauthorised access."
+    applicability: applicable
+    annex_vii: 2
+    status: in_progress
+    owner: "manufacturer"
+    evidence:
+      - type: code_ref
+        ref: "data/api/ApiClient.kt:19 — the authentication token is attached only when the request host matches the API host"
+        note: "Prevents the token leaking to a third-party host on a redirect the HTTP client would otherwise follow."
+      - type: code_ref
+        ref: "core-design/.../auth/FamilyTokenStore.kt, ios/App/Networking/TokenStore.swift — token issued through Google Sign-In and Sign in with Apple"
+    notes: >
+      The first half of the requirement has evidence. The second half — reporting on possible
+      unauthorised access — does not: there is no mechanism by which a user is told that their
+      account was accessed from elsewhere. See EI-12 and risk R-14.
+
+  - id: EI-05
+    article: "Annex I, Part I, (2)(e)"
+    title: "Confidentiality of data"
+    requirement: "The product protects the confidentiality of stored, transmitted or processed data, personal or other, including by encrypting relevant data at rest or in transit."
+    applicability: applicable
+    annex_vii: 2
+    status: in_progress
+    owner: "manufacturer"
+    evidence:
+      - type: code_ref
+        ref: "data/api/ApiClient.kt, ios/App/Networking/APIClient.swift — all traffic over HTTPS, no cleartext exception"
+      - type: config
+        ref: "android/app/build.gradle.kts targetSdk 35 — the platform default network security configuration excludes user-installed certificate authorities"
+        note: "No certificate pinning is implemented; the platform default is what provides the protection."
+      - type: code_ref
+        ref: "data/api/ApiClient.kt:35 — HTTP request logging is compiled into debug builds only, at a level that excludes headers"
+      - type: code_ref
+        ref: "api/routers/profile.py — the data export deliberately excludes token version, payment state, OAuth subject identifiers, device push tokens and other users' rows"
+        note: "A deliberate exclusion list on a user-facing data dump, rather than serialising whatever the model happens to hold."
+    notes: >
+      In transit: evidenced. At rest on the device: not met. The authentication token is stored
+      in a DataStore preferences file in plaintext, without the platform keystore. See risk R-02.
+      At rest on the server: not assessed in this file.
+
+  - id: EI-06
+    article: "Annex I, Part I, (2)(f)"
+    title: "Integrity of data"
+    requirement: "The product protects the integrity of stored, transmitted or processed data, commands, configuration and the product's own code against unauthorised manipulation."
+    applicability: applicable
+    annex_vii: 2
+    status: in_progress
+    owner: "manufacturer"
+    evidence:
+      - type: process_doc
+        ref: "App Store and Google Play package signature verification on install and update"
+      - type: code_ref
+        ref: "reminders/ReminderNotifier.kt — pending intents created with FLAG_IMMUTABLE"
+      - type: config
+        ref: "android/app/src/main/AndroidManifest.xml — the alarm receiver is not exported; only the boot receiver is, as the platform requires"
+    notes: >
+      Integrity of the delivered artefact is protected by the platforms. Integrity of the
+      production process is not: the build toolchain is not pinned and the dependency lock file
+      is not committed, so the same version number does not necessarily denote the same software.
+      See risks R-03 and R-04.
+
+  - id: EI-07
+    article: "Annex I, Part I, (2)(g)"
+    title: "Data minimisation"
+    requirement: "The product processes only data that is adequate, relevant and limited to what is necessary in relation to its intended use."
+    applicability: applicable
+    annex_vii: 2
+    status: not_met
+    owner: "manufacturer"
+    evidence:
+      - type: policy
+        ref: "https://example.invalid/privacy (22 June 2026) — names Google Gemini, OpenAI, Telegram and Sentry as recipients"
+      - type: code_ref
+        ref: "services/ai/config.py — named billed models establish that both providers are used on their paid tiers"
+      - type: third_party
+        ref: "OpenAI, Data controls in the OpenAI platform; Google, Gemini API data logging and sharing (retrieved 21 August 2026)"
+        note: >
+          On the paid tiers neither provider trains on this data by default. Retention is a separate
+          matter and is not zero: up to 30 days at OpenAI, a default maximum of 55 days at Google.
+          See section 2.6.
+    notes: >
+      Recorded as not met for a specific, identified reason rather than as a general failing.
+      The mitigating fact is recorded first, because it is real: both providers are used on paid
+      tiers where the data is not used for training, and retention there is bounded rather than
+      indefinite. That bounds the consequence; it does not address the requirement.
+
+      The receipt scanner accepts any photograph and forwards it to external processing without
+      inspecting what it contains. A user who photographs a document that is not a receipt —
+      a bank statement, an identity document, a card — transmits it. The product performs no
+      minimisation at that boundary. See risk R-01.
+
+  - id: EI-08
+    article: "Annex I, Part I, (2)(h)"
+    title: "Availability of essential functions"
+    requirement: "The product protects the availability of essential and basic functions, including after an incident, and by means of resilience and mitigation measures against denial-of-service attacks."
+    applicability: applicable
+    annex_vii: 2
+    status: not_met
+    owner: "manufacturer"
+    evidence: []
+    notes: >
+      No essential function of this product survives the loss of the backend, and two core
+      features additionally depend on third-party services the manufacturer does not operate.
+      No resilience measure, degraded mode or offline capability is implemented, and no
+      denial-of-service mitigation has been documented. This is an accurate description of the
+      product as built. See risk R-08.
+
+  - id: EI-09
+    article: "Annex I, Part I, (2)(i)"
+    title: "No adverse effect on availability of other devices or networks"
+    requirement: "The product minimises its own negative impact on the availability of services provided by other devices or networks."
+    applicability: applicable
+    annex_vii: 2
+    status: met
+    owner: "manufacturer"
+    evidence:
+      - type: design_doc
+        ref: "product.yaml section_2.architecture"
+        note: >
+          The applications expose no network service, accept no inbound connections and perform
+          no discovery, scanning or broadcast on the local network. Outbound traffic is limited
+          to the manufacturer's own API. The backend is a single service behind the
+          manufacturer's own infrastructure.
+
+  - id: EI-10
+    article: "Annex I, Part I, (2)(j)"
+    title: "Limitation of attack surface"
+    requirement: "The product is designed, developed and produced to limit attack surfaces, including external interfaces."
+    applicability: applicable
+    annex_vii: 2
+    status: met
+    owner: "manufacturer"
+    evidence:
+      - type: config
+        ref: "android/app/src/main/AndroidManifest.xml — one exported activity (the launcher), one exported receiver (BOOT_COMPLETED, exported only because the platform requires it), the alarm receiver not exported"
+      - type: code_ref
+        ref: "data/api/MedicineApiService.kt — the client calls a fixed, enumerated set of API endpoints; there is no generic request surface"
+    notes: >
+      Recorded as met for the client applications. The backend's own attack surface is not
+      assessed in this file and is a known limitation of the assessment, not a claim about the
+      backend.
+
+  - id: EI-11
+    article: "Annex I, Part I, (2)(k)"
+    title: "Mitigation of the impact of exploitation"
+    requirement: "The product reduces the impact of an incident using appropriate exploitation mitigation mechanisms and techniques."
+    applicability: applicable
+    annex_vii: 2
+    status: not_met
+    owner: "manufacturer"
+    evidence: []
+    notes: >
+      The Android release build is produced with code shrinking and obfuscation disabled
+      (isMinifyEnabled = false), so the API surface and endpoint structure are readable directly
+      from the package. The authentication token is stored unencrypted. There is no
+      compartmentalisation of the client. Nothing here is exotic, and all of it is common in
+      mobile applications — which is why it is recorded honestly rather than argued away.
+      See risks R-02 and R-09.
+
+  - id: EI-12
+    article: "Annex I, Part I, (2)(l)"
+    title: "Recording and monitoring of security-relevant activity"
+    requirement: "The product provides security-related information by recording and monitoring relevant internal activity, including access to or modification of data, with an opt-out mechanism for the user."
+    applicability: applicable
+    annex_vii: 2
+    status: not_met
+    owner: "manufacturer"
+    evidence: []
+    notes: >
+      Sentry receives runtime error reports. That is error reporting, not security event
+      recording: authentication failures, account access from a new device, permission changes
+      and data access are not recorded as security events, are not surfaced to the user, and
+      there is consequently nothing for the user to opt out of. See risk R-14.
+
+  - id: EI-13
+    article: "Annex I, Part I, (2)(m)"
+    title: "Data deletion and portability"
+    requirement: "The product provides the possibility for users to securely and easily remove on a permanent basis all data and settings, and, where such data can be transferred to other products or systems, to do so securely."
+    applicability: applicable
+    annex_vii: 2
+    status: met
+    owner: "manufacturer"
+    evidence:
+      - type: code_ref
+        ref: "api/routers/profile.py:693 — GET /profile/export, documented as GDPR data portability. Returns the caller's own data as a downloadable attachment in JSON (machine-readable) or HTML (self-contained, readable without any tool)."
+        note: >
+          Scoped to the authenticated user or to the places they are still a member of. Secrets are
+          deliberately excluded from the export: token version, payment state, OAuth subject
+          identifiers, device push tokens and other users' rows.
+      - type: code_ref
+        ref: "services/receipt_export/formatters.py — receipt export with an RFC 4180 conformant CSV writer"
+      - type: code_ref
+        ref: "data/api/MedicineApiService.kt — DELETE /profile, account deletion endpoint reachable from the client"
+        note: "Present as a store policy requirement; the client can invoke it."
+      - type: customer_attestation
+        ref: >
+          The manufacturer states that account deletion has been verified end to end and that the
+          verification is recorded.
+        attested_by: "<manufacturer name> (manufacturer)"
+        attested_at: "2026-08-21"
+        thread: "assessment correspondence, 21 August 2026"
+        verification: "unverified"
+        note: >
+          Recorded as the manufacturer's statement rather than as a verified fact, because the
+          server-side behaviour is outside what this assessment examined. The reference to the
+          record itself — a test, a log or a written procedure — should replace this attestation
+          once available, at which point the evidence type becomes test_report or process_doc and
+          the statement is no longer needed.
+    notes: >
+      Both halves are satisfied, by different kinds of evidence, and the difference is worth
+      stating rather than smoothing over.
+
+      Portability is evidenced in code and was verified during this assessment: the export
+      endpoint exists, is scoped to the caller, excludes credentials and other users' data, and
+      offers both a machine-readable and a human-readable form. A user can therefore take their
+      data with them without needing a tool to read it.
+
+      Deletion rests on the manufacturer's own attestation that it has been verified end to end
+      and recorded. That attestation has not been audited, and the validator flags it as
+      unchecked (W104). It remains the weaker of the two, and the record says so.
+
+      One item stays open and is not part of this requirement: data already transmitted to the
+      external processors named in section 2 is outside both the deletion and the export path.
+      See risk R-15.
+
+part_ii:
+  - id: VH-01
+    article: "Annex I, Part II, (1)"
+    title: "Identification of components and the SBOM"
+    requirement: "The manufacturer identifies and documents vulnerabilities and components contained in the product, including by drawing up a software bill of materials in a commonly used machine-readable format covering at the very least the top-level dependencies."
+    applicability: applicable
+    annex_vii: 8
+    status: met
+    owner: "manufacturer"
+    evidence:
+      - type: sbom
+        ref: "sbom.cdx.json — CycloneDX 1.6, 278 components, covering the iOS client, the Android client and the backend"
+        note: >
+          Generated from resolved build output for all three parts. On the Android side the
+          resolved tree yields 242 components against 43 obtainable by parsing build files.
+          Component-level licence determination is incomplete and is recorded as a gap in
+          section 6; the requirement is identification of components, which is satisfied.
+
+  - id: VH-02
+    article: "Annex I, Part II, (2)"
+    title: "Addressing vulnerabilities without delay"
+    requirement: "The manufacturer addresses and remediates vulnerabilities without delay, including by providing security updates, and where technically feasible provides updates separately from functionality updates."
+    applicability: applicable
+    annex_vii: 2
+    status: not_met
+    owner: "manufacturer"
+    evidence: []
+    notes: >
+      No documented process exists for triaging and remediating a reported vulnerability, and no
+      report has ever arrived from outside — which follows from VH-06, since there is no channel
+      through which one could.
+
+      There is, however, an internal precedent, and it belongs in the record: an authorisation
+      flaw in the data export path allowed a former household member to export that household's
+      shopping list after being removed. It was found internally, fixed, and the reasoning is
+      documented at the fix site (api/routers/profile.py, shopping list scoping). What is missing
+      is not the capacity to fix a vulnerability but the process around it: no triage timeline, no
+      advisory, no record beyond a code comment.
+
+      Security fixes are also not separable from feature releases: a user receives them as part of
+      the next application version. See risk R-11.
+
+  - id: VH-03
+    article: "Annex I, Part II, (3)"
+    title: "Regular security testing and review"
+    requirement: "The manufacturer applies effective and regular tests and reviews of the security of the product with digital elements."
+    applicability: applicable
+    annex_vii: 6
+    status: not_met
+    owner: "manufacturer"
+    evidence:
+      - type: test_report
+        ref: "Android lint (lintVitalAnalyzeRelease) in the release build; ruff configured for the backend; pytest suite for the backend"
+        note: "Functional and style tooling. Neither constitutes security testing."
+    notes: >
+      No penetration test, no external security assessment and no recurring security review has
+      been performed. The inspections recorded in section 6 were carried out once, during the
+      preparation of this file. Recorded as not met.
+
+  - id: VH-04
+    article: "Annex I, Part II, (4)"
+    title: "Public disclosure of fixed vulnerabilities"
+    requirement: "Once a security update has been made available, the manufacturer publicly discloses information about fixed vulnerabilities, including a description, information allowing users to identify the product affected, the impacts and severity, and information helping users to remediate."
+    applicability: applicable
+    annex_vii: 2
+    status: not_met
+    owner: "manufacturer"
+    evidence: []
+    notes: >
+      No advisories have been published and no channel exists through which they would be. No
+      vulnerability has been fixed that would have required disclosure, but the absence of a
+      channel is the finding, not the absence of an occasion. See risk R-06.
+
+  - id: VH-05
+    article: "Annex I, Part II, (5)"
+    title: "Coordinated vulnerability disclosure policy"
+    requirement: "The manufacturer puts in place and enforces a policy on coordinated vulnerability disclosure."
+    applicability: applicable
+    annex_vii: 2
+    status: not_met
+    owner: "manufacturer"
+    evidence: []
+    notes: >
+      No policy exists. Neither repository contains a SECURITY.md and no .well-known/security.txt
+      is served from example.invalid. See risk R-05.
+
+  - id: VH-06
+    article: "Annex I, Part II, (6)"
+    title: "Channel for receiving vulnerability reports"
+    requirement: "The manufacturer takes measures to facilitate the sharing of information about potential vulnerabilities, including by providing a contact address for the reporting of vulnerabilities."
+    applicability: applicable
+    annex_vii: 2
+    status: not_met
+    owner: "manufacturer"
+    evidence: []
+    notes: >
+      No contact address for security reports is published. The privacy policy gives a general
+      support address and the Google Play listing gives a personal mailbox; neither is a
+      security contact, and a researcher has no way to know where to write. See risk R-13.
+
+  - id: VH-07
+    article: "Annex I, Part II, (7)"
+    title: "Secure distribution of updates"
+    requirement: "The manufacturer ensures the secure distribution of updates in a timely manner and, where applicable, provides security patches or updates in an automatic manner."
+    applicability: applicable
+    annex_vii: 2
+    status: met
+    owner: "manufacturer"
+    evidence:
+      - type: process_doc
+        ref: "Distribution through the App Store and Google Play"
+        note: >
+          Both platforms verify the package signature on install and update, distribute over
+          authenticated transport and support automatic update. The manufacturer signs releases
+          with a distribution certificate held in continuous integration secrets.
+      - type: config
+        ref: ".github/workflows/ios_deploy.yml — signed release pipeline to TestFlight and the App Store"
+
+  - id: VH-08
+    article: "Annex I, Part II, (8)"
+    title: "Timely, free-of-charge updates with a security advisory"
+    requirement: "The manufacturer disseminates security updates without delay and free of charge, accompanied by advisory messages providing users with the relevant information, including on potential action to be taken."
+    applicability: applicable
+    annex_vii: 2
+    status: not_met
+    owner: "manufacturer"
+    evidence:
+      - type: process_doc
+        ref: "product.yaml section_2.vulnerability_handling_processes.update_distribution"
+        note: "Updates are free of charge and reach users through the platform update mechanisms."
+    notes: >
+      The free-of-charge and delivery elements are satisfied. The advisory element is not: no
+      advisory message accompanies any release, and a user has no way to learn that a given
+      update contained a security fix or what action to take. Recorded as not met because the
+      requirement is conjunctive.
