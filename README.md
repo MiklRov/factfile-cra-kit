@@ -27,7 +27,7 @@ uses it for the ecosystems the kit does not parse itself (see "On the SBOM").
 Install it:
 
 ```bash
-pipx install git+https://github.com/MiklRov/factfile-cra-kit@v0.2.0
+pipx install git+https://github.com/MiklRov/factfile-cra-kit@v0.2.1
 ```
 
 or work from a clone:
