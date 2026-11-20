@@ -21,10 +21,10 @@ import pytest
 
 from conftest import FIXTURES_DIR
 
-import sbom_coverage as coverage
-import syft_scan
-from build import build, known_unknowns_section
-from sbom_gen import generate
+from factfile_cra_kit import sbom_coverage as coverage
+from factfile_cra_kit import syft_scan
+from factfile_cra_kit.build import build, known_unknowns_section
+from factfile_cra_kit.sbom_gen import generate
 
 POLYGLOT = FIXTURES_DIR / "polyglot"
 HAPPY_DIR = FIXTURES_DIR / "build_happy"

@@ -24,7 +24,7 @@ import yaml
 
 from conftest import FIXTURES_DIR
 
-from build import build, ANNEX_VII_TITLES
+from factfile_cra_kit.build import build, ANNEX_VII_TITLES
 
 HAPPY_DIR = FIXTURES_DIR / "build_happy"
 CONTRADICTORY_DIR = FIXTURES_DIR / "build_contradictory"
@@ -107,7 +107,7 @@ def test_contradictory_risks_file_alone_is_caught_by_cross_check():
     """Sanity check that the fixture actually is contradictory (isolates a
     fixture-authoring mistake from a build.py regression)."""
     import yaml
-    from risk_report import cross_check
+    from factfile_cra_kit.risk_report import cross_check
 
     risks = yaml.safe_load((CONTRADICTORY_DIR / "risks.yaml").read_text(encoding="utf-8"))
     matrix = yaml.safe_load((CONTRADICTORY_DIR / "annex_i.yaml").read_text(encoding="utf-8"))

@@ -22,7 +22,7 @@ import urllib.error
 
 import pytest
 
-import vuln_scan
+from factfile_cra_kit import vuln_scan
 
 
 # --------------------------------------------------------------------------

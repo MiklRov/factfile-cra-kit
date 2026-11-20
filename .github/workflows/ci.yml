@@ -23,3 +23,36 @@ jobs:
       - name: Run pytest
         run: pytest tests/
         working-directory: .
+
+  cra-kit-install:
+    name: cra-kit installs and runs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install the package into a clean environment
+        run: |
+          python -m venv /tmp/venv
+          /tmp/venv/bin/pip install .
+
+      - name: Every console script starts
+        working-directory: /tmp
+        run: |
+          for c in build sbom vuln-scan validate license-enrich; do
+            /tmp/venv/bin/cra-kit-$c --help > /dev/null
+          done
+
+      - name: The installed build reproduces the worked example byte-for-byte
+        working-directory: /tmp
+        run: |
+          /tmp/venv/bin/cra-kit-build \
+            --config-dir "$GITHUB_WORKSPACE/examples/worked-example" \
+            --sbom "$GITHUB_WORKSPACE/examples/worked-example/sbom.cdx.json" \
+            -o /tmp/rebuilt
+          for f in technical_file.md declaration_of_conformity.md; do
+            cmp "/tmp/rebuilt/$f" "$GITHUB_WORKSPACE/examples/worked-example/$f"
+          done

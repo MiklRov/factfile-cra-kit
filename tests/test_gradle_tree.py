@@ -19,7 +19,7 @@ from __future__ import annotations
 
 from conftest import FIXTURES_DIR
 
-from gradle_tree import parse, to_components
+from factfile_cra_kit.gradle_tree import parse, to_components
 
 DEPS = FIXTURES_DIR / "gradle_tree_markers" / "deps.txt"
 

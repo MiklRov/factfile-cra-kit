@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import pytest
 
-from risk_report import cross_check
+from factfile_cra_kit.risk_report import cross_check
 
 
 # --------------------------------------------------------------------------

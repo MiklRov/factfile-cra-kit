@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+# Not "cra-kit", and the import package is not "cra_kit": dynamohtech/cra-kit
+# uses both, and two packages with one import name overwrite each other when
+# installed into the same environment.
+name = "factfile-cra-kit"
+dynamic = ["version"]
+description = "Annex VII technical documentation for the EU Cyber Resilience Act, assembled and cross-checked"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE"]
+dependencies = ["pyyaml>=6.0"]
+
+[project.optional-dependencies]
+test = ["pytest>=8.0"]
+
+[project.urls]
+Source = "https://github.com/MiklRov/factfile-cra-kit"
+
+[project.scripts]
+cra-kit-build = "factfile_cra_kit.build:main"
+cra-kit-sbom = "factfile_cra_kit.sbom_gen:main"
+cra-kit-vuln-scan = "factfile_cra_kit.vuln_scan:main"
+cra-kit-validate = "factfile_cra_kit.validate:main"
+cra-kit-license-enrich = "factfile_cra_kit.license_enrich:main"
+
+[tool.setuptools]
+packages = ["factfile_cra_kit"]
+
+[tool.setuptools.package-data]
+factfile_cra_kit = ["doc.css"]
+
+[tool.setuptools.dynamic]
+version = { attr = "factfile_cra_kit.__version__" }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
