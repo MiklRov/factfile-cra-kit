@@ -205,6 +205,10 @@ requirement cannot be closed without evidence, a risk cannot be lowered without 
 control, and inconsistent data stops the build rather than producing a confident-looking
 document.
 
+[`examples/worked-example/`](examples/worked-example/) is what a filled-in one looks like —
+a real released product, 31 pages, 278 components, seven of twenty-one requirements closed
+and the other fourteen named rather than hidden.
+
 If you would rather someone did that part and put their name on it, that is what we do:
 **[factfile.eu](https://factfile.eu)**. The tools stay free either way.
 
@@ -334,10 +338,40 @@ Article 14 requires manufacturers to report actively exploited vulnerabilities a
 
 ## Example
 
-A complete worked example — a filled set of YAML files and the pack built from them — is
-being prepared and will be added here.
+**[`examples/worked-example/`](examples/worked-example/)** — the pack for a real released
+product: a household inventory tracker shipped as an Android client, an iOS client and the
+backend both require. The four YAML files, the SBOM they were built against, and the
+output. The manufacturer and the product identifiers are anonymised; the component set, the
+evidence, the gaps and the warnings are the real ones.
 
-Until then, two small fixture sets show the mechanics:
+Rebuild it from the repository root:
+
+```bash
+python3 build.py --config-dir examples/worked-example \
+                 --sbom examples/worked-example/sbom.cdx.json \
+                 -o out --pdf
+```
+
+31 pages, 278 components, **7 of the 21 essential requirements met, 4 in progress, 10 not
+met.** Every one of the fourteen that are not closed carries a named gap. The build prints
+five `W3xx` warnings because the Article 14 runbook has no named filer and no completed
+walkthrough — which is the product's true state, so it is what the document says.
+
+**The declaration of conformity refuses to be signed.** Field 5, the statement of
+conformity, holds what `build.py` writes when the requirements matrix does not support one:
+*"NOT ISSUED… A declaration of conformity issued against this evidence would be false."*
+The document that carries legal weight is the one the tool is least willing to fake.
+
+Two further findings are the kind a questionnaire does not produce: the SBOM's licence data
+is determined for 4 of 278 components, and `pymupdf 1.27.2.3` is AGPL-3.0-or-later inside a
+network-facing backend serving proprietary clients. Both are named in the technical file
+itself rather than left for a reader to find.
+[`examples/worked-example/README.md`](examples/worked-example/README.md) walks through them.
+
+A worked example with twenty-one green rows would demonstrate nothing but a willingness to
+fill in twenty-one rows. Partway through is where every manufacturer reading this is.
+
+Two small fixture sets show the mechanics in isolation:
 `tests/fixtures/build_happy/` is a minimal valid set that builds, and
 `tests/fixtures/build_contradictory/` is what the integrity check rejects, and why.
 
