@@ -10,14 +10,27 @@ It builds a complete pack from a product's source code plus structured data: an 
 
 ## Prerequisites
 
-Python 3.12 or newer, and the packages in `requirements-dev.txt`.
+Python 3.12 or newer. Either install the kit, or run it from a clone with the packages in
+`requirements-dev.txt`.
 
-`--pdf` additionally needs **pandoc** and a LaTeX engine (`xelatex`). Without them the
-build still produces Markdown — omit `--pdf` and nothing is lost but the typesetting.
+`--pdf` additionally needs **pandoc** and a LaTeX engine (`xelatex`) with the DejaVu fonts.
+Without them the build still produces Markdown — omit `--pdf` and nothing is lost but the
+typesetting.
+
+[Syft](https://github.com/anchore/syft) is optional. When it is installed, `sbom_gen.py`
+uses it for the ecosystems the kit does not parse itself (see "On the SBOM").
 
 ---
 
 ## Quick start
+
+Install it:
+
+```bash
+pipx install git+https://github.com/MiklRov/factfile-cra-kit@v0.2.0
+```
+
+or work from a clone:
 
 ```bash
 pip install -r requirements-dev.txt
@@ -26,6 +39,15 @@ pip install -r requirements-dev.txt
 # this kit's own generator. Then:
 python3 build.py --config-dir . --sbom your-sbom.cdx.json -o out
 ```
+
+Installed, every script in the repository root is a command: `python3 build.py` is
+`cra-kit-build`, `sbom_gen.py` is `cra-kit-sbom`, `vuln_scan.py` is `cra-kit-vuln-scan`,
+`validate.py` is `cra-kit-validate`, and `license_enrich.py` is `cra-kit-license-enrich`.
+The YAML templates are not part of the installed package; take them from the repository.
+
+On Windows, Smart App Control may block the launchers pip creates for those commands,
+because they are not signed. `python -m factfile_cra_kit.build …` (and likewise for the
+other modules) runs the same tool without them.
 
 The four YAML files in the repository root are **templates**: the requirements matrix
 carries all twenty-one essential requirements with empty evidence, and the rest carry one
@@ -52,10 +74,15 @@ That is exactly what this kit does.
 
 ## Contents
 
+The code is the `factfile_cra_kit` package. The scripts with the same names in the
+repository root are thin wrappers around it, so every command below works from a clone.
+
 | File | Purpose |
 |---|---|
-| `sbom_gen.py` | SBOM generator (CycloneDX 1.6) across four ecosystems |
+| `sbom_gen.py` | SBOM generator (CycloneDX 1.6): its own parsers for four ecosystems, Syft for the rest, and a record of what it could not resolve |
 | `ecosystems.py` | Parsers for Gradle (Kotlin/Android, including multi-module projects) and PyPI. Composer and npm are parsed in `sbom_gen.py` |
+| `sbom_coverage.py` | Detects the ecosystems present in the source and records the ones missing from the SBOM as known unknowns |
+| `syft_scan.py` | Optional Syft fallback: runs Syft offline and merges its components with the kit's own |
 | `gradle_tree.py` | Parser for a Gradle-resolved dependency tree |
 | `vuln_scan.py` | Matches an SBOM's components against OSV.dev's known-vulnerability database |
 | `license_enrich.py` | Resolves licenses for an SBOM's Gradle/Maven and Python components — offline Gradle-cache POM walk, optional PyPI metadata lookup — and writes them back onto the SBOM |
@@ -67,7 +94,7 @@ That is exactly what this kit does.
 | `reporting.yaml` | Article 14 reporting runbook: triggers, deadlines, filer, CSIRT contact, templates, readiness checklist |
 | `reporting_report.py` | Completeness check of the runbook; renders it as appendix A |
 | `build.py` | Assembles the technical file and declaration into Markdown, PDF, HTML |
-| `doc.css` | HTML styling: one file, no external resources, no cookies |
+| `factfile_cra_kit/doc.css` | HTML styling: one file, no external resources, no cookies |
 
 ---
 
@@ -105,6 +132,15 @@ python3 sbom_gen.py /path/to/multi-module-project \
 python3 sbom_gen.py /path/to/backend \
     --name "MyBackend" --version "4.2.0" \
     --pip-freeze freeze.txt \
+    -o out/sbom.cdx.json
+
+# 1a'''. Go, Rust, .NET and container images go through Syft, if it is
+#        installed (found on PATH, or named with --syft). An image is read from
+#        a local archive, never pulled from a registry; first, on the build
+#        machine: docker save myimage:1.0 -o image.tar
+python3 sbom_gen.py /path/to/product \
+    --name "MyProduct" --version "1.2.3" \
+    --syft-image image.tar \
     -o out/sbom.cdx.json
 
 # 1b. Match the SBOM against known vulnerabilities (OSV.dev)
@@ -163,10 +199,11 @@ The build stops on any of these errors:
 | `E104` | Residual risk is below inherent, but no control is stated |
 | `E105` | A risk is accepted without a rationale |
 | `W201` | A requirement is not covered by any risk — the analysis is incomplete |
+| `W202` | `product.yaml` has a top-level key no section reads — it would not appear in the document |
 | `W300` | `reporting.yaml` is missing — appendix A is omitted, never a build failure |
 | `W301`–`W306` | The Article 14 runbook is present but incomplete: no named filer, no deputy, no CSIRT contact, templates unreviewed, no tabletop walkthrough, or the tabletop fields contradict each other |
 
-None of the `W3xx` codes stop the build: an unfilled runbook is a completeness gap, not a contradiction in the technical file itself — it just means the manufacturer is not yet ready to meet the Article 14 clock, which is worth knowing but not worth blocking the rest of the pack over.
+`W202` does not stop the build either: data the tool does not read is surfaced rather than silently dropped. None of the `W3xx` codes stop the build: an unfilled runbook is a completeness gap, not a contradiction in the technical file itself — it just means the manufacturer is not yet ready to meet the Article 14 clock, which is worth knowing but not worth blocking the rest of the pack over.
 
 `W201` is not a formality. On its first run against a real codebase it found seven requirements that had not been analysed at all: reviewing the code did not surface the process obligations, which relate not to the product but to maintaining it.
 
@@ -226,12 +263,15 @@ If you would rather someone did that part and put their name on it, that is what
 - **Gradle multi-module projects are discovered automatically.** Point `sbom_gen.py` at the repository root and, if a `settings.gradle.kts` / `settings.gradle` is found there, every `include(...)`-declared module's own `build.gradle.kts` is parsed and merged — not just the root file, which in a multi-module project typically only declares plugins and has no `dependencies {}` block of its own. Each component carries a `cra:module` property naming the module it was declared in. Inter-module dependencies (`implementation(project(":other-module"))`) are not third-party components and never appear in the output; `other-module`'s own external dependencies still do, tagged with its name. If the same `group:name@version` is declared by more than one module, it is written once with `cra:module` listing all of them; if two modules genuinely pin different versions of the same `group:name`, both are kept as separate components rather than one being silently dropped.
 - **`sbom_gen.py` refuses to write an empty SBOM (error `E-SBOM-01`).** If zero components are found, the run exits non-zero and prints exactly which manifest/lockfile paths were checked and where — an empty file that looks complete (valid CycloneDX, zero components, no warning) is the most dangerous failure mode in the kit: it silently passes as "done" when it usually means the tool was pointed at the wrong directory. Pass `--allow-empty` to write the file anyway, for the genuine case of a dependency-free module.
 - **Warning `W-SBOM-02`** fires (without failing the run) when every component in the SBOM is direct — i.e. it came from static parsing of `build.gradle.kts` file(s) rather than a Gradle-resolved tree, so no transitive dependency is present at all. It names the exact `gradlew :<module>:dependencies --configuration <config> > deps.txt` command and the matching `--gradle-tree` / `--gradle-configuration` flags to get full coverage instead.
-- **Python: `--pip-freeze` is the PyPI counterpart to `--gradle-tree`, and resolving a Python component set is a mandatory step, not an optional enhancement.** `requirements.txt` is hand-maintained and only ever shows the top-level packages someone chose to pin — a real incident found 27 declared packages against 111 actually resolved and running inside the production container, including security-critical packages (`cryptography`, `PyJWT`, `redis`, `sentry-sdk`) that were completely invisible to a `requirements.txt`-only scan and would have shipped as an SBOM gap in exactly the place Annex I Part II's SBOM requirement exists to close. Because of that, **`sbom_gen.py` treats a declared-only Python component set as a hard failure, `E-SBOM-02`, the same severity class as the empty-SBOM check `E-SBOM-01` — not a softer warning.** It fires whenever any PyPI component came only from static parsing of `requirements.txt` and no `--pip-freeze` was given; the run exits non-zero and no file is written. The fix it names is concrete: on the real target environment/container, run
+- **Python: `--pip-freeze` is the PyPI counterpart to `--gradle-tree`, and without it the Python part of the SBOM is not complete.** `requirements.txt` is hand-maintained and only ever shows the top-level packages someone chose to pin — a real incident found 27 declared packages against 111 actually resolved and running inside the production container, including security-critical packages (`cryptography`, `PyJWT`, `redis`, `sentry-sdk`) that were completely invisible to a `requirements.txt`-only scan and would have shipped as an SBOM gap in exactly the place Annex I Part II's SBOM requirement exists to close. Because of that, **a declared-only Python component set is never silent.** Whenever any PyPI component came only from static parsing of `requirements.txt` and no `--pip-freeze` was given, `sbom_gen.py` prints warning `W-SBOM-03` and records the gap in the SBOM itself as a known unknown with status `partial` — so it appears in section 8.3 of the technical file rather than only in a terminal. (Until v0.2.0 this was a hard failure, `E-SBOM-02`, that wrote no file at all; that left the manufacturer with no SBOM and no technical file instead of one that names the gap.) The fix it names is concrete: on the real target environment/container, run
   ```bash
   pip freeze > freeze.txt
   ```
   then re-run with `--pip-freeze freeze.txt`. `pip freeze` output is a flat list with no tree structure, so `sbom_gen.py` cross-references it against `requirements.txt` (root `requirements.txt` plus every `--pypi` extra) to tell direct from transitive: a package named in a requirements file is tagged `cra:direct=true`, everything else found only in the freeze file is `cra:direct=false` — genuine transitive information, not a guess. When no requirements file is available at all, `cra:direct` is tagged `"unknown"` rather than silently defaulting either way. Every PyPI component also carries `cra:pypi-source`: `"resolved"` when it came from `--pip-freeze`, `"declared"` when it came from `requirements.txt` parsing alone — so a reader of the finished technical file can tell which Python components were confirmed against a real resolved environment versus just declared. When both `--pypi requirements.txt` and `--pip-freeze` are given, the freeze file is authoritative for the component list itself (it reflects what actually runs); the requirements file is used only to inform `cra:direct` tagging, never parsed into a second, duplicate set of components.
-  For the genuine case where only a declared scan is available or intended, pass `--declared-only` — this is the explicit, visible admission mirroring `--allow-empty`: it downgrades the check to warning `W-SBOM-03` (same wording, same fix command) and the run still writes the file and exits zero.
+  `--declared-only` is still accepted, so existing scripts keep working, and has no effect: the check it used to downgrade is a warning anyway.
+- **Known unknowns.** `sbom_gen.py` looks through the source tree (four directory levels down, skipping `node_modules`, `vendor` and build output) for every ecosystem it can recognise, and compares that with what ended up in the SBOM. Anything found but missing, or present only in part, gets an entry: the ecosystem, the files that show it is there, why it is missing, and the command that fixes it. For a Dockerfile, the entry also names the base images from its `FROM` lines — "built on `python:3.12-slim`, contents not enumerated" says more than silence does. The record is written into the SBOM (`metadata.properties`: `cra:coverage-recorded`, plus one `cra:known-unknown` per gap), a non-empty record adds a CycloneDX composition with `aggregate: incomplete`, and warning `W-SBOM-04` prints the whole list. `build.py` prints it as **section 8.3, Known unknowns**; for an SBOM that carries no record — from another tool, or an older version of this one — section 8.3 says so, and says that the absence of a record is not evidence that coverage is complete. This is what ENISA's SBOM advisory asks for: documented gaps, exceptions and known unknowns in coverage.
+- **What stops the run, and what does not.** Only an empty SBOM (`E-SBOM-01`) stops `sbom_gen.py`. An ecosystem the kit has no parser for, a container image that was not scanned, a declared-only Python set, a static-only Gradle parse — each becomes a known unknown and a warning. The consistency rules of the technical file itself are untouched: `build.py` still refuses a requirement closed without evidence or a risk lowered without a named control.
+- **Syft, optionally.** For ecosystems the kit does not parse itself — Go, Rust, .NET, Ruby, OS packages, binaries, the contents of a container image — `sbom_gen.py` uses [Syft](https://github.com/anchore/syft) when it is on `PATH` or named with `--syft PATH` (`--no-syft` turns it off; `W-SBOM-05` warns when the path given does not exist). Syft's update check is switched off. A container image is read only from a local `docker save` archive or OCI layout passed with `--syft-image`, or from a local daemon named explicitly (`docker:<image>`); a registry is never contacted, so the SBOM step stays offline. The kit's own parsers keep priority for Gradle/Maven, PyPI, npm and Composer — they know which dependencies actually ship, and `license_enrich.py` resolves Gradle licences offline from the local cache, which Syft cannot. Syft's results for those ecosystems are dropped from a directory scan; from an image scan they are kept unless the same `group:name@version` is already there. Every component carries `cra:generator` (`cra-kit` or `syft`); Syft's carry `cra:direct` and `cra:dev` as `unknown`, because Syft cannot tell. A failing Syft run is a known unknown, never a crash.
 
 ---
 
