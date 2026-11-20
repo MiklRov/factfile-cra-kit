@@ -1,6 +1,8 @@
 """
-Tests for sbom_gen.py — the E-SBOM-01 / E-SBOM-02 / W-SBOM-02 / W-SBOM-03
-checks and the --allow-empty / --declared-only escape hatches (defect #1: an
+Tests for sbom_gen.py — the E-SBOM-01 / W-SBOM-02 / W-SBOM-03 checks and the
+--allow-empty escape hatch. E-SBOM-02 (declared-only PyPI) was a hard
+failure until P0 and is now a warning plus a known-unknowns entry; the
+--declared-only flag is still accepted and has no effect (defect #1: an
 empty SBOM used to be written silently with exit code 0; defect #2:
 root-only static parsing of a multi-module project used to be the reason the
 SBOM came out empty in the first place; defect #3: a PyPI component set
@@ -114,10 +116,11 @@ def test_multi_module_root_produces_nonempty_sbom_with_module_tags(tmp_path):
 # declared (requirements.txt alone), unless --declared-only is explicit
 # --------------------------------------------------------------------------
 
-def test_declared_only_pypi_hard_fails_and_writes_nothing(tmp_path, capsys):
+def test_declared_only_pypi_warns_and_records_a_known_unknown(tmp_path, capsys):
     # PIP_FREEZE_DECLARED_ONLY_DIR has only a requirements.txt, no gradle,
-    # no --pip-freeze passed — same failure class as E-SBOM-01: this must
-    # refuse to write the file, not just warn.
+    # no --pip-freeze passed. This used to be the hard failure E-SBOM-02;
+    # since P0 it writes the SBOM, warns, and records the gap in the SBOM
+    # itself, so the technical file states it instead of not existing.
     out = tmp_path / "sbom.cdx.json"
     rc = generate(
         PIP_FREEZE_DECLARED_ONLY_DIR, "X", "1.0.0", None, include_dev=False,
@@ -125,12 +128,21 @@ def test_declared_only_pypi_hard_fails_and_writes_nothing(tmp_path, capsys):
     )
     err = capsys.readouterr().err
 
-    assert rc != 0
-    assert "E-SBOM-02" in err
+    assert rc == 0
+    assert out.exists()
+    assert "E-SBOM-02" not in err
+    assert "W-SBOM-03" in err
     assert "pip freeze" in err
     assert "--pip-freeze" in err
-    assert "--declared-only" in err
-    assert not out.exists()
+
+    from coverage import from_bom
+    bom = json.loads(out.read_text(encoding="utf-8"))
+    unknowns = from_bom(bom)
+    pypi = [u for u in unknowns if u["ecosystem"] == "pypi"]
+    assert len(pypi) == 1
+    assert pypi[0]["status"] == "partial"
+    assert "--pip-freeze" in pypi[0]["fix"]
+    assert bom["compositions"][0]["aggregate"] == "incomplete"
 
 
 def test_pip_freeze_flag_satisfies_the_check_and_no_warning_fires(tmp_path, capsys):
@@ -163,7 +175,7 @@ def test_pip_freeze_flag_satisfies_the_check_and_no_warning_fires(tmp_path, caps
     assert direct["urllib3"] == "false"
 
 
-def test_declared_only_flag_downgrades_to_warning_and_still_writes(tmp_path, capsys):
+def test_declared_only_flag_is_still_accepted_and_still_writes(tmp_path, capsys):
     out = tmp_path / "sbom.cdx.json"
     rc = generate(
         PIP_FREEZE_DECLARED_ONLY_DIR, "X", "1.0.0", None, include_dev=False,

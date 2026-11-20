@@ -27,6 +27,7 @@ from pathlib import Path
 
 import yaml
 
+import coverage
 from risk_report import cross_check, render as render_risks
 from reporting_report import check_readiness, render as render_reporting
 
@@ -232,22 +233,80 @@ def s8(sbom: dict) -> str:
     o.append(f"- Direct dependencies: **{direct}**")
     o.append(f"- Without a stated licence: **{sum(1 for c in comps if not c.get('licenses'))}**")
     o.append("")
-    o.append(
-        "Coverage exceeds the statutory minimum: the full dependency tree of the "
-        "shipped product is included, not only the top level. Build-time "
-        "dependencies that are not shipped with the product are excluded.\n"
-    )
+    unknowns = coverage.from_bom(sbom)
+    if unknowns:
+        o.append(
+            "Coverage is incomplete: the ecosystems listed in 8.3 were found in "
+            "the source but are missing from this SBOM, or present only in "
+            "part. Build-time dependencies that are not shipped with the "
+            "product are excluded.\n"
+        )
+    else:
+        o.append(
+            "Coverage exceeds the statutory minimum: the full dependency tree of the "
+            "shipped product is included, not only the top level. Build-time "
+            "dependencies that are not shipped with the product are excluded.\n"
+        )
     o.append("## 8.2 Licence distribution\n")
     o.append("| Licence | Components |")
     o.append("|---|---|")
     for name, n in sorted(lic.items(), key=lambda kv: -kv[1])[:12]:
         o.append(f"| {name} | {n} |")
     o.append("")
+    o.append(known_unknowns_section(unknowns))
     o.append(
         "> The SBOM is not subject to mandatory publication. It is retained as "
         "part of the technical documentation and made available to the market "
         "surveillance authority upon reasoned request.\n"
     )
+    return "\n".join(o)
+
+
+def _cell(v) -> str:
+    return " ".join(str(v).split()).replace("|", "\\|")
+
+
+def known_unknowns_section(unknowns: list[dict] | None) -> str:
+    """8.3 — what the SBOM does not cover, stated rather than left for the
+    reader to discover. `unknowns` is None when the SBOM carries no coverage
+    record at all (produced by another tool, or by an older cra-kit)."""
+    o = ["## 8.3 Known unknowns\n"]
+    if unknowns is None:
+        o.append(
+            "This SBOM carries no machine-readable coverage record: it was not "
+            "produced by `sbom_gen.py`, or by a version that predates the "
+            "record. Gaps in coverage, if any, are not stated here, and the "
+            "absence of this record is not evidence that coverage is "
+            "complete.\n"
+        )
+        return "\n".join(o)
+    if not unknowns:
+        o.append(
+            "None. Every ecosystem detected in the source was resolved into "
+            "components, and none was resolved only in part.\n"
+        )
+        return "\n".join(o)
+    o.append(
+        "Detected in the source, but not resolved into components (or only "
+        "in part). Each entry names what is missing, why, and what resolves "
+        "it.\n"
+    )
+    o.append("| Ecosystem | Status | Found in | Why | How to resolve |")
+    o.append("|---|---|---|---|---|")
+    for e in unknowns:
+        ev = e.get("evidence") or []
+        where = ", ".join(f"`{x}`" for x in ev[:4])
+        if len(ev) > 4:
+            where += f" (+{len(ev) - 4} more)"
+        why = e.get("reason", "")
+        if e.get("base_images"):
+            imgs = ", ".join(f"`{i}`" for i in e["base_images"])
+            why += f". Built on {imgs}; the image contents are not enumerated"
+        o.append(
+            f"| {_cell(e.get('ecosystem', '?'))} | {_cell(e.get('status', '?'))} "
+            f"| {where or '—'} | {_cell(why)} | {_cell(e.get('fix', ''))} |"
+        )
+    o.append("")
     return "\n".join(o)
 
 
@@ -365,8 +424,10 @@ def build(cfg_dir: Path, sbom_path: Path, out_dir: Path, pdf: bool) -> int:
 
     tech_md = out_dir / "technical_file.md"
     doc_md = out_dir / "declaration_of_conformity.md"
-    tech_md.write_text(tech, encoding="utf-8")
-    doc_md.write_text(doc(product), encoding="utf-8")
+    # newline="\n": the same bytes on every OS, so the worked example
+    # rebuilds byte-for-byte on Windows too
+    tech_md.write_text(tech, encoding="utf-8", newline="\n")
+    doc_md.write_text(doc(product), encoding="utf-8", newline="\n")
 
     print(f"\n  Technical file:  {tech_md}  ({len(tech.splitlines())} lines)")
     print(f"  Declaration:        {doc_md}")

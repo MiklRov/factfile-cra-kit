@@ -712,6 +712,10 @@ Coverage exceeds the statutory minimum: the full dependency tree of the shipped 
 |---|---|
 | Apache-2.0 | 4 |
 
+## 8.3 Known unknowns
+
+This SBOM carries no machine-readable coverage record: it was not produced by `sbom_gen.py`, or by a version that predates the record. Gaps in coverage, if any, are not stated here, and the absence of this record is not evidence that coverage is complete.
+
 > The SBOM is not subject to mandatory publication. It is retained as part of the technical documentation and made available to the market surveillance authority upon reasoned request.
 
 
