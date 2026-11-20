@@ -38,7 +38,7 @@ from pathlib import Path
 
 import pytest
 
-from cra_kit import license_enrich
+from factfile_cra_kit import license_enrich
 
 FIXTURES_DIR = Path(__file__).resolve().parent / "fixtures" / "license_enrich"
 GRADLE_CACHE = FIXTURES_DIR / "gradle-cache"

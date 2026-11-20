@@ -17,7 +17,7 @@ import tomllib
 
 from conftest import CRA_KIT_DIR
 
-import cra_kit
+import factfile_cra_kit
 
 PYPROJECT = tomllib.loads((CRA_KIT_DIR / "pyproject.toml").read_text(encoding="utf-8"))
 SCRIPTS = PYPROJECT["project"]["scripts"]
@@ -38,8 +38,8 @@ def test_every_root_wrapper_points_at_a_callable_main():
     wrappers = sorted(CRA_KIT_DIR.glob("*.py"))
     assert wrappers, "no root wrappers found"
     for w in wrappers:
-        m = re.search(r"^from (cra_kit\.\w+) import main$", w.read_text(encoding="utf-8"), re.M)
-        assert m, f"{w.name} is not a wrapper around cra_kit"
+        m = re.search(r"^from (factfile_cra_kit\.\w+) import main$", w.read_text(encoding="utf-8"), re.M)
+        assert m, f"{w.name} is not a wrapper around factfile_cra_kit"
         assert callable(importlib.import_module(m.group(1)).main), w.name
 
 
@@ -53,12 +53,12 @@ def test_root_wrapper_runs_from_a_clone():
 
 
 def test_version_has_one_source():
-    from cra_kit import license_enrich, sbom_gen, vuln_scan
-    assert PYPROJECT["tool"]["setuptools"]["dynamic"]["version"] == {"attr": "cra_kit.__version__"}
+    from factfile_cra_kit import license_enrich, sbom_gen, vuln_scan
+    assert PYPROJECT["tool"]["setuptools"]["dynamic"]["version"] == {"attr": "factfile_cra_kit.__version__"}
     for mod in (sbom_gen, vuln_scan, license_enrich):
-        assert mod.TOOL_VERSION == cra_kit.__version__
+        assert mod.TOOL_VERSION == factfile_cra_kit.__version__
 
 
 def test_the_stylesheet_ships_with_the_package():
-    assert "doc.css" in PYPROJECT["tool"]["setuptools"]["package-data"]["cra_kit"]
-    assert (CRA_KIT_DIR / "cra_kit" / "doc.css").is_file()
+    assert "doc.css" in PYPROJECT["tool"]["setuptools"]["package-data"]["factfile_cra_kit"]
+    assert (CRA_KIT_DIR / "factfile_cra_kit" / "doc.css").is_file()

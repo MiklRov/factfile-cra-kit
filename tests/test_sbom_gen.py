@@ -21,7 +21,7 @@ import json
 
 from conftest import FIXTURES_DIR
 
-from cra_kit.sbom_gen import generate
+from factfile_cra_kit.sbom_gen import generate
 
 MULTI_MODULE_DIR = FIXTURES_DIR / "gradle_multi_module"
 NO_MANIFEST_DIR = FIXTURES_DIR / "no_manifest"
@@ -135,7 +135,7 @@ def test_declared_only_pypi_warns_and_records_a_known_unknown(tmp_path, capsys):
     assert "pip freeze" in err
     assert "--pip-freeze" in err
 
-    from cra_kit.sbom_coverage import from_bom
+    from factfile_cra_kit.sbom_coverage import from_bom
     bom = json.loads(out.read_text(encoding="utf-8"))
     unknowns = from_bom(bom)
     pypi = [u for u in unknowns if u["ecosystem"] == "pypi"]

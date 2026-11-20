@@ -1,9 +1,9 @@
 """
 Shared pytest configuration for the cra-kit test suite.
 
-The code is the `cra_kit` package (pyproject.toml); the scripts in the
+The code is the `factfile_cra_kit` package (pyproject.toml); the scripts in the
 repository root are thin wrappers that keep `python3 build.py` working from
-a clone. Tests import the package (`from cra_kit.risk_report import
+a clone. Tests import the package (`from factfile_cra_kit.risk_report import
 cross_check`). The repository root is put on sys.path here so that works
 without `pip install -e .` as well.
 

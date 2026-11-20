@@ -15,4 +15,4 @@ and so on: the scripts in the repository root are thin wrappers around this
 package.
 """
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
